@@ -49,7 +49,7 @@ export default function Home(){
             <input type="password" className="input" value={password} onChange={e=>setPassword(e.target.value)} required/>
           </div>
           <button className="btn-primary w-full" disabled={loading}>
-            {loading? 'Entrando...' : 'Entrar'}
+            {loading? 'Entrando...' : '🔐 Entrar'}
           </button>
         </form>
 

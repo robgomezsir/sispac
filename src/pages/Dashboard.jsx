@@ -45,8 +45,10 @@ export default function Dashboard(){
     <div>
       <div className="flex items-end justify-between mb-4">
         <div className="flex gap-2">
-          <input className="input" placeholder="Buscar..." value={q} onChange={e=>setQ(e.target.value)}/>
-          <button className="btn-secondary" onClick={load}>Atualizar</button>
+          <input className="input" placeholder="Buscar candidatos..." value={q} onChange={e=>setQ(e.target.value)}/>
+          <button className="btn-secondary" onClick={load} disabled={loading}>
+            {loading ? 'Carregando...' : '🔄 Atualizar'}
+          </button>
         </div>
         <div className="flex items-center gap-2">
           <label className="label">Exportar colunas:</label>
@@ -75,8 +77,8 @@ export default function Dashboard(){
                 </div>
               </div>
               <div className="mt-4 flex gap-2">
-                <button className="btn-secondary" onClick={()=>setCurrent(row)}>Detalhar</button>
-                <button className="btn-primary" onClick={()=>exportOne(row)}>Download</button>
+                <button className="btn-secondary" onClick={()=>setCurrent(row)}>👁️ Detalhar</button>
+                <button className="btn-primary" onClick={()=>exportOne(row)}>📥 Download</button>
               </div>
             </div>
           ))}

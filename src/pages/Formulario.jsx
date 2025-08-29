@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { questions } from '../data/questions'
 import { computeScore, classify } from '../utils/scoring'
 import { supabase } from '../lib/supabase'
+import { useNavigate } from 'react-router-dom'
 
 export default function Formulario(){
   const [step, setStep] = useState(0) // 0..3 perguntas, 4 = final
@@ -11,6 +12,7 @@ export default function Formulario(){
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   function toggleOption(qid, optionText){
     const selected = answers[qid] || []
@@ -123,7 +125,13 @@ export default function Formulario(){
           <button className="btn-primary" onClick={handleSend} disabled={sending || sent}>
             {sending ? 'Enviando...' : (sent ? 'Enviado' : 'Enviar')}
           </button>
-          <button className="btn-danger" disabled={!sent}>Sair</button>
+          <button 
+            className="btn-danger" 
+            onClick={() => navigate('/')}
+            disabled={sending}
+          >
+            {sent ? 'Voltar ao Início' : 'Cancelar'}
+          </button>
         </div>
       </div>
     )

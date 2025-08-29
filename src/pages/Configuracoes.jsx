@@ -47,16 +47,24 @@ export default function Configuracoes(){
           </select>
         </div>
         <div className="mt-4 flex gap-2">
-          <button className="btn-primary" disabled={loading} onClick={()=>callApi('addUser', { name, email, role })}>Adicionar</button>
-          <button className="btn-danger" disabled={loading} onClick={()=>callApi('deleteUser', { email })}>Remover</button>
+          <button className="btn-primary" disabled={loading} onClick={()=>callApi('addUser', { name, email, role })}>
+            {loading ? 'Adicionando...' : '➕ Adicionar Usuário'}
+          </button>
+          <button className="btn-danger" disabled={loading} onClick={()=>callApi('deleteUser', { email })}>
+            {loading ? 'Removendo...' : '🗑️ Remover Usuário'}
+          </button>
         </div>
       </div>
 
       <div className="card">
         <h3 className="font-semibold mb-3">Manutenção de Dados</h3>
         <div className="flex gap-2 flex-wrap">
-          <button className="btn-secondary" disabled={loading} onClick={()=>callApi('backup', {})}>Download backup</button>
-          <button className="btn-danger" disabled={loading} onClick={()=>callApi('purge', {})}>Limpar tudo</button>
+          <button className="btn-secondary" disabled={loading} onClick={()=>callApi('backup', {})}>
+            {loading ? 'Preparando...' : '💾 Download Backup'}
+          </button>
+          <button className="btn-danger" disabled={loading} onClick={()=>callApi('purge', {})}>
+            {loading ? 'Limpando...' : '⚠️ Limpar Tudo'}
+          </button>
         </div>
       </div>
 

@@ -17,14 +17,14 @@ function NavBar(){
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
         <Link to="/" className="font-bold">SisPAC</Link>
         <nav className="flex gap-3 text-sm">
-          <Link to="/form">Formulário</Link>
-          {user && <Link to="/dashboard">Dashboard</Link>}
-          {role==='admin' && <Link to="/config">Configurações</Link>}
-          {role==='admin' && <Link to="/api">Painel de API</Link>}
+          <Link to="/form" className="hover:text-blue-600 transition-colors">📝 Formulário</Link>
+          {user && <Link to="/dashboard" className="hover:text-blue-600 transition-colors">📊 Dashboard</Link>}
+          {role==='admin' && <Link to="/config" className="hover:text-blue-600 transition-colors">⚙️ Configurações</Link>}
+          {role==='admin' && <Link to="/api" className="hover:text-blue-600 transition-colors">🔌 Painel de API</Link>}
         </nav>
         <div className="ml-auto flex items-center gap-3">
           {user ? (
-            <button className="btn-secondary flex items-center gap-2" onClick={()=>{signOut(); navigate('/')}}>
+            <button className="btn-secondary flex items-center gap-2 hover:bg-red-50 hover:text-red-600 transition-colors" onClick={()=>{signOut(); navigate('/')}}>
               <LogOut size={16}/> Sair
             </button>
           ) : null}
