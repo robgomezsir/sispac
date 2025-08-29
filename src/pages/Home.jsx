@@ -8,6 +8,7 @@ export default function Home(){
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState(null)
+  const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
   async function onSubmit(e){
@@ -18,8 +19,9 @@ export default function Home(){
     try{
       console.log("🔐 [Home] Chamando signIn...")
       const result = await signIn(email, password)
-      console.log("✅ [Home] Login bem-sucedido, redirecionando para dashboard:", result)
-      navigate('/dashboard')
+      console.log("✅ [Home] Login bem-sucedido, aguardando redirecionamento automático...", result)
+      setSuccess(true)
+      // O redirecionamento agora é automático via useAuth
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)
       console.error("❌ [Home] Mensagem de erro:", e.message)
@@ -50,6 +52,12 @@ export default function Home(){
             {loading? 'Entrando...' : 'Entrar'}
           </button>
         </form>
+
+        {success && (
+          <div className="mt-4 p-3 bg-green-100 border border-green-300 text-green-700 rounded-md">
+            ✅ Login realizado com sucesso! Redirecionando para o Dashboard...
+          </div>
+        )}
 
         <div className="mt-6 text-sm text-gray-600">
           Não tem acesso ao dashboard? Você pode <Link className="text-blue-600" to="/form">realizar o teste</Link>.
