@@ -38,7 +38,7 @@ export default function Formulario(){
   }
 
   async function submit(){
-    setSending(True)
+    setSending(true)
   }
 
   async function handleSend(){
