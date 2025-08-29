@@ -11,10 +11,25 @@ export default function Dashboard(){
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
 
   async function load(){
+    console.log("📊 [Dashboard] Carregando dados...")
     setLoading(true)
-    const { data, error } = await supabase.from('candidates').select('*').order('created_at', { ascending: false })
-    if(!error) setRows(data || [])
-    setLoading(false)
+    
+    try {
+      const { data, error } = await supabase.from('candidates').select('*').order('created_at', { ascending: false })
+      console.log("📊 [Dashboard] Resultado da consulta:", { data, error, count: data?.length })
+      
+      if(!error) {
+        setRows(data || [])
+        console.log("✅ [Dashboard] Dados carregados com sucesso:", data?.length, "registros")
+      } else {
+        console.error("❌ [Dashboard] Erro ao carregar dados:", error)
+      }
+    } catch(err) {
+      console.error("❌ [Dashboard] Exceção ao carregar dados:", err)
+    } finally {
+      setLoading(false)
+      console.log("📊 [Dashboard] Carregamento finalizado")
+    }
   }
   useEffect(()=>{ load() }, [])
 

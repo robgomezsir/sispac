@@ -12,13 +12,22 @@ export default function Home(){
 
   async function onSubmit(e){
     e.preventDefault()
+    console.log("🔐 [Home] Iniciando processo de login...")
     setErr(null); setLoading(true)
+    
     try{
-      await signIn(email, password)
+      console.log("🔐 [Home] Chamando signIn...")
+      const result = await signIn(email, password)
+      console.log("✅ [Home] Login bem-sucedido, redirecionando para dashboard:", result)
       navigate('/dashboard')
     }catch(e){
+      console.error("❌ [Home] Erro no login:", e)
+      console.error("❌ [Home] Mensagem de erro:", e.message)
       setErr(e.message)
-    }finally{ setLoading(false) }
+    }finally{ 
+      setLoading(false)
+      console.log("🔐 [Home] Processo de login finalizado")
+    }
   }
 
   return (

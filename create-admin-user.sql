@@ -16,7 +16,7 @@ WHERE email = 'robgomez.sir@gmail.com';
 -- 3. Se não existir usuário, criar via painel do Supabase:
 -- Vá para: Authentication > Users > Add User
 -- Email: robgomez.sir@gmail.com
--- Password: admin1630
+-- Password: admin1641
 -- Email Confirm: true
 
 -- 4. Após criar o usuário, verificar se foi criado
