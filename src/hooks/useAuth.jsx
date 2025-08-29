@@ -47,6 +47,20 @@ function useProvideAuth(){
       
       console.log("🔍 [useAuth] Buscando role para usuário:", user.id)
       try {
+        // Primeiro verificar se a tabela profiles existe
+        const { data: tableCheck, error: tableError } = await supabase
+          .from('profiles')
+          .select('count')
+          .limit(1)
+        
+        if(tableError) {
+          console.error("❌ [useAuth] Tabela profiles não existe ou erro de acesso:", tableError.message)
+          console.log("🔍 [useAuth] Usando fallback 'rh' - configure o banco primeiro")
+          setRole('rh') // fallback padrão
+          return
+        }
+        
+        // Buscar role do usuário
         const { data, error } = await supabase
           .from('profiles')
           .select('role')
@@ -56,9 +70,27 @@ function useProvideAuth(){
         console.log("🔍 [useAuth] Resultado da busca de role:", { data, error })
         
         if(error){
-          console.error("❌ [useAuth] Erro ao buscar role:", error.message)
-          console.log("🔍 [useAuth] Usando fallback 'rh'")
-          setRole('rh') // fallback padrão
+          if(error.code === 'PGRST116') {
+            console.log("🔍 [useAuth] Usuário não tem perfil, criando perfil padrão...")
+            // Tentar criar perfil padrão
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                email: user.email,
+                role: 'rh'
+              })
+            
+            if(insertError) {
+              console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
+            } else {
+              console.log("✅ [useAuth] Perfil criado com sucesso")
+            }
+            setRole('rh')
+          } else {
+            console.error("❌ [useAuth] Erro ao buscar role:", error.message)
+            setRole('rh') // fallback padrão
+          }
         } else {
           console.log("✅ [useAuth] Role encontrado:", data?.role)
           setRole(data?.role || 'rh')
