@@ -17,7 +17,11 @@ export function useAuth(){
 function useProvideAuth(){
   const [user, setUser] = React.useState(null)
   const [role, setRole] = React.useState(null) // 'admin' | 'rh' | null
+  const [isLoading, setIsLoading] = React.useState(true)
   const navigate = useNavigate()
+  
+  // Cache para evitar consultas repetidas
+  const roleCache = React.useRef(new Map())
 
   React.useEffect(()=>{
     let isMounted = true
@@ -29,11 +33,13 @@ function useProvideAuth(){
       } else {
         setUser(data.user)
       }
+      setIsLoading(false)
     })
     
     const { data: sub } = supabase.auth.onAuthStateChange((event, session)=>{
       if (!isMounted) return
       setUser(session?.user ?? null)
+      setIsLoading(false)
     })
     
     return ()=>{
@@ -42,7 +48,7 @@ function useProvideAuth(){
     }
   }, [])
 
-  // Buscar role real na tabela profiles
+  // Buscar role real na tabela profiles com cache
   React.useEffect(()=>{
     let isMounted = true
     
@@ -52,6 +58,14 @@ function useProvideAuth(){
           setRole(null)
         }
         return 
+      }
+      
+      // Verificar cache primeiro
+      if (roleCache.current.has(user.id)) {
+        if (isMounted) {
+          setRole(roleCache.current.get(user.id))
+        }
+        return
       }
       
       try {
@@ -80,18 +94,26 @@ function useProvideAuth(){
             if(insertError) {
               console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
             }
-            setRole('rh')
+            const defaultRole = 'rh'
+            roleCache.current.set(user.id, defaultRole)
+            setRole(defaultRole)
           } else {
             console.error("❌ [useAuth] Erro ao buscar role:", error.message)
-            setRole('rh') // fallback padrão
+            const fallbackRole = 'rh'
+            roleCache.current.set(user.id, fallbackRole)
+            setRole(fallbackRole)
           }
         } else {
-          setRole(data?.role || 'rh')
+          const userRole = data?.role || 'rh'
+          roleCache.current.set(user.id, userRole)
+          setRole(userRole)
         }
       } catch(err){
         if (!isMounted) return
         console.error("❌ [useAuth] Falha ao buscar role:", err)
-        setRole('rh')
+        const errorRole = 'rh'
+        roleCache.current.set(user.id, errorRole)
+        setRole(errorRole)
       }
     }
     
@@ -104,67 +126,30 @@ function useProvideAuth(){
 
   // Redirecionar automaticamente após autenticação
   React.useEffect(() => {
-    if (user && role && window.location.pathname === '/') {
-      console.log("🚀 [useAuth] Usuário autenticado com role, redirecionando para dashboard...")
-      
-      // Usar setTimeout para evitar loop infinito
-      const timer = setTimeout(() => {
-        navigate('/dashboard')
-      }, 100)
-      
-      return () => clearTimeout(timer)
+    if (user && role && !isLoading) {
+      // Verificar se está na página inicial ou se precisa redirecionar
+      const currentPath = window.location.pathname
+      if (currentPath === '/' || currentPath === '/login') {
+        console.log("🚀 [useAuth] Usuário autenticado com role, redirecionando para dashboard...")
+        
+        // Redirecionamento imediato para evitar delays
+        navigate('/dashboard', { replace: true })
+      }
     }
-  }, [user, role]) // Removido navigate das dependências
+  }, [user, role, isLoading, navigate])
 
   async function signIn(email, password){
-    console.log("🔐 [useAuth] Tentativa de login:", { email, password: '***' })
-    
     try {
-      // Primeira tentativa: login direto
-      console.log("🔐 [useAuth] Tentando login direto...")
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      console.log("🔐 [useAuth] Resultado do login direto:", { data, error })
       
       if(error) {
-        console.error("❌ [useAuth] Erro no login direto:", error.message)
-        
-        // Se der erro de "Database error", tentar criar sessão manual
-        if(error.message.includes('Database error')) {
-          console.log("🔐 [useAuth] Tentando criar sessão manual...")
-          
-          // Verificar se o usuário existe na tabela profiles
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('email', email)
-            .single()
-          
-          if(profileError) {
-            console.error("❌ [useAuth] Erro ao buscar perfil:", profileError.message)
-            throw error // re-throw o erro original
-          }
-          
-          if(profileData) {
-            console.log("✅ [useAuth] Perfil encontrado, criando sessão manual")
-            // Criar uma sessão manual baseada no perfil
-            const mockUser = {
-              id: profileData.id,
-              email: profileData.email,
-              user_metadata: { role: profileData.role }
-            }
-            
-            // Simular login bem-sucedido
-            setUser(mockUser)
-            setRole(profileData.role)
-            
-            return { user: mockUser, session: { user: mockUser } }
-          }
-        }
-        
+        console.error("❌ [useAuth] Erro no login:", error.message)
         throw error
       }
       
-      console.log("✅ [useAuth] Login bem-sucedido:", data)
+      // Limpar cache ao fazer novo login
+      roleCache.current.clear()
+      
       return data
     } catch(err) {
       console.error("❌ [useAuth] Exceção no login:", err)
@@ -173,11 +158,11 @@ function useProvideAuth(){
   }
 
   async function signOut(){
-    console.log("🚪 [useAuth] Fazendo logout...")
     await supabase.auth.signOut()
     setRole(null)
-    console.log("✅ [useAuth] Logout concluído")
+    // Limpar cache ao fazer logout
+    roleCache.current.clear()
   }
 
-  return { user, role, signIn, signOut }
+  return { user, role, isLoading, signIn, signOut }
 }

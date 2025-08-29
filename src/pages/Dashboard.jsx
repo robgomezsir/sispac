@@ -9,6 +9,14 @@ export default function Dashboard(){
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
+  
+  // Memoizar dados filtrados para evitar re-renders
+  const filtered = React.useMemo(() => {
+    return rows.filter(r => {
+      const s = (r.name + ' ' + r.email + ' ' + r.status).toLowerCase()
+      return s.includes(q.toLowerCase())
+    })
+  }, [rows, q])
 
   async function load(){
     setLoading(true)
@@ -29,10 +37,7 @@ export default function Dashboard(){
   }
   useEffect(()=>{ load() }, [])
 
-  const filtered = rows.filter(r => {
-    const s = (r.name + ' ' + r.email + ' ' + r.status).toLowerCase()
-    return s.includes(q.toLowerCase())
-  })
+  // Removido - agora está memoizado acima
 
   function exportAll(){
     downloadXlsx('candidatos.xlsx', filtered, columnsToExport)
@@ -94,15 +99,37 @@ export default function Dashboard(){
 
 function CandidateDetails({ id }){
   const [details, setDetails] = React.useState(null)
+  
   React.useEffect(()=>{
-    (async ()=>{
-      const { data, error } = await 
-        (await import('../lib/supabase')).supabase
-          .from('results').select('*').eq('candidate_id', id).single()
-      if(!error) setDetails(data)
-    })()
+    let isMounted = true
+    
+    const fetchDetails = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('results')
+          .select('*')
+          .eq('candidate_id', id)
+          .single()
+        
+        if (!isMounted) return
+        
+        if(!error) {
+          setDetails(data)
+        }
+      } catch (err) {
+        console.error("Erro ao buscar detalhes:", err)
+      }
+    }
+    
+    fetchDetails()
+    
+    return () => {
+      isMounted = false
+    }
   }, [id])
-  if(!details) return <div>Carregando...</div>
+  
+  if(!details) return <div className="text-center py-4">Carregando detalhes...</div>
+  
   return (
     <pre className="bg-gray-50 p-4 rounded-xl whitespace-pre-wrap">{details.details}</pre>
   )
