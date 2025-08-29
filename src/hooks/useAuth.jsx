@@ -7,6 +7,7 @@ export function AuthProvider({ children }){
   const auth = useProvideAuth()
   return <Ctx.Provider value={auth}>{children}</Ctx.Provider>
 }
+
 export function useAuth(){
   const ctx = React.useContext(Ctx) || useProvideAuth()
   return ctx
@@ -26,12 +27,28 @@ function useProvideAuth(){
     return ()=>sub?.subscription.unsubscribe()
   }, [])
 
+  // Buscar role real na tabela profiles
   React.useEffect(()=>{
-    // Mapear role simples: admin se email = ADMIN GERAL, senão 'rh'
-    const email = user?.email
-    if(!email){ setRole(null); return }
-    if(email?.toLowerCase() === 'robgomez.sir@gmail.com'){ setRole('admin') }
-    else { setRole('rh') }
+    async function fetchRole(){
+      if(!user){ setRole(null); return }
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        if(error){
+          console.error("Erro ao buscar role:", error.message)
+          setRole('rh') // fallback padrão
+        } else {
+          setRole(data?.role || 'rh')
+        }
+      } catch(err){
+        console.error("Falha ao buscar role:", err)
+        setRole('rh')
+      }
+    }
+    fetchRole()
   }, [user])
 
   async function signIn(email, password){
@@ -39,8 +56,10 @@ function useProvideAuth(){
     if(error) throw error
     return data
   }
+
   async function signOut(){
     await supabase.auth.signOut()
+    setRole(null)
   }
 
   return { user, role, signIn, signOut }
