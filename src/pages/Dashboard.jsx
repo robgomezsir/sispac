@@ -3,8 +3,12 @@ import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
+import { useAuth } from '../hooks/useAuth.jsx'
+import { Link } from 'react-router-dom'
+import { Settings, BarChart3, Users, FileText } from 'lucide-react'
 
 export default function Dashboard(){
+  const { user, role } = useAuth()
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(false)
   const [initialLoad, setInitialLoad] = useState(false)
@@ -87,91 +91,151 @@ export default function Dashboard(){
   }, [])
 
   return (
-    <div>
-      <div className="flex items-end justify-between mb-4">
-        <div className="flex gap-2">
-          <input 
-            className="input" 
-            placeholder="Buscar candidatos..." 
-            value={q} 
-            onChange={handleSearchChange}
-          />
-          <button 
-            className="btn-secondary" 
-            onClick={load} 
-            disabled={loading}
-          >
-            {loading ? 'Carregando...' : '🔄 Atualizar'}
-          </button>
+    <div className="space-y-6">
+      {/* Header do Dashboard */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            📊 Dashboard de Candidatos
+          </h1>
+          <p className="text-gray-600">Gerencie e visualize os resultados dos testes comportamentais</p>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="label">Exportar colunas:</label>
-          <select 
-            multiple 
-            className="input h-24" 
-            value={columnsToExport}
-            onChange={handleColumnsChange}
-          >
-            {['id','name','email','score','status','created_at'].map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          <button 
-            className="btn-primary" 
-            onClick={exportAll}
-            disabled={filtered.length === 0}
-          >
-            Download consolidado (XLSX)
-          </button>
+        
+        {/* Ações rápidas para admin */}
+        {role === 'admin' && (
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/config"
+              className="btn-secondary flex items-center gap-2 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            >
+              <Settings size={16} />
+              ⚙️ Configurações
+            </Link>
+            <Link 
+              to="/api"
+              className="btn-secondary flex items-center gap-2 hover:bg-green-50 hover:text-green-600 transition-colors"
+            >
+              <BarChart3 size={16} />
+              📊 API Panel
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Estatísticas rápidas */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <div className="card text-center">
+          <div className="text-2xl font-bold text-blue-600">{filtered.length}</div>
+          <div className="text-sm text-gray-600">Total de Candidatos</div>
+        </div>
+        <div className="card text-center">
+          <div className="text-2xl font-bold text-green-600">
+            {filtered.filter(r => r.status === 'SUPEROU A EXPECTATIVA').length}
+          </div>
+          <div className="text-sm text-gray-600">Superaram Expectativa</div>
+        </div>
+        <div className="card text-center">
+          <div className="text-2xl font-bold text-yellow-600">
+            {filtered.filter(r => r.status === 'ACIMA DA EXPECTATIVA').length}
+          </div>
+          <div className="text-sm text-gray-600">Acima da Expectativa</div>
+        </div>
+        <div className="card text-center">
+          <div className="text-2xl font-bold text-gray-600">
+            {filtered.filter(r => r.status === 'DENTRO DA EXPECTATIVA').length}
+          </div>
+          <div className="text-sm text-gray-600">Dentro da Expectativa</div>
         </div>
       </div>
 
-      {!initialLoad ? (
-        <div className="card text-center py-8">
-          <div className="text-gray-500">Clique em "Atualizar" para carregar os dados</div>
-        </div>
-      ) : loading ? (
-        <div className="card text-center py-8">
-          <div className="text-gray-500">Carregando candidatos...</div>
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="card text-center py-8">
-          <div className="text-gray-500">
-            {q ? 'Nenhum candidato encontrado para esta busca' : 'Nenhum candidato cadastrado'}
+      {/* Controles de busca e exportação */}
+      <div className="card">
+        <div className="flex items-end justify-between mb-4">
+          <div className="flex gap-2">
+            <input 
+              className="input" 
+              placeholder="Buscar candidatos..." 
+              value={q} 
+              onChange={handleSearchChange}
+            />
+            <button 
+              className="btn-secondary" 
+              onClick={load} 
+              disabled={loading}
+            >
+              {loading ? 'Carregando...' : '🔄 Atualizar'}
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="label">Exportar colunas:</label>
+            <select 
+              multiple 
+              className="input h-24" 
+              value={columnsToExport}
+              onChange={handleColumnsChange}
+            >
+              {['id','name','email','score','status','created_at'].map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <button 
+              className="btn-primary" 
+              onClick={exportAll}
+              disabled={filtered.length === 0}
+            >
+              📥 Download consolidado (XLSX)
+            </button>
           </div>
         </div>
-      ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(row => (
-            <div key={row.id} className="card">
-              <div className="flex justify-between">
-                <div>
-                  <div className="font-semibold">{row.name}</div>
-                  <div className="text-sm text-gray-600">{row.email}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-bold">{row.score}</div>
-                  <div className="text-xs text-gray-600">{row.status}</div>
-                </div>
-              </div>
-              <div className="mt-4 flex gap-2">
-                <button 
-                  className="btn-secondary" 
-                  onClick={() => openModal(row)}
-                >
-                  👁️ Detalhar
-                </button>
-                <button 
-                  className="btn-primary" 
-                  onClick={() => exportOne(row)}
-                >
-                  📥 Download
-                </button>
-              </div>
+
+        {/* Conteúdo dos candidatos */}
+        {!initialLoad ? (
+          <div className="text-center py-8">
+            <div className="text-gray-500">Clique em "Atualizar" para carregar os dados</div>
+          </div>
+        ) : loading ? (
+          <div className="text-center py-8">
+            <div className="text-gray-500">Carregando candidatos...</div>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="text-gray-500">
+              {q ? 'Nenhum candidato encontrado para esta busca' : 'Nenhum candidato cadastrado'}
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filtered.map(row => (
+              <div key={row.id} className="card">
+                <div className="flex justify-between">
+                  <div>
+                    <div className="font-semibold">{row.name}</div>
+                    <div className="text-sm text-gray-600">{row.email}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold">{row.score}</div>
+                    <div className="text-xs text-gray-600">{row.status}</div>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <button 
+                    className="btn-secondary" 
+                    onClick={() => openModal(row)}
+                  >
+                    👁️ Detalhar
+                  </button>
+                  <button 
+                    className="btn-primary" 
+                    onClick={() => exportOne(row)}
+                  >
+                    📥 Download
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Modal 
         open={!!current} 

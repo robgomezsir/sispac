@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 import ApiPanel from './pages/ApiPanel.jsx'
 import { useAuth } from './hooks/useAuth.jsx'
-import { LogOut } from 'lucide-react'
+import { LogOut, Settings, Database, BarChart3 } from 'lucide-react'
 
 // Componente NavBar otimizado
 const NavBar = React.memo(function NavBar(){
@@ -28,8 +28,8 @@ const NavBar = React.memo(function NavBar(){
     { to: "/form", label: "📝 Formulário", icon: "📝" },
     ...(user ? [{ to: "/dashboard", label: "📊 Dashboard", icon: "📊" }] : []),
     ...(role === 'admin' ? [
-      { to: "/config", label: "⚙️ Configurações", icon: "⚙️" },
-      { to: "/api", label: "🔌 Painel de API", icon: "🔌" }
+      { to: "/config", label: "⚙️ Configurações", icon: "⚙️", isAdmin: true },
+      { to: "/api", label: "🔌 Painel de API", icon: "🔌", isAdmin: true }
     ] : [])
   ], [user, role])
   
@@ -41,26 +41,59 @@ const NavBar = React.memo(function NavBar(){
         </Link>
         
         <nav className="flex gap-3 text-sm">
-          {navLinks.map(({ to, label, icon }) => (
+          {navLinks.map(({ to, label, icon, isAdmin }) => (
             <Link 
               key={to}
               to={to} 
-              className="hover:text-blue-600 transition-colors flex items-center gap-1"
+              className={`hover:text-blue-600 transition-colors flex items-center gap-1 px-3 py-2 rounded-lg ${
+                isAdmin 
+                  ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200' 
+                  : 'hover:bg-gray-50'
+              }`}
             >
-              {label}
+              {icon} {label}
+              {isAdmin && (
+                <span className="ml-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                  ADMIN
+                </span>
+              )}
             </Link>
           ))}
         </nav>
         
         <div className="ml-auto flex items-center gap-3">
           {user && (
-            <button 
-              className="btn-secondary flex items-center gap-2 hover:bg-red-50 hover:text-red-600 transition-colors" 
-              onClick={handleSignOut}
-              aria-label="Sair da aplicação"
-            >
-              <LogOut size={16}/> Sair
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Indicador de usuário */}
+              <div className="text-sm text-gray-600 hidden md:block">
+                <span className="font-medium">{user.email}</span>
+                {role === 'admin' && (
+                  <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                    👑 Admin
+                  </span>
+                )}
+              </div>
+              
+              {/* Botão de configurações rápido para admin */}
+              {role === 'admin' && (
+                <Link 
+                  to="/config"
+                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  title="Configurações"
+                >
+                  <Settings size={18} />
+                </Link>
+              )}
+              
+              {/* Botão de logout */}
+              <button 
+                className="btn-secondary flex items-center gap-2 hover:bg-red-50 hover:text-red-600 transition-colors" 
+                onClick={handleSignOut}
+                aria-label="Sair da aplicação"
+              >
+                <LogOut size={16}/> Sair
+              </button>
+            </div>
           )}
         </div>
       </div>
