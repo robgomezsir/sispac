@@ -110,6 +110,8 @@ const AdminOnly = React.memo(function AdminOnly({ children }){
 
 // Componente App principal otimizado
 export default function App(){
+  console.log('🚀 [App] Componente App renderizando...')
+  
   // Rotas memoizadas para evitar re-criação
   const routes = useMemo(() => [
     { path: "/", element: <Home /> },
