@@ -56,15 +56,15 @@ function MeuComponente() {
 ### **Logo no Header:**
 ```javascript
 // src/assets/index.js
-export { default as logo } from './logos/sispac-logo.svg'
+export { default as sispacLogo } from './logos/sispac-logo.svg'
 
 // src/App.jsx
-import { logo } from './assets'
+import { sispacLogo } from './assets'
 
 function NavBar() {
   return (
     <header>
-      <img src={logo} alt="SisPAC Logo" className="h-8" />
+      <img src={sispacLogo} alt="SisPAC Logo" className="h-8" />
     </header>
   )
 }
@@ -88,19 +88,37 @@ function Dashboard() {
 }
 ```
 
+### **Ícone de Atualizar:**
+```javascript
+// src/assets/index.js
+export { default as refreshIcon } from './icons/refresh.svg'
+
+// src/pages/Dashboard.jsx
+import { refreshIcon } from '../assets'
+
+function Dashboard() {
+  return (
+    <button>
+      <img src={refreshIcon} alt="Atualizar" className="w-4 h-4" />
+      Atualizar
+    </button>
+  )
+}
+```
+
 ### **Imagem de Background:**
 ```javascript
 // src/assets/index.js
-export { default as heroBg } from './images/hero-background.jpg'
+export { default as heroBackground } from './images/hero-background.svg'
 
 // src/pages/Home.jsx
-import { heroBg } from '../assets'
+import { heroBackground } from '../assets'
 
 function Home() {
   return (
     <div 
       className="bg-cover bg-center min-h-screen"
-      style={{ backgroundImage: `url(${heroBg})` }}
+      style={{ backgroundImage: `url(${heroBackground})` }}
     >
       {/* Conteúdo */}
     </div>
