@@ -20,60 +20,52 @@ function useProvideAuth(){
   const navigate = useNavigate()
 
   React.useEffect(()=>{
-    console.log("🔍 [useAuth] Verificando usuário atual...")
+    let isMounted = true
+    
     supabase.auth.getUser().then(({data, error})=>{
-      console.log("🔍 [useAuth] getUser result:", { data, error })
+      if (!isMounted) return
       if(error) {
         console.error("❌ [useAuth] Erro ao buscar usuário:", error)
       } else {
-        console.log("✅ [useAuth] Usuário encontrado:", data.user)
         setUser(data.user)
       }
     })
     
     const { data: sub } = supabase.auth.onAuthStateChange((event, session)=>{
-      console.log("🔄 [useAuth] Auth state change:", { event, session })
+      if (!isMounted) return
       setUser(session?.user ?? null)
     })
-    return ()=>sub?.subscription.unsubscribe()
+    
+    return ()=>{
+      isMounted = false
+      sub?.subscription.unsubscribe()
+    }
   }, [])
 
   // Buscar role real na tabela profiles
   React.useEffect(()=>{
+    let isMounted = true
+    
     async function fetchRole(){
       if(!user){ 
-        console.log("🔍 [useAuth] Sem usuário, role resetado para null")
-        setRole(null); 
+        if (isMounted) {
+          setRole(null)
+        }
         return 
       }
       
-      console.log("🔍 [useAuth] Buscando role para usuário:", user.id)
       try {
-        // Primeiro verificar se a tabela profiles existe
-        const { data: tableCheck, error: tableError } = await supabase
-          .from('profiles')
-          .select('count')
-          .limit(1)
-        
-        if(tableError) {
-          console.error("❌ [useAuth] Tabela profiles não existe ou erro de acesso:", tableError.message)
-          console.log("🔍 [useAuth] Usando fallback 'rh' - configure o banco primeiro")
-          setRole('rh') // fallback padrão
-          return
-        }
-        
-        // Buscar role do usuário
+        // Buscar role do usuário diretamente
         const { data, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
           .single()
         
-        console.log("🔍 [useAuth] Resultado da busca de role:", { data, error })
+        if (!isMounted) return
         
         if(error){
           if(error.code === 'PGRST116') {
-            console.log("🔍 [useAuth] Usuário não tem perfil, criando perfil padrão...")
             // Tentar criar perfil padrão
             const { error: insertError } = await supabase
               .from('profiles')
@@ -83,10 +75,10 @@ function useProvideAuth(){
                 role: 'rh'
               })
             
+            if (!isMounted) return
+            
             if(insertError) {
               console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
-            } else {
-              console.log("✅ [useAuth] Perfil criado com sucesso")
             }
             setRole('rh')
           } else {
@@ -94,30 +86,35 @@ function useProvideAuth(){
             setRole('rh') // fallback padrão
           }
         } else {
-          console.log("✅ [useAuth] Role encontrado:", data?.role)
           setRole(data?.role || 'rh')
         }
       } catch(err){
+        if (!isMounted) return
         console.error("❌ [useAuth] Falha ao buscar role:", err)
-        console.log("🔍 [useAuth] Usando fallback 'rh'")
         setRole('rh')
       }
     }
+    
     fetchRole()
+    
+    return () => {
+      isMounted = false
+    }
   }, [user])
 
   // Redirecionar automaticamente após autenticação
   React.useEffect(() => {
-    if (user && role) {
+    if (user && role && window.location.pathname === '/') {
       console.log("🚀 [useAuth] Usuário autenticado com role, redirecionando para dashboard...")
-      console.log("🚀 [useAuth] Dados do usuário:", { email: user.email, role, id: user.id })
       
-      // Pequeno delay para garantir que tudo foi carregado
-      setTimeout(() => {
+      // Usar setTimeout para evitar loop infinito
+      const timer = setTimeout(() => {
         navigate('/dashboard')
       }, 100)
+      
+      return () => clearTimeout(timer)
     }
-  }, [user, role, navigate])
+  }, [user, role]) // Removido navigate das dependências
 
   async function signIn(email, password){
     console.log("🔐 [useAuth] Tentativa de login:", { email, password: '***' })
@@ -181,8 +178,6 @@ function useProvideAuth(){
     setRole(null)
     console.log("✅ [useAuth] Logout concluído")
   }
-
-  console.log("🔍 [useAuth] Estado atual:", { user: user?.email, role, userId: user?.id })
 
   return { user, role, signIn, signOut }
 }
