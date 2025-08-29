@@ -10,139 +10,156 @@ export function AuthProvider({ children }){
 }
 
 export function useAuth(){
-  const ctx = React.useContext(Ctx) || useProvideAuth()
+  const ctx = React.useContext(Ctx)
+  if (!ctx) {
+    throw new Error('useAuth deve ser usado dentro de AuthProvider')
+  }
   return ctx
 }
 
 function useProvideAuth(){
   const [user, setUser] = React.useState(null)
-  const [role, setRole] = React.useState(null) // 'admin' | 'rh' | null
+  const [role, setRole] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
+  const [isInitialized, setIsInitialized] = React.useState(false)
   const navigate = useNavigate()
   
   // Cache para evitar consultas repetidas
   const roleCache = React.useRef(new Map())
+  const isMounted = React.useRef(true)
+  const authSubscription = React.useRef(null)
 
-  React.useEffect(()=>{
-    let isMounted = true
-    
-    supabase.auth.getUser().then(({data, error})=>{
-      if (!isMounted) return
-      if(error) {
-        console.error("❌ [useAuth] Erro ao buscar usuário:", error)
-      } else {
-        setUser(data.user)
+  // Inicialização única
+  React.useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Buscar usuário atual
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        
+        if (!isMounted.current) return
+        
+        if (error) {
+          console.error("❌ [useAuth] Erro ao buscar usuário:", error)
+        } else if (currentUser) {
+          setUser(currentUser)
+          // Buscar role apenas se houver usuário
+          await fetchUserRole(currentUser)
+        }
+      } catch (err) {
+        console.error("❌ [useAuth] Erro na inicialização:", err)
+      } finally {
+        if (isMounted.current) {
+          setIsLoading(false)
+          setIsInitialized(true)
+        }
       }
+    }
+
+    initializeAuth()
+
+    // Configurar listener de mudança de auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!isMounted.current) return
+      
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUser(session.user)
+        await fetchUserRole(session.user)
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null)
+        setRole(null)
+        roleCache.current.clear()
+      }
+      
       setIsLoading(false)
     })
-    
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session)=>{
-      if (!isMounted) return
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
-    
-    return ()=>{
-      isMounted = false
-      sub?.subscription.unsubscribe()
+
+    authSubscription.current = subscription
+
+    return () => {
+      isMounted.current = false
+      if (authSubscription.current) {
+        authSubscription.current.unsubscribe()
+      }
     }
   }, [])
 
-  // Buscar role real na tabela profiles com cache
-  React.useEffect(()=>{
-    let isMounted = true
-    
-    async function fetchRole(){
-      if(!user){ 
-        if (isMounted) {
-          setRole(null)
-        }
-        return 
-      }
-      
-      // Verificar cache primeiro
-      if (roleCache.current.has(user.id)) {
-        if (isMounted) {
-          setRole(roleCache.current.get(user.id))
-        }
-        return
-      }
-      
-      try {
-        // Buscar role do usuário diretamente
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single()
-        
-        if (!isMounted) return
-        
-        if(error){
-          if(error.code === 'PGRST116') {
-            // Tentar criar perfil padrão
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert({
-                id: user.id,
-                email: user.email,
-                role: 'rh'
-              })
-            
-            if (!isMounted) return
-            
-            if(insertError) {
-              console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
-            }
-            const defaultRole = 'rh'
-            roleCache.current.set(user.id, defaultRole)
-            setRole(defaultRole)
-          } else {
-            console.error("❌ [useAuth] Erro ao buscar role:", error.message)
-            const fallbackRole = 'rh'
-            roleCache.current.set(user.id, fallbackRole)
-            setRole(fallbackRole)
-          }
-        } else {
-          const userRole = data?.role || 'rh'
-          roleCache.current.set(user.id, userRole)
-          setRole(userRole)
-        }
-      } catch(err){
-        if (!isMounted) return
-        console.error("❌ [useAuth] Falha ao buscar role:", err)
-        const errorRole = 'rh'
-        roleCache.current.set(user.id, errorRole)
-        setRole(errorRole)
-      }
-    }
-    
-    fetchRole()
-    
-    return () => {
-      isMounted = false
-    }
-  }, [user])
+  // Função otimizada para buscar role
+  const fetchUserRole = React.useCallback(async (userData) => {
+    if (!userData?.id) return
 
-  // Redirecionar automaticamente após autenticação
+    // Verificar cache primeiro
+    if (roleCache.current.has(userData.id)) {
+      const cachedRole = roleCache.current.get(userData.id)
+      if (isMounted.current) {
+        setRole(cachedRole)
+      }
+      return
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userData.id)
+        .single()
+      
+      if (!isMounted.current) return
+      
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // Perfil não existe, criar padrão
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userData.id,
+              email: userData.email,
+              role: 'rh'
+            })
+          
+          if (!isMounted.current) return
+          
+          if (insertError) {
+            console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
+          }
+          const defaultRole = 'rh'
+          roleCache.current.set(userData.id, defaultRole)
+          setRole(defaultRole)
+        } else {
+          console.error("❌ [useAuth] Erro ao buscar role:", error.message)
+          const fallbackRole = 'rh'
+          roleCache.current.set(userData.id, fallbackRole)
+          setRole(fallbackRole)
+        }
+      } else {
+        const userRole = data?.role || 'rh'
+        roleCache.current.set(userData.id, userRole)
+        setRole(userRole)
+      }
+    } catch (err) {
+      if (!isMounted.current) return
+      console.error("❌ [useAuth] Falha ao buscar role:", err)
+      const errorRole = 'rh'
+      roleCache.current.set(userData.id, errorRole)
+      setRole(errorRole)
+    }
+  }, [])
+
+  // Redirecionamento otimizado
   React.useEffect(() => {
-    if (user && role && !isLoading) {
-      // Verificar se está na página inicial ou se precisa redirecionar
+    if (isInitialized && user && role && !isLoading) {
       const currentPath = window.location.pathname
       if (currentPath === '/' || currentPath === '/login') {
-        console.log("🚀 [useAuth] Usuário autenticado com role, redirecionando para dashboard...")
-        
-        // Redirecionamento imediato para evitar delays
+        console.log("🚀 [useAuth] Redirecionando para dashboard...")
         navigate('/dashboard', { replace: true })
       }
     }
-  }, [user, role, isLoading, navigate])
+  }, [user, role, isLoading, isInitialized, navigate])
 
-  async function signIn(email, password){
+  const signIn = React.useCallback(async (email, password) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       
-      if(error) {
+      if (error) {
         console.error("❌ [useAuth] Erro no login:", error.message)
         throw error
       }
@@ -151,18 +168,30 @@ function useProvideAuth(){
       roleCache.current.clear()
       
       return data
-    } catch(err) {
+    } catch (err) {
       console.error("❌ [useAuth] Exceção no login:", err)
       throw err
     }
-  }
+  }, [])
 
-  async function signOut(){
-    await supabase.auth.signOut()
-    setRole(null)
-    // Limpar cache ao fazer logout
-    roleCache.current.clear()
-  }
+  const signOut = React.useCallback(async () => {
+    try {
+      await supabase.auth.signOut()
+      setRole(null)
+      roleCache.current.clear()
+    } catch (err) {
+      console.error("❌ [useAuth] Erro no logout:", err)
+    }
+  }, [])
 
-  return { user, role, isLoading, signIn, signOut }
+  // Memoizar o objeto de retorno para evitar re-renders
+  const authValue = React.useMemo(() => ({
+    user,
+    role,
+    isLoading,
+    signIn,
+    signOut
+  }), [user, role, isLoading, signIn, signOut])
+
+  return authValue
 }
