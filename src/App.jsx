@@ -1,52 +1,15 @@
-import React, { useCallback, useMemo } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './contexts/ThemeContext.jsx'
+import { Protected } from './components/Protected.jsx'
+import { AdminOnly } from './components/AdminOnly.jsx'
+import Navigation from './components/Navigation.jsx'
 import Home from './pages/Home.jsx'
 import Formulario from './pages/Formulario.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 import ApiPanel from './pages/ApiPanel.jsx'
-import { Navigation } from './components/Navigation.jsx'
-import { useAuth } from './hooks/useAuth.jsx'
-
-// Componente Protected otimizado
-const Protected = React.memo(function Protected({ children }){
-  const { user, isLoading } = useAuth()
-  
-  // Mostrar loading enquanto verifica autenticação
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-muted-foreground">Verificando autenticação...</div>
-      </div>
-    )
-  }
-  
-  if (!user) {
-    return <Navigate to="/" replace />
-  }
-  
-  return children
-})
-
-// Componente AdminOnly otimizado
-const AdminOnly = React.memo(function AdminOnly({ children }){
-  const { role, isLoading } = useAuth()
-  
-  // Mostrar loading enquanto verifica role
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-muted-foreground">Verificando permissões...</div>
-      </div>
-    )
-  }
-  
-  if (role !== 'admin') {
-    return <Navigate to="/" replace />
-  }
-  
-  return children
-})
+import AuthDebug from './components/AuthDebug.jsx'
 
 // Componente App principal otimizado
 export default function App(){
@@ -67,6 +30,10 @@ export default function App(){
     { 
       path: "/api", 
       element: <AdminOnly><ApiPanel /></AdminOnly> 
+    },
+    { 
+      path: "/debug", 
+      element: <AuthDebug /> 
     },
     { 
       path: "*", 
