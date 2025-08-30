@@ -16,10 +16,19 @@ if (isDevelopment()) {
     DEV: import.meta.env.DEV,
     VITE_APP_ENV: import.meta.env.VITE_APP_ENV
   })
+} else {
+  console.log('🚀 [main] Iniciando aplicação em modo PRODUÇÃO...')
 }
 
 try {
-  const root = ReactDOM.createRoot(document.getElementById('root'))
+  const rootElement = document.getElementById('root')
+  
+  if (!rootElement) {
+    throw new Error('Elemento root não encontrado')
+  }
+  
+  const root = ReactDOM.createRoot(rootElement)
+  
   if (isDevelopment()) {
     devLog('🚀 [main] Root criado com sucesso')
   }
@@ -39,19 +48,28 @@ try {
   if (isDevelopment()) {
     devLog('🚀 [main] Aplicação renderizada com sucesso')
     devLog('🔧 [main] Servidor rodando em: http://localhost:5173')
+  } else {
+    console.log('✅ [main] Aplicação renderizada com sucesso em produção')
   }
 } catch (error) {
   console.error('❌ [main] Erro ao renderizar aplicação:', error)
+  
   if (isDevelopment()) {
     devLog('❌ [main] Erro detalhado:', error)
   }
   
-  document.getElementById('root').innerHTML = `
-    <div style="padding: 20px; text-align: center; color: red;">
-      <h1>Erro ao carregar a aplicação</h1>
-      <p>${error.message}</p>
-      <button onclick="location.reload()">Recarregar</button>
-      ${isDevelopment() ? `<br><small>Modo desenvolvimento ativo</small>` : ''}
-    </div>
-  `
+  // Fallback para erro em produção
+  const rootElement = document.getElementById('root')
+  if (rootElement) {
+    rootElement.innerHTML = `
+      <div style="padding: 20px; text-align: center; color: red; font-family: Arial, sans-serif;">
+        <h1>Erro ao carregar a aplicação</h1>
+        <p>${error.message}</p>
+        <button onclick="location.reload()" style="padding: 10px 20px; margin: 10px; background: #dc2626; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Recarregar
+        </button>
+        ${isDevelopment() ? '<br><small>Modo desenvolvimento ativo</small>' : ''}
+      </div>
+    `
+  }
 }

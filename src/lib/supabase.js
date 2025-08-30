@@ -24,25 +24,45 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false // DESABILITADO para evitar login automático
-  }
-})
-
-// Testar conexão
-supabase.auth.getSession().then(({ data, error }) => {
-  if (error) {
-    console.error('❌ [Supabase] Erro na conexão:', error)
-  } else {
-    console.log('✅ [Supabase] Conexão estabelecida com sucesso!')
-    if (data.session) {
-      console.log('✅ [Supabase] Sessão ativa encontrada:', data.session.user.email)
-    } else {
-      console.log('ℹ️ [Supabase] Nenhuma sessão ativa')
+    detectSessionInUrl: false, // DESABILITADO para evitar login automático
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    storageKey: 'sispac-auth-token'
+  },
+  // Configurações adicionais para produção
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'sispac-web'
     }
   }
 })
 
+// Testar conexão apenas em desenvolvimento
+if (import.meta.env.DEV) {
+  supabase.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error('❌ [Supabase] Erro na conexão:', error)
+    } else {
+      console.log('✅ [Supabase] Conexão estabelecida com sucesso!')
+      if (data.session) {
+        console.log('✅ [Supabase] Sessão ativa encontrada:', data.session.user.email)
+      } else {
+        console.log('ℹ️ [Supabase] Nenhuma sessão ativa')
+      }
+    }
+  })
+}
+
 // Criar cliente com chave de serviço para operações que precisam contornar RLS
 export const supabaseAdmin = supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
   : supabase // Fallback para o cliente anônimo se não houver chave de serviço

@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html','./src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+    './dist/**/*.html'
+  ],
   darkMode: 'class',
   theme: {
     extend: {
@@ -31,7 +35,7 @@ export default {
           foreground: 'hsl(var(--accent-foreground))',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
+          DEFAULT: 'hsl(var(--popover-foreground))',
           foreground: 'hsl(var(--popover-foreground))',
         },
         card: {
@@ -71,4 +75,12 @@ export default {
     },
   },
   plugins: [],
+  // Configurações para produção
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+  // Configurações de performance
+  corePlugins: {
+    preflight: true,
+  }
 }

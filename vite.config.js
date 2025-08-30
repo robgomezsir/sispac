@@ -21,7 +21,10 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    // Configurações para produção
+    minify: 'esbuild',
+    target: 'es2015'
   },
   define: {
     global: 'globalThis'
@@ -36,5 +39,12 @@ export default defineConfig({
   // Configurações de assets
   assetsInclude: ['**/*.ico', '**/*.png', '**/*.svg'],
   // Configurações de favicon
-  publicDir: 'public'
+  publicDir: 'public',
+  // Configurações para SPA
+  base: '/',
+  // Configurações de preview
+  preview: {
+    port: 4173,
+    host: true
+  }
 })

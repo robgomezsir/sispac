@@ -1,15 +1,6 @@
 {
   "rewrites": [
-    { "source": "/welcome", "destination": "/index.html" },
-    { "source": "/join", "destination": "/index.html" },
-    { "source": "/setup-password", "destination": "/index.html" },
-    { "source": "/complete-invite", "destination": "/index.html" }
-  ],
-  "redirects": [
-    { "source": "/welcome", "destination": "/index.html", "permanent": false },
-    { "source": "/join", "destination": "/index.html", "permanent": false },
-    { "source": "/setup-password", "destination": "/index.html", "permanent": false },
-    { "source": "/complete-invite", "destination": "/index.html", "permanent": false }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -20,6 +11,28 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
