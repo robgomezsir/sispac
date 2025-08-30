@@ -1,6 +1,7 @@
 import React from 'react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+import { clearAuthCache, checkCacheHealth } from '../lib/cache-cleaner.js'
 
 const Ctx = React.createContext(null)
 
@@ -31,6 +32,17 @@ function useProvideAuth(){
   const authSubscription = React.useRef(null)
   const hasRedirected = React.useRef(false)
 
+  // Verificar saúde dos caches na inicialização
+  React.useEffect(() => {
+    console.log('🔍 [useAuth] Verificando saúde dos caches...')
+    const cacheHealth = checkCacheHealth()
+    
+    if (!cacheHealth.healthy) {
+      console.log('⚠️ [useAuth] Problemas de cache detectados, limpando...')
+      clearAuthCache()
+    }
+  }, [])
+
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
     console.log('🔍 [useAuth] useEffect de inicialização executando...')
@@ -51,6 +63,11 @@ function useProvideAuth(){
         
         if (error) {
           console.error("❌ [useAuth] Erro ao buscar usuário:", error)
+          // Se houver erro de autenticação, limpar cache
+          if (error.message.includes('token') || error.message.includes('expired')) {
+            console.log('🔍 [useAuth] Token expirado detectado, limpando cache...')
+            clearAuthCache()
+          }
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
           
@@ -317,10 +334,34 @@ function useProvideAuth(){
       roleCache.current.clear()
       hasRedirected.current = false
       
+      // Limpar cache de autenticação ao fazer logout
+      clearAuthCache()
+      
       console.log('✅ [useAuth] Logout realizado com sucesso')
     } catch (err) {
       console.error("❌ [useAuth] Erro no logout:", err)
     }
+  }, [])
+
+  // Função para limpar cache manualmente
+  const clearCache = React.useCallback(() => {
+    console.log('🧹 [useAuth] Limpando cache manualmente...')
+    clearAuthCache()
+    roleCache.current.clear()
+    hasRedirected.current = false
+    setUser(null)
+    setRole(null)
+    setIsInvitePending(false)
+    setIsLoading(true)
+    setIsInitialized(false)
+    
+    // Reinicializar após limpeza
+    setTimeout(() => {
+      if (isMounted.current) {
+        setIsLoading(false)
+        setIsInitialized(true)
+      }
+    }, 100)
   }, [])
 
   // Memoizar o objeto de retorno para evitar re-renders
@@ -331,8 +372,9 @@ function useProvideAuth(){
     isInvitePending,
     finalizeInvite,
     signIn,
-    signOut
-  }), [user, role, isLoading, isInvitePending, finalizeInvite, signIn, signOut])
+    signOut,
+    clearCache
+  }), [user, role, isLoading, isInvitePending, finalizeInvite, signIn, signOut, clearCache])
 
   return authValue
 }
