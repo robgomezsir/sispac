@@ -50,6 +50,10 @@ export default function App(){
       element: <AuthCallback /> 
     },
     { 
+      path: "/invite-callback", 
+      element: <AuthCallback /> 
+    },
+    { 
       path: "*", 
       element: <Navigate to="/" replace /> 
     }

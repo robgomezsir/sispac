@@ -1,12 +1,23 @@
 {
   "rewrites": [
     {
+      "source": "/auth/confirm",
+      "destination": "/index.html"
+    },
+    {
       "source": "/auth/(.*)",
       "destination": "/index.html"
     },
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/auth/confirm",
+      "destination": "/index.html",
+      "permanent": false
     }
   ],
   "headers": [
