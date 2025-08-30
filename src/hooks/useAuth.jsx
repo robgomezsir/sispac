@@ -23,12 +23,13 @@ function useProvideAuth(){
   const [isLoading, setIsLoading] = React.useState(true)
   const [isInitialized, setIsInitialized] = React.useState(false)
   const [isInvitePending, setIsInvitePending] = React.useState(false)
-  const navigate = useNavigate()
+  const navigate = React.useRef(useNavigate())
   
   // Cache para evitar consultas repetidas
   const roleCache = React.useRef(new Map())
   const isMounted = React.useRef(true)
   const authSubscription = React.useRef(null)
+  const hasRedirected = React.useRef(false)
 
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
@@ -139,6 +140,7 @@ function useProvideAuth(){
         setRole(null)
         setIsInvitePending(false)
         roleCache.current.clear()
+        hasRedirected.current = false
       }
       
       setIsLoading(false)
@@ -265,18 +267,20 @@ function useProvideAuth(){
       role: !!role, 
       isLoading, 
       isInvitePending,
+      hasRedirected: hasRedirected.current,
       currentPath: window.location.pathname
     })
     
-    // Só redirecionar se estiver inicializado, logado e não for convite pendente
-    if (isInitialized && user && role && !isLoading && !isInvitePending) {
+    // Só redirecionar se estiver inicializado, logado, não for convite pendente e ainda não redirecionou
+    if (isInitialized && user && role && !isLoading && !isInvitePending && !hasRedirected.current) {
       const currentPath = window.location.pathname
       if (currentPath === '/' || currentPath === '/login') {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
-        navigate('/dashboard', { replace: true })
+        hasRedirected.current = true
+        navigate.current('/dashboard', { replace: true })
       }
     }
-  }, [isInitialized, user, role, isLoading, isInvitePending, navigate])
+  }, [isInitialized, user, role, isLoading, isInvitePending])
 
   const signIn = React.useCallback(async (email, password) => {
     try {
@@ -293,6 +297,7 @@ function useProvideAuth(){
       
       // Limpar cache ao fazer novo login
       roleCache.current.clear()
+      hasRedirected.current = false
       
       return data
     } catch (err) {
@@ -310,6 +315,7 @@ function useProvideAuth(){
       setRole(null)
       setIsInvitePending(false)
       roleCache.current.clear()
+      hasRedirected.current = false
       
       console.log('✅ [useAuth] Logout realizado com sucesso')
     } catch (err) {

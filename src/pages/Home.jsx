@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { 
@@ -24,6 +24,7 @@ export default function Home(){
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState(null)
   const navigate = useNavigate()
+  const hasRedirected = useRef(false)
 
   // Debug logs
   useEffect(() => {
@@ -31,14 +32,15 @@ export default function Home(){
     console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading })
   }, [user, isLoading, loading])
 
-  // Redirecionar automaticamente se já estiver logado
+  // Redirecionar automaticamente se já estiver logado - SEM dependências circulares
   useEffect(() => {
     console.log('🔍 [Home] Verificando redirecionamento...')
-    if (user && !isLoading) {
+    if (user && !isLoading && !hasRedirected.current) {
       console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
+      hasRedirected.current = true
       navigate('/dashboard', { replace: true })
     }
-  }, [user, isLoading, navigate])
+  }, [user, isLoading]) // Removida dependência navigate
 
   async function onSubmit(e){
     e.preventDefault()
