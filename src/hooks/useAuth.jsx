@@ -96,6 +96,16 @@ function useProvideAuth(){
       return
     }
 
+    // Verificar se é o usuário admin principal
+    if (userData.email === 'robgomez.sir@gmail.com') {
+      const adminRole = 'admin'
+      roleCache.current.set(userData.id, adminRole)
+      if (isMounted.current) {
+        setRole(adminRole)
+      }
+      return
+    }
+
     try {
       const { data, error } = await supabase
         .from('profiles')
