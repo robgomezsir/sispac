@@ -3,6 +3,19 @@ import { questions } from '../data/questions'
 import { computeScore, classify } from '../utils/scoring'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+import { 
+  CheckCircle, 
+  ChevronLeft, 
+  ChevronRight, 
+  Send, 
+  Home,
+  User,
+  Mail,
+  BarChart3,
+  Award,
+  AlertCircle
+} from 'lucide-react'
+import { cn } from '../lib/utils'
 
 export default function Formulario(){
   const [step, setStep] = useState(0) // 0..3 perguntas, 4 = final
@@ -95,43 +108,121 @@ export default function Formulario(){
   if(step === questions.length){
     const score = computeScore(answers, questions)
     const status = classify(score)
+    
+    const getStatusColor = (status) => {
+      switch (status) {
+        case 'SUPEROU A EXPECTATIVA':
+          return 'bg-green-50 text-green-700 border-green-200'
+        case 'ACIMA DA EXPECTATIVA':
+          return 'bg-blue-50 text-blue-700 border-blue-200'
+        case 'DENTRO DA EXPECTATIVA':
+          return 'bg-yellow-50 text-yellow-700 border-yellow-200'
+        default:
+          return 'bg-gray-50 text-gray-700 border-gray-200'
+      }
+    }
+
     return (
-      <div className="card max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-2">🎉 Obrigado por participar!</h2>
-        <p className="text-center text-gray-600 mb-6">Confira seus dados e envie.</p>
-
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="label">Nome completo</label>
-            <input className="input" value={nome} onChange={e=>setNome(e.target.value)} placeholder="Nome e Sobrenome"/>
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header de Sucesso */}
+        <div className="card p-8 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle size={32} className="text-green-600" />
           </div>
-          <div>
-            <label className="label">Email</label>
-            <input className="input" value={email} onChange={e=>setEmail(e.target.value)} placeholder="email@exemplo.com"/>
-          </div>
+          <h2 className="text-3xl font-bold mb-2">🎉 Obrigado por participar!</h2>
+          <p className="text-muted-foreground text-lg">
+            Confira seus dados e envie para finalizar o processo.
+          </p>
         </div>
 
-        <div className="bg-gray-50 rounded-xl p-4 mb-4">
-          <div className="flex justify-between text-sm">
-            <span><b>Score:</b> {score}</span>
-            <span><b>Status:</b> {status}</span>
+        {/* Formulário de Dados */}
+        <div className="card p-8">
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
+            <User size={20} />
+            Informações Pessoais
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-2">
+              <label className="label">Nome completo</label>
+              <input 
+                className="input" 
+                value={nome} 
+                onChange={e=>setNome(e.target.value)} 
+                placeholder="Nome e Sobrenome"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="label">Email</label>
+              <input 
+                className="input" 
+                value={email} 
+                onChange={e=>setEmail(e.target.value)} 
+                placeholder="email@exemplo.com"
+              />
+            </div>
           </div>
-        </div>
 
-        {error && <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 mb-3">{error}</div>}
+          {/* Resultados */}
+          <div className="card bg-muted/50 p-6 mb-6">
+            <h4 className="font-semibold mb-4 flex items-center gap-2">
+              <BarChart3 size={18} />
+              Resultados da Avaliação
+            </h4>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <div className="text-2xl font-bold text-primary">{score}</div>
+                <div className="text-sm text-muted-foreground">Pontuação Total</div>
+              </div>
+              <div className="text-center p-4 bg-background rounded-lg">
+                <div className={cn(
+                  "inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border",
+                  getStatusColor(status)
+                )}>
+                  <Award size={16} />
+                  {status}
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <div className="flex gap-3 justify-center">
-          <button className="btn-secondary" onClick={()=>setStep(questions.length-1)}>Voltar</button>
-          <button className="btn-primary" onClick={handleSend} disabled={sending || sent}>
-            {sending ? 'Enviando...' : (sent ? 'Enviado' : 'Enviar')}
-          </button>
-          <button 
-            className="btn-danger" 
-            onClick={() => navigate('/')}
-            disabled={sending}
-          >
-            {sent ? 'Voltar ao Início' : 'Cancelar'}
-          </button>
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg mb-6 flex items-center gap-2">
+              <AlertCircle size={16} />
+              {error}
+            </div>
+          )}
+
+          {/* Botões de Ação */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button 
+              className="btn-outline flex items-center gap-2" 
+              onClick={()=>setStep(questions.length-1)}
+            >
+              <ChevronLeft size={16} />
+              Voltar
+            </button>
+            <button 
+              className="btn-primary flex items-center gap-2" 
+              onClick={handleSend} 
+              disabled={sending || sent}
+            >
+              {sending ? (
+                <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+              ) : (
+                <Send size={16} />
+              )}
+              {sending ? 'Enviando...' : (sent ? 'Enviado' : 'Enviar Respostas')}
+            </button>
+            <button 
+              className="btn-destructive flex items-center gap-2" 
+              onClick={() => navigate('/')}
+              disabled={sending}
+            >
+              <Home size={16} />
+              {sent ? 'Voltar ao Início' : 'Cancelar'}
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -143,40 +234,95 @@ export default function Formulario(){
   const progress = Math.round(((step+1) / (questions.length+1)) * 100)
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="w-full bg-gray-200 h-2 rounded-full mb-6">
-        <div className="h-2 bg-blue-600 rounded-full transition-all" style={{ width: progress + '%' }}></div>
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Progress Bar */}
+      <div className="card p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">Progresso do Teste</span>
+            <span className="text-muted-foreground">{step+1} de {questions.length}</span>
+          </div>
+          <div className="w-full bg-muted h-3 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-primary rounded-full transition-all duration-500 ease-out" 
+              style={{ width: progress + '%' }}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="card">
-        <h2 className="text-xl font-bold mb-2">Pergunta {step+1} de {questions.length}</h2>
-        <p className="text-gray-600 mb-4">{q.title}</p>
+      {/* Pergunta */}
+      <div className="card p-8">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">Pergunta {step+1}</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">{q.title}</p>
+          </div>
 
-        <ul className="space-y-2">
-          {q.answers.map((a, idx)=>{
-            const active = selected.includes(a.text)
-            return (
-              <li key={idx} onClick={()=>toggleOption(q.id, a.text)}
-                  className={
-                    'p-3 border rounded-xl cursor-pointer transition ' +
-                    (active ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 hover:bg-gray-100 border-gray-300')
-                  }>
-                <div className="flex justify-between">
-                  <span>{a.text}</span>
-                  <span className={active ? 'opacity-80' : 'text-gray-400'}>+{a.value}</span>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Selecione até 5 opções que melhor descrevem você:
+            </p>
+            
+            <ul className="space-y-3">
+              {q.answers.map((a, idx)=>{
+                const active = selected.includes(a.text)
+                return (
+                  <li 
+                    key={idx} 
+                    onClick={()=>toggleOption(q.id, a.text)}
+                    className={cn(
+                      "p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-sm",
+                      active 
+                        ? 'bg-primary text-primary-foreground border-primary shadow-md' 
+                        : 'bg-background hover:bg-muted/50 border-border hover:border-primary/50'
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{a.text}</span>
+                      <div className={cn(
+                        "flex items-center gap-2",
+                        active ? "text-primary-foreground/80" : "text-muted-foreground"
+                      )}>
+                        <span className="text-sm">+{a.value}</span>
+                        {active && <CheckCircle size={16} />}
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
 
-        <div className="flex justify-between mt-6">
-          <button className="btn-secondary" onClick={prev} disabled={step===0}>Voltar</button>
-          {step === questions.length - 1 ? (
-            <button className="btn-primary" onClick={next}>Finalizar</button>
-          ) : (
-            <button className="btn-primary" onClick={next}>Próxima</button>
-          )}
+          {/* Navegação */}
+          <div className="flex items-center justify-between pt-6 border-t">
+            <button 
+              className="btn-outline flex items-center gap-2" 
+              onClick={prev} 
+              disabled={step===0}
+            >
+              <ChevronLeft size={16} />
+              Voltar
+            </button>
+            
+            {step === questions.length - 1 ? (
+              <button 
+                className="btn-primary flex items-center gap-2" 
+                onClick={next}
+              >
+                Finalizar Teste
+                <ChevronRight size={16} />
+              </button>
+            ) : (
+              <button 
+                className="btn-primary flex items-center gap-2" 
+                onClick={next}
+              >
+                Próxima Pergunta
+                <ChevronRight size={16} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

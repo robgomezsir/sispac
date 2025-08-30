@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { AuthProvider } from './hooks/useAuth.jsx'
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import './styles.css'
 
 console.log('🚀 [main] Iniciando aplicação...')
@@ -13,11 +14,13 @@ try {
   
   root.render(
     <React.StrictMode>
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </BrowserRouter>
+      </ThemeProvider>
     </React.StrictMode>
   )
   console.log('🚀 [main] Aplicação renderizada com sucesso')

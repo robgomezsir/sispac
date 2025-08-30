@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect } from 'react'
+import { X } from 'lucide-react'
+import { cn } from '../lib/utils'
 
-export default function Modal({ open, onClose, title, children }){
+export default function Modal({ open, onClose, title, children, size = "default" }){
   // Fechar modal com ESC
   useEffect(() => {
     const handleEscape = (e) => {
@@ -33,25 +35,36 @@ export default function Modal({ open, onClose, title, children }){
     onClose()
   }, [onClose])
 
+  const sizeClasses = {
+    sm: "max-w-md",
+    default: "max-w-2xl",
+    lg: "max-w-4xl",
+    xl: "max-w-6xl",
+    full: "max-w-[95vw]"
+  }
+
   if (!open) return null
 
   return (
     <div 
-      className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-4 sticky top-0 bg-white pb-2">
+      <div className={cn(
+        "card w-full max-h-[90vh] overflow-hidden shadow-2xl border-0",
+        sizeClasses[size]
+      )}>
+        <div className="flex items-center justify-between p-6 border-b bg-muted/50">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button 
-            className="btn-secondary hover:bg-gray-100 transition-colors" 
+            className="btn-ghost h-8 w-8 p-0 hover:bg-muted" 
             onClick={handleClose}
             aria-label="Fechar modal"
           >
-            ✕ Fechar
+            <X size={16} />
           </button>
         </div>
-        <div className="min-h-0">
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           {children}
         </div>
       </div>
