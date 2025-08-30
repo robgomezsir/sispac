@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
+import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
@@ -22,7 +23,12 @@ import {
   Activity,
   Target,
   Award,
-  Calendar
+  Calendar,
+  Plus,
+  Filter as FilterIcon,
+  ChevronDown,
+  ArrowUpDown,
+  FileSpreadsheet
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -40,7 +46,25 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
-  TabsContent
+  TabsContent,
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuCheckboxItem
 } from '../components/ui'
 
 export default function Dashboard(){
@@ -51,19 +75,78 @@ export default function Dashboard(){
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
+  const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
+  const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' })
+  const [advancedFilters, setAdvancedFilters] = useState({
+    status: '',
+    scoreMin: '',
+    scoreMax: '',
+    dateFrom: '',
+    dateTo: '',
+    sortBy: 'created_at'
+  })
   
   // Usar hook de debounce personalizado
   const debouncedQuery = useDebounce(q, 300)
 
-  // Memoizar dados filtrados para evitar re-renders
+  // Memoizar dados filtrados e ordenados para evitar re-renders
   const filtered = useMemo(() => {
-    if (!debouncedQuery.trim()) return rows
-    
-    return rows.filter(r => {
-      const searchText = (r.name + ' ' + r.email + ' ' + r.status).toLowerCase()
-      return searchText.includes(debouncedQuery.toLowerCase())
+    let filteredData = rows
+
+    // Aplicar busca por texto
+    if (debouncedQuery.trim()) {
+      filteredData = filteredData.filter(r => {
+        const searchText = (r.name + ' ' + r.email + ' ' + r.status).toLowerCase()
+        return searchText.includes(debouncedQuery.toLowerCase())
+      })
+    }
+
+    // Aplicar filtros avançados
+    if (advancedFilters.status) {
+      filteredData = filteredData.filter(r => r.status === advancedFilters.status)
+    }
+
+    if (advancedFilters.scoreMin) {
+      filteredData = filteredData.filter(r => r.score >= parseInt(advancedFilters.scoreMin))
+    }
+
+    if (advancedFilters.scoreMax) {
+      filteredData = filteredData.filter(r => r.score <= parseInt(advancedFilters.scoreMax))
+    }
+
+    if (advancedFilters.dateFrom) {
+      filteredData = filteredData.filter(r => new Date(r.created_at) >= new Date(advancedFilters.dateFrom))
+    }
+
+    if (advancedFilters.dateTo) {
+      filteredData = filteredData.filter(r => new Date(r.created_at) <= new Date(advancedFilters.dateTo))
+    }
+
+    return filteredData
+  }, [rows, debouncedQuery, advancedFilters])
+
+  const sortedData = useMemo(() => {
+    const sorted = [...filtered].sort((a, b) => {
+      const aValue = a[sortConfig.key]
+      const bValue = b[sortConfig.key]
+      
+      if (sortConfig.key === 'created_at') {
+        return sortConfig.direction === 'asc' 
+          ? new Date(aValue) - new Date(bValue)
+          : new Date(bValue) - new Date(aValue)
+      }
+      
+      if (typeof aValue === 'string') {
+        return sortConfig.direction === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue)
+      }
+      
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue
     })
-  }, [rows, debouncedQuery])
+    
+    return sorted
+  }, [filtered, sortConfig])
 
   // Estatísticas calculadas
   const stats = useMemo(() => {
@@ -109,8 +192,8 @@ export default function Dashboard(){
 
   // Funções de export otimizadas
   const exportAll = useCallback(() => {
-    downloadXlsx('candidatos.xlsx', filtered, columnsToExport)
-  }, [filtered, columnsToExport])
+    downloadXlsx('candidatos.xlsx', sortedData, columnsToExport)
+  }, [sortedData, columnsToExport])
 
   const exportOne = useCallback((row) => {
     downloadXlsx(`candidato_${row.id}.xlsx`, [row], columnsToExport)
@@ -136,6 +219,23 @@ export default function Dashboard(){
     setCurrent(null)
   }, [])
 
+  // Função de ordenação
+  const handleSort = useCallback((key) => {
+    setSortConfig(prev => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+    }))
+  }, [])
+
+  // Função para lidar com mudanças nos filtros avançados
+  const handleAdvancedFiltersChange = useCallback((newFilters) => {
+    setAdvancedFilters(newFilters)
+    // Atualizar ordenação se necessário
+    if (newFilters.sortBy && newFilters.sortBy !== sortConfig.key) {
+      setSortConfig({ key: newFilters.sortBy, direction: 'desc' })
+    }
+  }, [sortConfig.key])
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
@@ -159,6 +259,19 @@ export default function Dashboard(){
         return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200">Bom</Badge>
       default:
         return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Regular</Badge>
+    }
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'SUPEROU A EXPECTATIVA':
+        return 'text-green-600'
+      case 'ACIMA DA EXPECTATIVA':
+        return 'text-blue-600'
+      case 'DENTRO DA EXPECTATIVA':
+        return 'text-yellow-600'
+      default:
+        return 'text-gray-600'
     }
   }
 
@@ -260,6 +373,12 @@ export default function Dashboard(){
         </Card>
       </div>
 
+      {/* Filtros Avançados */}
+      <AdvancedFilters 
+        filters={advancedFilters}
+        onFiltersChange={handleAdvancedFiltersChange}
+      />
+
       {/* Controles de busca e exportação */}
       <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl">
         <CardHeader className="pb-6">
@@ -324,6 +443,37 @@ export default function Dashboard(){
             </div>
           </div>
 
+          {/* Seletor de visualização */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Visualização:</Label>
+              <div className="flex rounded-md border">
+                <Button
+                  variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('cards')}
+                  className="rounded-r-none"
+                >
+                  <FileText size={16} className="mr-2" />
+                  Cartões
+                </Button>
+                <Button
+                  variant={viewMode === 'table' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('table')}
+                  className="rounded-l-none"
+                >
+                  <BarChart3 size={16} className="mr-2" />
+                  Tabela
+                </Button>
+              </div>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+
           {/* Conteúdo dos candidatos */}
           {!initialLoad ? (
             <div className="text-center py-12">
@@ -339,12 +489,15 @@ export default function Dashboard(){
           ) : filtered.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-muted-foreground text-lg">
-                {q ? 'Nenhum candidato encontrado para esta busca' : 'Nenhum candidato cadastrado'}
+                {q || Object.values(advancedFilters).some(v => v !== '') 
+                  ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
+                  : 'Nenhum candidato cadastrado'}
               </div>
             </div>
-          ) : (
+          ) : viewMode === 'cards' ? (
+            // Visualização em cartões
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map(row => (
+              {sortedData.map(row => (
                 <Card 
                   key={row.id} 
                   className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm"
@@ -392,6 +545,111 @@ export default function Dashboard(){
                   </CardFooter>
                 </Card>
               ))}
+            </div>
+          ) : (
+            // Visualização em tabela
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('name')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Nome
+                        <ArrowUpDown size={16} className="text-muted-foreground" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('email')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Email
+                        <ArrowUpDown size={16} className="text-muted-foreground" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('score')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Pontuação
+                        <ArrowUpDown size={16} className="text-muted-foreground" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('status')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Status
+                        <ArrowUpDown size={16} className="text-muted-foreground" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('created_at')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Data
+                        <ArrowUpDown size={16} className="text-muted-foreground" />
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedData.map((row) => (
+                    <TableRow key={row.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{row.name}</TableCell>
+                      <TableCell className="text-muted-foreground">{row.email}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-primary">{row.score}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(row.status)}
+                          <span className={getStatusColor(row.status)}>
+                            {row.status}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreHorizontal size={16} />
+                              <span className="sr-only">Abrir menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openModal(row)}>
+                              <Eye size={16} className="mr-2" />
+                              Ver detalhes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => exportOne(row)}>
+                              <Download size={16} className="mr-2" />
+                              Exportar
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-muted-foreground">
+                              <FileSpreadsheet size={16} className="mr-2" />
+                              Ver histórico
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>

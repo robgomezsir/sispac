@@ -6,3 +6,36 @@ export { Badge, badgeVariants } from './badge'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Separator } from './separator'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './tooltip'
+export { 
+  Table, 
+  TableHeader, 
+  TableBody, 
+  TableFooter, 
+  TableHead, 
+  TableRow, 
+  TableCell, 
+  TableCaption 
+} from './table'
+export { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectLabel, 
+  SelectSeparator, 
+  SelectTrigger, 
+  SelectValue 
+} from './select'
+export { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuCheckboxItem, 
+  DropdownMenuRadioItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuShortcut, 
+  DropdownMenuSub, 
+  DropdownMenuSubTrigger, 
+  DropdownMenuSubContent 
+} from './dropdown-menu'
