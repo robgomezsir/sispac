@@ -71,37 +71,63 @@ function useProvideAuth(){
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
           
-          // Verificar se o usuário tem senha definida (não é um convite pendente)
+          // Verificar se o usuário tem perfil na tabela profiles
           try {
             console.log('🔍 [useAuth] Verificando perfil do usuário...')
-            const { data: profileData } = await supabase
+            const { data: profileData, error: profileError } = await supabase
               .from('profiles')
-              .select('password_set')
+              .select('id, email, role')
               .eq('id', currentUser.id)
               .single()
             
             console.log('🔍 [useAuth] Dados do perfil:', profileData)
             
-            // Se não tem perfil ou password_set é false, tratar como convite pendente
-            if (!profileData || profileData.password_set === false) {
-              console.log('🔍 [useAuth] Usuário sem senha definida, tratando como convite pendente')
-              setIsInvitePending(true)
-              setIsLoading(false)
-              setIsInitialized(true)
-              return
+            if (profileError) {
+              if (profileError.code === 'PGRST116') {
+                // Perfil não existe, criar padrão
+                console.log('🔍 [useAuth] Perfil não existe, criando padrão...')
+                const { error: insertError } = await supabase
+                  .from('profiles')
+                  .insert({
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    role: 'rh'
+                  })
+                
+                if (insertError) {
+                  console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
+                  // Continuar mesmo com erro na criação do perfil
+                }
+                
+                // Definir role padrão
+                const defaultRole = 'rh'
+                roleCache.current.set(currentUser.id, defaultRole)
+                setRole(defaultRole)
+              } else {
+                console.error("❌ [useAuth] Erro ao buscar perfil:", profileError.message)
+                // Em caso de erro, usar role padrão
+                const fallbackRole = 'rh'
+                roleCache.current.set(currentUser.id, fallbackRole)
+                setRole(fallbackRole)
+              }
+            } else {
+              // Perfil existe, usar role do banco
+              const userRole = profileData?.role || 'rh'
+              roleCache.current.set(currentUser.id, userRole)
+              setRole(userRole)
             }
+            
+            // Definir usuário após verificar perfil
+            setUser(currentUser)
+            
           } catch (profileError) {
-            console.log('🔍 [useAuth] Erro ao verificar perfil, tratando como convite pendente:', profileError)
-            setIsInvitePending(true)
-            setIsLoading(false)
-            setIsInitialized(true)
-            return
+            console.log('🔍 [useAuth] Erro ao verificar perfil, usando configuração padrão:', profileError)
+            // Em caso de erro, usar configuração padrão
+            const defaultRole = 'rh'
+            roleCache.current.set(currentUser.id, defaultRole)
+            setRole(defaultRole)
+            setUser(currentUser)
           }
-          
-          console.log('🔍 [useAuth] Definindo usuário e buscando role...')
-          setUser(currentUser)
-          // Buscar role apenas se houver usuário
-          await fetchUserRole(currentUser)
         } else {
           console.log('🔍 [useAuth] Nenhum usuário encontrado')
         }
@@ -126,32 +152,58 @@ function useProvideAuth(){
       console.log('🔍 [useAuth] Evento de auth:', event, session?.user?.email)
       
       if (event === 'SIGNED_IN' && session?.user) {
-        // Verificar novamente se não é um convite pendente
+        // Verificar perfil do usuário logado
         try {
-          const { data: profileData } = await supabase
+          console.log('🔍 [useAuth] Verificando perfil do usuário logado...')
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('password_set')
+            .select('id, email, role')
             .eq('id', session.user.id)
             .single()
           
-          if (!profileData || profileData.password_set === false) {
-            console.log('🔍 [useAuth] Usuário convidado detectado, marcando como pendente')
-            setIsInvitePending(true)
-            setUser(null)
-            setRole(null)
-            return
+          if (profileError && profileError.code === 'PGRST116') {
+            // Perfil não existe, criar padrão
+            console.log('🔍 [useAuth] Perfil não existe, criando padrão...')
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: session.user.id,
+                email: session.user.email,
+                role: 'rh'
+              })
+            
+            if (insertError) {
+              console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
+            }
+            
+            // Usar role padrão
+            const defaultRole = 'rh'
+            roleCache.current.set(session.user.id, defaultRole)
+            setRole(defaultRole)
+          } else if (profileData) {
+            // Perfil existe, usar role do banco
+            const userRole = profileData?.role || 'rh'
+            roleCache.current.set(session.user.id, userRole)
+            setRole(userRole)
+          } else {
+            // Em caso de erro, usar role padrão
+            const fallbackRole = 'rh'
+            roleCache.current.set(session.user.id, fallbackRole)
+            setRole(fallbackRole)
           }
+          
+          setUser(session.user)
+          setIsInvitePending(false)
+          
         } catch (profileError) {
-          console.log('🔍 [useAuth] Erro ao verificar perfil, marcando como convite pendente')
-          setIsInvitePending(true)
-          setUser(null)
-          setRole(null)
-          return
+          console.log('🔍 [useAuth] Erro ao verificar perfil, usando configuração padrão:', profileError)
+          // Em caso de erro, usar configuração padrão
+          const fallbackRole = 'rh'
+          roleCache.current.set(session.user.id, fallbackRole)
+          setRole(fallbackRole)
+          setUser(session.user)
+          setIsInvitePending(false)
         }
-        
-        setUser(session.user)
-        setIsInvitePending(false)
-        await fetchUserRole(session.user)
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
         setRole(null)
