@@ -6,6 +6,7 @@ export default function AuthCallback() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState("");
+  const [inviteData, setInviteData] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -17,6 +18,7 @@ export default function AuthCallback() {
         const refreshToken = searchParams.get('refresh_token');
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
+        const type = searchParams.get('type');
 
         if (error) {
           setMessage(`❌ Erro: ${errorDescription || error}`);
@@ -25,30 +27,41 @@ export default function AuthCallback() {
         }
 
         if (accessToken && refreshToken) {
-          // Define as sessões no Supabase
-          const { data, error: sessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
+          // Para convites, NÃO definimos a sessão automaticamente
+          // Apenas verificamos se é um convite válido
+          if (type === 'invite' || type === 'signup') {
+            // Verifica se o token é válido sem definir a sessão
+            const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+            
+            if (userError || !userData.user) {
+              setMessage("❌ Convite inválido ou expirado.");
+              setLoading(false);
+              return;
+            }
 
-          if (sessionError) {
-            setMessage("⚠️ Erro ao configurar sessão: " + sessionError.message);
-            setLoading(false);
-            return;
-          }
+            // Armazena os dados do convite para uso posterior
+            setInviteData({
+              user: userData.user,
+              accessToken,
+              refreshToken
+            });
+            
+            setAction("create_password");
+            setMessage("✅ Convite confirmado! Agora crie sua senha.");
+          } else {
+            // Para outros tipos de autenticação, define a sessão normalmente
+            const { data, error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
 
-          if (data.user) {
-            // Verifica se é um usuário novo (sem senha definida)
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', data.user.id)
-              .single();
+            if (sessionError) {
+              setMessage("⚠️ Erro ao configurar sessão: " + sessionError.message);
+              setLoading(false);
+              return;
+            }
 
-            if (profile && !profile.password_set) {
-              setAction("create_password");
-              setMessage("✅ Convite confirmado! Agora crie sua senha.");
-            } else {
+            if (data.user) {
               setAction("redirect");
               setMessage("✅ Autenticação realizada com sucesso! Redirecionando...");
               setTimeout(() => navigate("/dashboard"), 2000);
@@ -86,7 +99,19 @@ export default function AuthCallback() {
     setLoading(true);
 
     try {
-      // Atualiza a senha do usuário
+      // Primeiro define a sessão com os tokens do convite
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: inviteData.accessToken,
+        refresh_token: inviteData.refreshToken,
+      });
+
+      if (sessionError) {
+        setMessage("⚠️ Erro ao configurar sessão: " + sessionError.message);
+        setLoading(false);
+        return;
+      }
+
+      // Agora atualiza a senha do usuário
       const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
@@ -95,10 +120,14 @@ export default function AuthCallback() {
         setMessage("✅ Senha criada com sucesso! Redirecionando...");
         
         // Atualiza o perfil para marcar que a senha foi definida
-        await supabase
-          .from('profiles')
-          .update({ password_set: true })
-          .eq('id', (await supabase.auth.getUser()).data.user?.id);
+        try {
+          await supabase
+            .from('profiles')
+            .update({ password_set: true })
+            .eq('id', inviteData.user.id);
+        } catch (profileError) {
+          console.log("Perfil não encontrado, continuando...");
+        }
 
         setTimeout(() => navigate("/dashboard"), 2000);
       }
@@ -114,7 +143,7 @@ export default function AuthCallback() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Processando autenticação...</p>
+          <p className="text-gray-600">Processando convite...</p>
         </div>
       </div>
     );
@@ -128,7 +157,7 @@ export default function AuthCallback() {
             Bem-vindo ao SisPAC!
           </h2>
           <p className="text-gray-600 text-center mb-6">
-            Crie sua senha para começar a usar o sistema.
+            Olá, {inviteData?.user?.email}. Crie sua senha para começar a usar o sistema.
           </p>
           
           <form onSubmit={handleCreatePassword} className="space-y-4">
@@ -144,7 +173,7 @@ export default function AuthCallback() {
               type="password"
               name="confirmPassword"
               placeholder="Confirme sua senha"
-              className="w-full p-3 border rounded-xl focus:ring-indigo-400"
+              className="w-full p-3 border rounded-xl focus:ring focus:ring-indigo-400"
               required
               minLength={6}
             />
