@@ -9,6 +9,8 @@ import Dashboard from './pages/Dashboard.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 import ApiPanel from './pages/ApiPanel.jsx'
 import AuthDebug from './components/AuthDebug.jsx'
+import RequestPasswordReset from './pages/RequestPasswordReset.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
 
 // Componente App principal otimizado
 export default function App(){
@@ -33,6 +35,14 @@ export default function App(){
     { 
       path: "/debug", 
       element: <AuthDebug /> 
+    },
+    { 
+      path: "/request-reset", 
+      element: <RequestPasswordReset /> 
+    },
+    { 
+      path: "/reset-password", 
+      element: <ResetPassword /> 
     },
     { 
       path: "*", 
