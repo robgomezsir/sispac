@@ -12,9 +12,11 @@ import {
   X,
   Home,
   FileText,
-  User
+  User,
+  ChevronDown
 } from 'lucide-react'
 import { cn } from '../lib/utils'
+import { Button, Badge, Separator } from './ui'
 
 export function Navigation() {
   const { user, role, signOut } = useAuth()
@@ -68,39 +70,47 @@ export function Navigation() {
   }, [])
   
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-3 text-xl font-bold text-primary hover:text-primary/80 transition-colors"
+            className="flex items-center space-x-3 text-xl font-bold text-primary hover:text-primary/80 transition-all duration-300 hover:scale-105"
             onClick={closeMobileMenu}
           >
-            <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8" />
-            <span className="hidden sm:inline">SisPAC</span>
+            <div className="relative">
+              <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8 drop-shadow-sm" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+            </div>
+            <span className="hidden sm:inline bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              SisPAC
+            </span>
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-2">
             {navLinks.map(({ to, label, icon: Icon, isActive, isAdmin }) => (
               <Link
                 key={to}
                 to={to}
                 className={cn(
-                  "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative group",
                   isActive
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
+                    ? "bg-primary/10 text-primary shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:shadow-sm",
                   isAdmin && "bg-primary/10 text-primary hover:bg-primary/20"
                 )}
               >
-                <Icon size={16} />
+                <Icon size={16} className="group-hover:scale-110 transition-transform duration-200" />
                 <span>{label}</span>
                 {isAdmin && (
-                  <span className="ml-1 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  <Badge variant="secondary" className="ml-2 bg-primary/20 text-primary border-primary/30 text-xs">
                     ADMIN
-                  </span>
+                  </Badge>
+                )}
+                {isActive && (
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
                 )}
               </Link>
             ))}
@@ -112,35 +122,42 @@ export function Navigation() {
             
             {user && (
               <div className="hidden md:flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center border border-primary/20">
                     <User size={16} className="text-primary" />
                   </div>
                   <div className="hidden lg:block">
-                    <div className="font-medium text-foreground">{user.email}</div>
+                    <div className="font-medium text-foreground text-sm">{user.email}</div>
                     {role === 'admin' && (
-                      <div className="text-xs text-muted-foreground">Administrador</div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <div className="w-2 h-2 bg-primary rounded-full" />
+                        Administrador
+                      </div>
                     )}
                   </div>
                 </div>
                 
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={handleSignOut}
-                  className="btn-outline flex items-center space-x-2"
+                  className="flex items-center space-x-2 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-200"
                 >
                   <LogOut size={16} />
                   <span className="hidden sm:inline">Sair</span>
-                </button>
+                </Button>
               </div>
             )}
             
             {/* Mobile menu button */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent"
+              className="md:hidden"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+            </Button>
           </div>
         </div>
         
@@ -153,42 +170,52 @@ export function Navigation() {
                   key={to}
                   to={to}
                   className={cn(
-                    "flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium transition-colors",
+                    "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200",
                     isActive
-                      ? "bg-accent text-accent-foreground"
+                      ? "bg-primary/10 text-primary shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
                     isAdmin && "bg-primary/10 text-primary hover:bg-primary/20"
                   )}
                   onClick={closeMobileMenu}
                 >
-                  <Icon size={20} />
+                  <Icon size={20} className="group-hover:scale-110 transition-transform duration-200" />
                   <span>{label}</span>
                   {isAdmin && (
-                    <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                    <Badge variant="secondary" className="ml-auto bg-primary/20 text-primary border-primary/30 text-xs">
                       ADMIN
-                    </span>
+                    </Badge>
                   )}
                 </Link>
               ))}
               
               {user && (
                 <>
-                  <div className="border-t pt-4 mt-4">
-                    <div className="px-3 py-2 text-sm text-muted-foreground">
-                      <div className="font-medium text-foreground">{user.email}</div>
-                      {role === 'admin' && (
-                        <div className="text-xs">Administrador</div>
-                      )}
+                  <Separator className="my-4" />
+                  <div className="px-4 py-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                        <User size={20} className="text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-foreground">{user.email}</div>
+                        {role === 'admin' && (
+                          <div className="text-sm text-muted-foreground flex items-center gap-2">
+                            <div className="w-2 h-2 bg-primary rounded-full" />
+                            Administrador
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
-                  <button
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start px-4 py-3 h-auto hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-200"
                     onClick={handleSignOut}
-                    className="w-full flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-accent/50"
                   >
-                    <LogOut size={20} />
+                    <LogOut size={20} className="mr-3" />
                     <span>Sair</span>
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
