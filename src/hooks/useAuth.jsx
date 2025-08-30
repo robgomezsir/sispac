@@ -32,14 +32,21 @@ function useProvideAuth(){
 
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
+    console.log('🔍 [useAuth] useEffect de inicialização executando...')
+    
     const initializeAuth = async () => {
       try {
         console.log('🔍 [useAuth] Iniciando autenticação...')
         
         // Buscar usuário atual
+        console.log('🔍 [useAuth] Chamando supabase.auth.getUser()...')
         const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        console.log('🔍 [useAuth] Resposta do getUser:', { user: !!currentUser, error: !!error })
         
-        if (!isMounted.current) return
+        if (!isMounted.current) {
+          console.log('🔍 [useAuth] Componente desmontado, abortando...')
+          return
+        }
         
         if (error) {
           console.error("❌ [useAuth] Erro ao buscar usuário:", error)
@@ -48,11 +55,14 @@ function useProvideAuth(){
           
           // Verificar se o usuário tem senha definida (não é um convite pendente)
           try {
+            console.log('🔍 [useAuth] Verificando perfil do usuário...')
             const { data: profileData } = await supabase
               .from('profiles')
               .select('password_set')
               .eq('id', currentUser.id)
               .single()
+            
+            console.log('🔍 [useAuth] Dados do perfil:', profileData)
             
             // Se não tem perfil ou password_set é false, tratar como convite pendente
             if (!profileData || profileData.password_set === false) {
@@ -63,21 +73,25 @@ function useProvideAuth(){
               return
             }
           } catch (profileError) {
-            console.log('🔍 [useAuth] Erro ao verificar perfil, tratando como convite pendente')
+            console.log('🔍 [useAuth] Erro ao verificar perfil, tratando como convite pendente:', profileError)
             setIsInvitePending(true)
             setIsLoading(false)
             setIsInitialized(true)
             return
           }
           
+          console.log('🔍 [useAuth] Definindo usuário e buscando role...')
           setUser(currentUser)
           // Buscar role apenas se houver usuário
           await fetchUserRole(currentUser)
+        } else {
+          console.log('🔍 [useAuth] Nenhum usuário encontrado')
         }
       } catch (err) {
         console.error("❌ [useAuth] Erro na inicialização:", err)
       } finally {
         if (isMounted.current) {
+          console.log('🔍 [useAuth] Finalizando inicialização, definindo estados...')
           setIsLoading(false)
           setIsInitialized(true)
         }
@@ -87,6 +101,7 @@ function useProvideAuth(){
     initializeAuth()
 
     // Configurar listener de mudança de auth
+    console.log('🔍 [useAuth] Configurando listener de auth...')
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted.current) return
       
@@ -132,6 +147,7 @@ function useProvideAuth(){
     authSubscription.current = subscription
 
     return () => {
+      console.log('🔍 [useAuth] Cleanup do useEffect...')
       isMounted.current = false
       if (authSubscription.current) {
         authSubscription.current.unsubscribe()

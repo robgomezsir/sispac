@@ -25,8 +25,15 @@ export default function Home(){
   const [err, setErr] = useState(null)
   const navigate = useNavigate()
 
+  // Debug logs
+  useEffect(() => {
+    console.log('🔍 [Home] Componente Home renderizado')
+    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading })
+  }, [user, isLoading, loading])
+
   // Redirecionar automaticamente se já estiver logado
   useEffect(() => {
+    console.log('🔍 [Home] Verificando redirecionamento...')
     if (user && !isLoading) {
       console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
       navigate('/dashboard', { replace: true })
@@ -59,6 +66,7 @@ export default function Home(){
 
   // Se ainda estiver carregando, mostrar loading
   if (isLoading) {
+    console.log('🔍 [Home] Mostrando tela de carregamento...')
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="text-center">
@@ -66,6 +74,7 @@ export default function Home(){
             <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
           <p className="text-muted-foreground">Carregando sistema...</p>
+          <p className="text-xs text-muted-foreground mt-2">Debug: isLoading=true, user={user ? 'sim' : 'não'}</p>
         </div>
       </div>
     )
@@ -73,6 +82,7 @@ export default function Home(){
 
   // Se já estiver logado, mostrar loading de redirecionamento
   if (user) {
+    console.log('🔍 [Home] Usuário logado, mostrando tela de redirecionamento...')
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="text-center">
@@ -80,10 +90,13 @@ export default function Home(){
             <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
           <p className="text-muted-foreground">Redirecionando para o dashboard...</p>
+          <p className="text-xs text-muted-foreground mt-2">Debug: user=sim, role={user?.role || 'não definido'}</p>
         </div>
       </div>
     )
   }
+
+  console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
