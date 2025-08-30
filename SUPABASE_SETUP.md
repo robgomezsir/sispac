@@ -52,31 +52,20 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-## Configuração de URLs de Redirecionamento (IMPORTANTE)
+## 🔧 Configuração das URLs de Redirecionamento
 
-Para que os convites funcionem corretamente e redirecionem para o SisPAC em vez do Vercel, configure as URLs de redirecionamento:
+### ⚠️ **IMPORTANTE: Use estas URLs específicas**
 
-### 1. Acesse as Configurações de Autenticação
+O Vercel intercepta rotas como `/welcome` e `/join`. Use estas rotas alternativas:
 
-1. Vá para **Authentication** > **URL Configuration**
-2. Configure as seguintes URLs:
+**URLs Recomendadas para Supabase:**
+- `https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/setup-password`
+- `https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/complete-invite`
 
-### 2. Site URL
-```
-https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app
-```
-
-### 3. Redirect URLs
-Adicione as seguintes URLs na lista de redirecionamentos permitidos:
-
-```
-https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome
-https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/join
-https://*.rob-gomezs-projects.vercel.app/welcome
-https://*.rob-gomezs-projects.vercel.app/join
-```
-
-**⚠️ IMPORTANTE:** Use `/welcome` ou `/join` em vez de `/auth/confirm` para evitar que o Vercel intercepte a rota.
+**URLs que NÃO funcionam (interceptadas pelo Vercel):**
+- ❌ `/welcome` - Interceptada pelo Vercel
+- ❌ `/join` - Interceptada pelo Vercel
+- ❌ `/auth/confirm` - Interceptada pelo Vercel
 
 ### 4. Configuração de Email Templates (Opcional)
 

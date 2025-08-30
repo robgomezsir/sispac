@@ -224,30 +224,30 @@ export default function Configuracoes(){
           </h3>
           
           <div className="space-y-4">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-sm text-yellow-700">
-                <strong>⚠️ Importante:</strong> Se os convites estão redirecionando para o Vercel em vez do SisPAC, verifique a configuração de URLs.
+            <div>
+              <h4 className="font-semibold text-green-600">Site URL (Recomendado):</h4>
+              <code className="block bg-gray-100 p-2 rounded text-sm">
+                https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app
+              </code>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-green-600">Redirect URLs (Recomendadas):</h4>
+              <div className="space-y-2">
+                <code className="block bg-gray-100 p-2 rounded text-sm">
+                  https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/setup-password
+                </code>
+                <code className="block bg-gray-100 p-2 rounded text-sm">
+                  https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/complete-invite
+                </code>
+              </div>
+            </div>
+            
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h4 className="font-semibold text-yellow-800">⚠️ URLs que NÃO funcionam:</h4>
+              <p className="text-yellow-700 text-sm mt-2">
+                O Vercel intercepta estas rotas: <code>/welcome</code>, <code>/join</code>, <code>/auth/confirm</code>
               </p>
-            </div>
-            
-            <div className="flex gap-2 flex-wrap">
-              <button 
-                className="btn-secondary flex-1" 
-                disabled={loading} 
-                onClick={handleCheckSupabaseConfig}
-              >
-                {loading ? '⏳ Verificando...' : '🔍 Verificar Configuração'}
-              </button>
-            </div>
-            
-            <div className="text-xs text-gray-600">
-              <p><strong>URLs que devem estar configuradas:</strong></p>
-              <ul className="list-disc list-inside mt-1 space-y-1">
-                <li>Site URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app</li>
-                <li>Redirect URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome</li>
-                <li className="text-yellow-600 font-medium">⚠️ Use /welcome ou /join em vez de /auth/confirm</li>
-                <li className="text-green-600 font-medium">🆕 Teste: /welcome ou /join</li>
-              </ul>
             </div>
           </div>
         </div>

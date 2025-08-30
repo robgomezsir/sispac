@@ -1,41 +1,15 @@
 {
   "rewrites": [
-    {
-      "source": "/welcome",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/join",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/invite-callback",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/auth/confirm",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/auth/(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/welcome", "destination": "/index.html" },
+    { "source": "/join", "destination": "/index.html" },
+    { "source": "/setup-password", "destination": "/index.html" },
+    { "source": "/complete-invite", "destination": "/index.html" }
   ],
   "redirects": [
-    {
-      "source": "/welcome",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/join",
-      "destination": "/index.html",
-      "permanent": false
-    }
+    { "source": "/welcome", "destination": "/index.html", "permanent": false },
+    { "source": "/join", "destination": "/index.html", "permanent": false },
+    { "source": "/setup-password", "destination": "/index.html", "permanent": false },
+    { "source": "/complete-invite", "destination": "/index.html", "permanent": false }
   ],
   "headers": [
     {

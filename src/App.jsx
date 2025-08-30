@@ -62,6 +62,14 @@ export default function App(){
       element: <AuthCallback /> 
     },
     { 
+      path: "/setup-password", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/complete-invite", 
+      element: <AuthCallback /> 
+    },
+    { 
       path: "*", 
       element: <Navigate to="/" replace /> 
     }
