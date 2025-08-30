@@ -13,12 +13,22 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        // Primeiro, limpa qualquer sessão existente para evitar login automático
+        await supabase.auth.signOut();
+        
         // Obtém os parâmetros da URL
         const accessToken = searchParams.get('access_token');
         const refreshToken = searchParams.get('refresh_token');
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
         const type = searchParams.get('type');
+
+        console.log('🔍 [AuthCallback] Parâmetros:', { 
+          accessToken: accessToken ? '***' : null, 
+          refreshToken: refreshToken ? '***' : null, 
+          type, 
+          error 
+        });
 
         if (error) {
           setMessage(`❌ Erro: ${errorDescription || error}`);
@@ -29,15 +39,20 @@ export default function AuthCallback() {
         if (accessToken && refreshToken) {
           // Para convites, NÃO definimos a sessão automaticamente
           // Apenas verificamos se é um convite válido
-          if (type === 'invite' || type === 'signup') {
+          if (type === 'invite' || type === 'signup' || !type) {
+            console.log('🔍 [AuthCallback] Processando convite...');
+            
             // Verifica se o token é válido sem definir a sessão
             const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
             
             if (userError || !userData.user) {
+              console.log('❌ [AuthCallback] Token inválido:', userError);
               setMessage("❌ Convite inválido ou expirado.");
               setLoading(false);
               return;
             }
+
+            console.log('✅ [AuthCallback] Token válido para:', userData.user.email);
 
             // Armazena os dados do convite para uso posterior
             setInviteData({
@@ -49,6 +64,8 @@ export default function AuthCallback() {
             setAction("create_password");
             setMessage("✅ Convite confirmado! Agora crie sua senha.");
           } else {
+            console.log('🔍 [AuthCallback] Processando autenticação normal...');
+            
             // Para outros tipos de autenticação, define a sessão normalmente
             const { data, error: sessionError } = await supabase.auth.setSession({
               access_token: accessToken,
@@ -68,9 +85,11 @@ export default function AuthCallback() {
             }
           }
         } else {
+          console.log('❌ [AuthCallback] Parâmetros inválidos');
           setMessage("❌ Parâmetros de autenticação inválidos.");
         }
       } catch (err) {
+        console.error('❌ [AuthCallback] Erro:', err);
         setMessage("❌ Erro inesperado: " + err.message);
       } finally {
         setLoading(false);
@@ -99,6 +118,8 @@ export default function AuthCallback() {
     setLoading(true);
 
     try {
+      console.log('🔍 [AuthCallback] Criando senha para:', inviteData.user.email);
+      
       // Primeiro define a sessão com os tokens do convite
       const { error: sessionError } = await supabase.auth.setSession({
         access_token: inviteData.accessToken,
@@ -110,6 +131,8 @@ export default function AuthCallback() {
         setLoading(false);
         return;
       }
+
+      console.log('✅ [AuthCallback] Sessão configurada, atualizando senha...');
 
       // Agora atualiza a senha do usuário
       const { error } = await supabase.auth.updateUser({ password });
@@ -132,6 +155,7 @@ export default function AuthCallback() {
         setTimeout(() => navigate("/dashboard"), 2000);
       }
     } catch (err) {
+      console.error('❌ [AuthCallback] Erro ao criar senha:', err);
       setMessage("❌ Erro inesperado: " + err.message);
     } finally {
       setLoading(false);
