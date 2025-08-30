@@ -5,9 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:debug": "vite --mode development --debug",
+    "dev:open": "vite --host --open",
+    "dev:local": "vite --host 0.0.0.0 --port 5173",
     "build": "vite build",
+    "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "echo \"(optional) add eslint\""
+    "preview:dev": "vite preview --port 4173",
+    "lint": "echo \"(optional) add eslint\"",
+    "clean": "rm -rf dist node_modules/.vite",
+    "setup:dev": "echo 'Configurando ambiente de desenvolvimento...' && npm run dev:open"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

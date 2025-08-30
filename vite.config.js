@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173 },
+  server: { 
+    port: 5173,
+    host: true, // Permite acesso externo
+    open: true  // Abre o navegador automaticamente
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -21,5 +25,12 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis'
-  }
+  },
+  // Configurações de desenvolvimento
+  mode: process.env.NODE_ENV || 'development',
+  // Variáveis de ambiente para desenvolvimento
+  envPrefix: 'VITE_',
+  // Configurações de debug
+  logLevel: 'info',
+  clearScreen: false
 })
