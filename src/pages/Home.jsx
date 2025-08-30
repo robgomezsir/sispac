@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
-import { sispacLogoLarge } from '../assets'
 import { 
   LogIn, 
   CheckCircle
@@ -80,11 +79,8 @@ export default function Home(){
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="w-full max-w-md px-4">
-        {/* Logo e Título Principal */}
+        {/* Título Principal */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <img src={sispacLogoLarge} alt="SisPAC Logo" className="h-20 md:h-24" />
-          </div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
             SisPAC
           </h1>
