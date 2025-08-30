@@ -1,20 +1,24 @@
-"use client";
 import { useState } from "react";
-import { supabase } from "../lib/supabase"; // ajuste o path para onde você configurou o cliente
-import { useRouter } from "next/navigation";
+import { supabase } from "../../src/lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleReset = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
       setMessage("❌ As senhas não coincidem.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setMessage("❌ A senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
@@ -28,7 +32,7 @@ export default function ResetPassword() {
         setMessage("⚠️ Erro: " + error.message);
       } else {
         setMessage("✅ Senha redefinida com sucesso! Redirecionando...");
-        setTimeout(() => router.push("/login"), 2000); // depois leva pra login
+        setTimeout(() => navigate("/login"), 2000);
       }
     } catch (err) {
       setMessage("Erro inesperado: " + err.message);
@@ -51,6 +55,7 @@ export default function ResetPassword() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            minLength={6}
           />
           <input
             type="password"
@@ -59,17 +64,24 @@ export default function ResetPassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            minLength={6}
           />
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Salvando..." : "Salvar nova senha"}
           </button>
         </form>
         {message && (
-          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
+          <p className={`mt-4 text-center text-sm ${
+            message.includes("❌") ? "text-red-600" : 
+            message.includes("⚠️") ? "text-yellow-600" : 
+            "text-green-600"
+          }`}>
+            {message}
+          </p>
         )}
       </div>
     </div>
