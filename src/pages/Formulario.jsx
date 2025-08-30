@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { questions } from '../data/questions'
 import { computeScore, classify } from '../utils/scoring'
 import { supabase, supabaseAdmin } from '../lib/supabase'
@@ -28,6 +28,11 @@ export default function Formulario(){
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
+  // Autoscroll para o início da página quando o step mudar
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
+
   function toggleOption(qid, optionText){
     const selected = answers[qid] || []
     const exists = selected.includes(optionText)
@@ -45,12 +50,17 @@ export default function Formulario(){
   }
 
   function next(){
-    if(step < questions.length) setStep(step+1)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if(step < questions.length) {
+      setStep(step+1)
+      // O useEffect já cuida do scroll automático
+    }
   }
+  
   function prev(){
-    if(step > 0) setStep(step-1)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if(step > 0) {
+      setStep(step-1)
+      // O useEffect já cuida do scroll automático
+    }
   }
 
   async function submit(){
