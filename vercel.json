@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/auth/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -15,5 +19,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
