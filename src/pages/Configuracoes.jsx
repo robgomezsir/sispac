@@ -105,6 +105,10 @@ export default function Configuracoes(){
     }
   }
 
+  const handleCheckSupabaseConfig = () => {
+    callApi('checkSupabaseConfig', {})
+  }
+
   if (role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -213,16 +217,16 @@ export default function Configuracoes(){
           </div>
         </div>
 
-        {/* Manutenção de Dados */}
+        {/* Configuração do Supabase */}
         <div className="card">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            🛠️ Manutenção de Dados
+            🔧 Configuração do Supabase
           </h3>
           
           <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-700">
-                <strong>💡 Dica:</strong> Faça backup antes de executar operações de manutenção.
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-sm text-yellow-700">
+                <strong>⚠️ Importante:</strong> Se os convites estão redirecionando para o Vercel em vez do SisPAC, verifique a configuração de URLs.
               </p>
             </div>
             
@@ -230,18 +234,51 @@ export default function Configuracoes(){
               <button 
                 className="btn-secondary flex-1" 
                 disabled={loading} 
-                onClick={handleBackup}
+                onClick={handleCheckSupabaseConfig}
               >
-                {loading ? '⏳ Preparando...' : '💾 Download Backup'}
-              </button>
-              <button 
-                className="btn-danger" 
-                disabled={loading} 
-                onClick={handlePurge}
-              >
-                {loading ? '⏳ Limpando...' : '⚠️ Limpar Tudo'}
+                {loading ? '⏳ Verificando...' : '🔍 Verificar Configuração'}
               </button>
             </div>
+            
+            <div className="text-xs text-gray-600">
+              <p><strong>URLs que devem estar configuradas:</strong></p>
+              <ul className="list-disc list-inside mt-1 space-y-1">
+                <li>Site URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app</li>
+                <li>Redirect URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/auth/confirm</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Manutenção de Dados */}
+      <div className="card">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          🛠️ Manutenção de Dados
+        </h3>
+        
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-700">
+              <strong>💡 Dica:</strong> Faça backup antes de executar operações de manutenção.
+            </p>
+          </div>
+          
+          <div className="flex gap-2 flex-wrap">
+            <button 
+              className="btn-secondary flex-1" 
+              disabled={loading} 
+              onClick={handleBackup}
+            >
+              {loading ? '⏳ Preparando...' : '💾 Download Backup'}
+            </button>
+            <button 
+              className="btn-danger" 
+              disabled={loading} 
+              onClick={handlePurge}
+            >
+              {loading ? '⏳ Limpando...' : '⚠️ Limpar Tudo'}
+            </button>
           </div>
         </div>
       </div>

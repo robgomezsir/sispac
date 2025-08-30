@@ -52,6 +52,43 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
+## Configuração de URLs de Redirecionamento (IMPORTANTE)
+
+Para que os convites funcionem corretamente e redirecionem para o SisPAC em vez do Vercel, configure as URLs de redirecionamento:
+
+### 1. Acesse as Configurações de Autenticação
+
+1. Vá para **Authentication** > **URL Configuration**
+2. Configure as seguintes URLs:
+
+### 2. Site URL
+```
+https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app
+```
+
+### 3. Redirect URLs
+Adicione as seguintes URLs na lista de redirecionamentos permitidos:
+
+```
+https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/auth/confirm
+https://*.rob-gomezs-projects.vercel.app/auth/confirm
+```
+
+### 4. Configuração de Email Templates (Opcional)
+
+Para personalizar os emails de convite:
+
+1. Vá para **Authentication** > **Email Templates**
+2. Selecione **"Invite"**
+3. Configure o template para incluir a URL correta:
+
+```html
+<!-- Exemplo de template de convite -->
+<p>Você foi convidado para participar do SisPAC.</p>
+<p>Clique no link abaixo para aceitar o convite:</p>
+<a href="{{ .ConfirmationURL }}">Aceitar Convite</a>
+```
+
 ## Recomendação
 
 Para desenvolvimento e testes, use a **Opção 1** (desabilitar RLS).
@@ -143,3 +180,21 @@ Com a tabela `profiles` configurada, o sistema agora:
 2. Redireciona para página de criação de senha
 3. Evita login automático no dashboard
 4. Permite que o usuário crie sua senha antes de acessar o sistema
+
+## Troubleshooting de Convites
+
+### Problema: Convite redireciona para Vercel em vez do SisPAC
+
+**Solução:**
+1. Verifique se a **Site URL** está configurada corretamente
+2. Confirme se as **Redirect URLs** incluem `/auth/confirm`
+3. Teste o link do convite em uma aba anônima
+4. Verifique se não há conflitos com outras configurações de URL
+
+### Problema: Usuário não consegue criar senha
+
+**Solução:**
+1. Verifique se a tabela `profiles` foi criada
+2. Confirme se as políticas RLS estão configuradas
+3. Verifique os logs do console para erros
+4. Teste com um usuário admin primeiro
