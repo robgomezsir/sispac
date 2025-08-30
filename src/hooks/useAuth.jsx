@@ -237,6 +237,15 @@ function useProvideAuth(){
 
   // Redirecionamento otimizado - não redirecionar se for convite pendente
   React.useEffect(() => {
+    console.log('🔍 [useAuth] Verificando redirecionamento:', { 
+      isInitialized, 
+      user: !!user, 
+      role: !!role, 
+      isLoading, 
+      isInvitePending,
+      currentPath: window.location.pathname
+    })
+    
     if (isInitialized && user && role && !isLoading && !isInvitePending) {
       const currentPath = window.location.pathname
       if (currentPath === '/' || currentPath === '/login') {
@@ -246,6 +255,8 @@ function useProvideAuth(){
           navigate('/dashboard', { replace: true })
         }, 100)
       }
+    } else if (isInitialized && isInvitePending && !isLoading) {
+      console.log('🔍 [useAuth] Convite pendente, não redirecionando')
     }
   }, [user, role, isLoading, isInitialized, isInvitePending, navigate])
 
