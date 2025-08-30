@@ -18,7 +18,7 @@ import {
 } from '../components/ui'
 
 export default function Home(){
-  const { user, signIn } = useAuth()
+  const { user, signIn, isLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,11 +27,11 @@ export default function Home(){
 
   // Redirecionar automaticamente se já estiver logado
   useEffect(() => {
-    if (user) {
+    if (user && !isLoading) {
       console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
       navigate('/dashboard', { replace: true })
     }
-  }, [user, navigate])
+  }, [user, isLoading, navigate])
 
   async function onSubmit(e){
     e.preventDefault()
@@ -41,16 +41,11 @@ export default function Home(){
     
     try{
       console.log("🔐 [Home] Chamando signIn...")
-      const result = await signIn(email, password)
-      console.log("✅ [Home] Login bem-sucedido:", result)
+      await signIn(email, password)
+      console.log("✅ [Home] Login bem-sucedido")
       
-      // Aguardar um momento para o estado ser atualizado
-      setTimeout(() => {
-        if (user) {
-          console.log("🚀 [Home] Redirecionando para dashboard...")
-          navigate('/dashboard', { replace: true })
-        }
-      }, 100)
+      // O redirecionamento será feito automaticamente pelo useAuth
+      // Não precisamos fazer nada aqui
       
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)
@@ -62,7 +57,21 @@ export default function Home(){
     }
   }
 
-  // Se já estiver logado, mostrar loading
+  // Se ainda estiver carregando, mostrar loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </div>
+          <p className="text-muted-foreground">Carregando sistema...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Se já estiver logado, mostrar loading de redirecionamento
   if (user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">

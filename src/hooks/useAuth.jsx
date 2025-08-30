@@ -30,10 +30,12 @@ function useProvideAuth(){
   const isMounted = React.useRef(true)
   const authSubscription = React.useRef(null)
 
-  // Inicialização única
+  // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log('🔍 [useAuth] Iniciando autenticação...')
+        
         // Buscar usuário atual
         const { data: { user: currentUser }, error } = await supabase.auth.getUser()
         
@@ -42,6 +44,8 @@ function useProvideAuth(){
         if (error) {
           console.error("❌ [useAuth] Erro ao buscar usuário:", error)
         } else if (currentUser) {
+          console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
+          
           // Verificar se o usuário tem senha definida (não é um convite pendente)
           try {
             const { data: profileData } = await supabase
@@ -86,11 +90,7 @@ function useProvideAuth(){
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted.current) return
       
-      // Não processar eventos de auth se for um convite pendente
-      if (isInvitePending) {
-        console.log('🔍 [useAuth] Ignorando evento de auth durante convite pendente:', event)
-        return
-      }
+      console.log('🔍 [useAuth] Evento de auth:', event, session?.user?.email)
       
       if (event === 'SIGNED_IN' && session?.user) {
         // Verificar novamente se não é um convite pendente
@@ -104,19 +104,25 @@ function useProvideAuth(){
           if (!profileData || profileData.password_set === false) {
             console.log('🔍 [useAuth] Usuário convidado detectado, marcando como pendente')
             setIsInvitePending(true)
+            setUser(null)
+            setRole(null)
             return
           }
         } catch (profileError) {
           console.log('🔍 [useAuth] Erro ao verificar perfil, marcando como convite pendente')
           setIsInvitePending(true)
+          setUser(null)
+          setRole(null)
           return
         }
         
         setUser(session.user)
+        setIsInvitePending(false)
         await fetchUserRole(session.user)
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
         setRole(null)
+        setIsInvitePending(false)
         roleCache.current.clear()
       }
       
@@ -131,7 +137,7 @@ function useProvideAuth(){
         authSubscription.current.unsubscribe()
       }
     }
-  }, [isInvitePending])
+  }, []) // SEM dependências para evitar loops
 
   // Função para finalizar convite e permitir login normal
   const finalizeInvite = React.useCallback(async (userData, accessToken, refreshToken) => {
@@ -235,7 +241,7 @@ function useProvideAuth(){
     }
   }, [])
 
-  // Redirecionamento otimizado - não redirecionar se for convite pendente
+  // Redirecionamento otimizado - SEM dependências circulares
   React.useEffect(() => {
     console.log('🔍 [useAuth] Verificando redirecionamento:', { 
       isInitialized, 
@@ -246,28 +252,28 @@ function useProvideAuth(){
       currentPath: window.location.pathname
     })
     
+    // Só redirecionar se estiver inicializado, logado e não for convite pendente
     if (isInitialized && user && role && !isLoading && !isInvitePending) {
       const currentPath = window.location.pathname
       if (currentPath === '/' || currentPath === '/login') {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
-        // Usar setTimeout para garantir que o estado seja atualizado
-        setTimeout(() => {
-          navigate('/dashboard', { replace: true })
-        }, 100)
+        navigate('/dashboard', { replace: true })
       }
-    } else if (isInitialized && isInvitePending && !isLoading) {
-      console.log('🔍 [useAuth] Convite pendente, não redirecionando')
     }
-  }, [user, role, isLoading, isInitialized, isInvitePending, navigate])
+  }, [isInitialized, user, role, isLoading, isInvitePending, navigate])
 
   const signIn = React.useCallback(async (email, password) => {
     try {
+      console.log('🔐 [useAuth] Iniciando login para:', email)
+      
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       
       if (error) {
         console.error("❌ [useAuth] Erro no login:", error.message)
         throw error
       }
+      
+      console.log('✅ [useAuth] Login bem-sucedido para:', email)
       
       // Limpar cache ao fazer novo login
       roleCache.current.clear()
@@ -281,11 +287,15 @@ function useProvideAuth(){
 
   const signOut = React.useCallback(async () => {
     try {
+      console.log('🔐 [useAuth] Iniciando logout...')
+      
       await supabase.auth.signOut()
       setUser(null)
       setRole(null)
       setIsInvitePending(false)
       roleCache.current.clear()
+      
+      console.log('✅ [useAuth] Logout realizado com sucesso')
     } catch (err) {
       console.error("❌ [useAuth] Erro no logout:", err)
     }
