@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+// Configuração com fallback para desenvolvimento
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zibuyabpsvgulvigvdtb.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
@@ -13,6 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ [Supabase] Variáveis de ambiente não configuradas!')
   console.error('❌ [Supabase] VITE_SUPABASE_URL:', supabaseUrl)
   console.error('❌ [Supabase] VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'DEFINIDA' : 'NÃO DEFINIDA')
+  console.error('❌ [Supabase] Crie um arquivo .env com as chaves do Supabase!')
 }
 
 // Criar cliente com chave anônima para operações básicas
