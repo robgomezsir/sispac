@@ -13,7 +13,8 @@ import {
   Mail,
   BarChart3,
   Award,
-  AlertCircle
+  AlertCircle,
+  X
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 
@@ -35,7 +36,7 @@ export default function Formulario(){
       next = selected.filter(x=>x!==optionText)
     }else{
       if(selected.length>=5){
-        alert('Você só pode escolher até 5 opções nesta questão.')
+        // Não permitir mais de 5 seleções
         return
       }
       next = [...selected, optionText]
@@ -106,22 +107,6 @@ export default function Formulario(){
   }
 
   if(step === questions.length){
-    const score = computeScore(answers, questions)
-    const status = classify(score)
-    
-    const getStatusColor = (status) => {
-      switch (status) {
-        case 'SUPEROU A EXPECTATIVA':
-          return 'bg-green-50 text-green-700 border-green-200'
-        case 'ACIMA DA EXPECTATIVA':
-          return 'bg-blue-50 text-blue-700 border-blue-200'
-        case 'DENTRO DA EXPECTATIVA':
-          return 'bg-yellow-50 text-yellow-700 border-yellow-200'
-        default:
-          return 'bg-gray-50 text-gray-700 border-gray-200'
-      }
-    }
-
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header de Sucesso */}
@@ -163,29 +148,6 @@ export default function Formulario(){
             </div>
           </div>
 
-          {/* Resultados */}
-          <div className="card bg-muted/50 p-6 mb-6">
-            <h4 className="font-semibold mb-4 flex items-center gap-2">
-              <BarChart3 size={18} />
-              Resultados da Avaliação
-            </h4>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="text-center p-4 bg-background rounded-lg">
-                <div className="text-2xl font-bold text-primary">{score}</div>
-                <div className="text-sm text-muted-foreground">Pontuação Total</div>
-              </div>
-              <div className="text-center p-4 bg-background rounded-lg">
-                <div className={cn(
-                  "inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border",
-                  getStatusColor(status)
-                )}>
-                  <Award size={16} />
-                  {status}
-                </div>
-              </div>
-            </div>
-          </div>
-
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg mb-6 flex items-center gap-2">
               <AlertCircle size={16} />
@@ -219,8 +181,8 @@ export default function Formulario(){
               onClick={() => navigate('/')}
               disabled={sending}
             >
-              <Home size={16} />
-              {sent ? 'Voltar ao Início' : 'Cancelar'}
+              <X size={16} />
+              Sair
             </button>
           </div>
         </div>
@@ -230,8 +192,13 @@ export default function Formulario(){
 
   const q = questions[step]
   const selected = answers[q.id] || []
+  const maxChoices = q.maxChoices || 5
+  const columns = q.columns || 1
 
   const progress = Math.round(((step+1) / (questions.length+1)) * 100)
+
+  // Verificar se pode avançar (deve ter exatamente 5 respostas)
+  const canProceed = selected.length === maxChoices
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -260,38 +227,64 @@ export default function Formulario(){
           </div>
 
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Selecione até 5 opções que melhor descrevem você:
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                Selecione exatamente {maxChoices} opções:
+              </p>
+              <div className="text-sm font-medium">
+                {selected.length}/{maxChoices} selecionadas
+              </div>
+            </div>
             
-            <ul className="space-y-3">
+            {/* Grid de respostas baseado no número de colunas */}
+            <div className={cn(
+              "grid gap-3",
+              columns === 3 ? "grid-cols-1 md:grid-cols-3" : 
+              columns === 2 ? "grid-cols-1 md:grid-cols-2" : 
+              "grid-cols-1"
+            )}>
               {q.answers.map((a, idx)=>{
                 const active = selected.includes(a.text)
+                const disabled = !active && selected.length >= maxChoices
+                
                 return (
-                  <li 
+                  <div 
                     key={idx} 
-                    onClick={()=>toggleOption(q.id, a.text)}
+                    onClick={() => !disabled && toggleOption(q.id, a.text)}
                     className={cn(
-                      "p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-sm",
+                      "p-4 border rounded-lg transition-all duration-200 cursor-pointer",
                       active 
-                        ? 'bg-primary text-primary-foreground border-primary shadow-md' 
-                        : 'bg-background hover:bg-muted/50 border-border hover:border-primary/50'
+                        ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                        : disabled
+                        ? "bg-muted/30 text-muted-foreground border-muted cursor-not-allowed opacity-60"
+                        : "bg-background hover:bg-muted/50 border-border hover:border-primary/50 hover:shadow-sm"
                     )}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">{a.text}</span>
+                      <span className={cn(
+                        "font-medium",
+                        active ? "text-primary-foreground" : "text-foreground"
+                      )}>
+                        {a.text}
+                      </span>
                       <div className={cn(
                         "flex items-center gap-2",
                         active ? "text-primary-foreground/80" : "text-muted-foreground"
                       )}>
-                        <span className="text-sm">+{a.value}</span>
                         {active && <CheckCircle size={16} />}
                       </div>
                     </div>
-                  </li>
+                    
+                    {/* Mensagem discreta quando não pode selecionar */}
+                    {disabled && (
+                      <div className="mt-2 text-xs text-muted-foreground italic">
+                        Para escolher esta resposta, desmarque uma ou mais das respostas já escolhidas.
+                      </div>
+                    )}
+                  </div>
                 )
               })}
-            </ul>
+            </div>
           </div>
 
           {/* Navegação */}
@@ -309,6 +302,7 @@ export default function Formulario(){
               <button 
                 className="btn-primary flex items-center gap-2" 
                 onClick={next}
+                disabled={!canProceed}
               >
                 Finalizar Teste
                 <ChevronRight size={16} />
@@ -317,6 +311,7 @@ export default function Formulario(){
               <button 
                 className="btn-primary flex items-center gap-2" 
                 onClick={next}
+                disabled={!canProceed}
               >
                 Próxima Pergunta
                 <ChevronRight size={16} />
