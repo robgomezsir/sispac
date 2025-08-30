@@ -11,6 +11,7 @@ import ApiPanel from './pages/ApiPanel.jsx'
 import AuthDebug from './components/AuthDebug.jsx'
 import RequestPasswordReset from './pages/RequestPasswordReset.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import AuthCallback from './pages/AuthCallback.jsx'
 
 // Componente App principal otimizado
 export default function App(){
@@ -43,6 +44,10 @@ export default function App(){
     { 
       path: "/reset-password", 
       element: <ResetPassword /> 
+    },
+    { 
+      path: "/auth/confirm", 
+      element: <AuthCallback /> 
     },
     { 
       path: "*", 
