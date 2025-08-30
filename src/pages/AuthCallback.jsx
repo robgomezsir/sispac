@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 export default function AuthCallback() {
   const [message, setMessage] = useState("");
@@ -9,13 +10,11 @@ export default function AuthCallback() {
   const [inviteData, setInviteData] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { finalizeInvite } = useAuth();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Primeiro, limpa qualquer sessão existente para evitar login automático
-        await supabase.auth.signOut();
-        
         // Obtém os parâmetros da URL
         const accessToken = searchParams.get('access_token');
         const refreshToken = searchParams.get('refresh_token');
@@ -120,26 +119,31 @@ export default function AuthCallback() {
     try {
       console.log('🔍 [AuthCallback] Criando senha para:', inviteData.user.email);
       
-      // Primeiro define a sessão com os tokens do convite
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: inviteData.accessToken,
-        refresh_token: inviteData.refreshToken,
+      // Primeiro atualiza a senha do usuário usando o token do convite
+      const { error: updateError } = await supabase.auth.updateUser({ 
+        password 
+      }, {
+        headers: {
+          Authorization: `Bearer ${inviteData.accessToken}`
+        }
       });
 
-      if (sessionError) {
-        setMessage("⚠️ Erro ao configurar sessão: " + sessionError.message);
+      if (updateError) {
+        setMessage("⚠️ Erro ao criar senha: " + updateError.message);
         setLoading(false);
         return;
       }
 
-      console.log('✅ [AuthCallback] Sessão configurada, atualizando senha...');
+      console.log('✅ [AuthCallback] Senha criada com sucesso');
 
-      // Agora atualiza a senha do usuário
-      const { error } = await supabase.auth.updateUser({ password });
+      // Agora finaliza o convite usando a função do hook
+      const result = await finalizeInvite(
+        inviteData.user, 
+        inviteData.accessToken, 
+        inviteData.refreshToken
+      );
 
-      if (error) {
-        setMessage("⚠️ Erro ao criar senha: " + error.message);
-      } else {
+      if (result.success) {
         setMessage("✅ Senha criada com sucesso! Redirecionando...");
         
         // Atualiza o perfil para marcar que a senha foi definida
@@ -153,6 +157,8 @@ export default function AuthCallback() {
         }
 
         setTimeout(() => navigate("/dashboard"), 2000);
+      } else {
+        setMessage("⚠️ Erro ao finalizar convite: " + result.error.message);
       }
     } catch (err) {
       console.error('❌ [AuthCallback] Erro ao criar senha:', err);
