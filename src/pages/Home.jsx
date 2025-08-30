@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link, useNavigate } from 'react-router-dom'
+import { sispacLogoLarge } from '../assets'
 import { 
   LogIn, 
   FileText, 
@@ -70,6 +71,11 @@ export default function Home(){
     <div className="space-y-8">
       {/* Hero Section */}
       <div className="text-center space-y-6 py-12">
+        {/* Logo Principal */}
+        <div className="flex justify-center mb-6">
+          <img src={sispacLogoLarge} alt="SisPAC - Sistema de Avaliação Comportamental" className="h-20" />
+        </div>
+        
         <div className="space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
             Sistema de Avaliação

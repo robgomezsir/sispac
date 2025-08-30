@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { ThemeToggle } from './ThemeToggle.jsx'
+import { sispacLogo } from '../assets'
 import { 
   LogOut, 
   Settings, 
@@ -73,12 +74,10 @@ export function Navigation() {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-2 text-xl font-bold text-primary hover:text-primary/80 transition-colors"
+            className="flex items-center space-x-3 text-xl font-bold text-primary hover:text-primary/80 transition-colors"
             onClick={closeMobileMenu}
           >
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">S</span>
-            </div>
+            <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8" />
             <span className="hidden sm:inline">SisPAC</span>
           </Link>
           

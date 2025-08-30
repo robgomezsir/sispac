@@ -32,5 +32,9 @@ export default defineConfig({
   envPrefix: 'VITE_',
   // Configurações de debug
   logLevel: 'info',
-  clearScreen: false
+  clearScreen: false,
+  // Configurações de assets
+  assetsInclude: ['**/*.ico', '**/*.png', '**/*.svg'],
+  // Configurações de favicon
+  publicDir: 'public'
 })
