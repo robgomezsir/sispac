@@ -15,10 +15,32 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ [Supabase] VITE_SUPABASE_URL:', supabaseUrl)
   console.error('❌ [Supabase] VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'DEFINIDA' : 'NÃO DEFINIDA')
   console.error('❌ [Supabase] Crie um arquivo .env com as chaves do Supabase!')
+} else {
+  console.log('✅ [Supabase] Configuração carregada com sucesso!')
 }
 
 // Criar cliente com chave anônima para operações básicas
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+})
+
+// Testar conexão
+supabase.auth.getSession().then(({ data, error }) => {
+  if (error) {
+    console.error('❌ [Supabase] Erro na conexão:', error)
+  } else {
+    console.log('✅ [Supabase] Conexão estabelecida com sucesso!')
+    if (data.session) {
+      console.log('✅ [Supabase] Sessão ativa encontrada:', data.session.user.email)
+    } else {
+      console.log('ℹ️ [Supabase] Nenhuma sessão ativa')
+    }
+  }
+})
 
 // Criar cliente com chave de serviço para operações que precisam contornar RLS
 export const supabaseAdmin = supabaseServiceKey 
