@@ -3,36 +3,46 @@ export const clearAllCaches = () => {
   console.log('🧹 [CacheCleaner] Iniciando limpeza de caches...')
   
   try {
-    // Limpar localStorage
-    const keysToKeep = ['theme'] // Manter apenas configurações essenciais
+    // Limpar localStorage de forma seletiva
+    const keysToKeep = ['theme', 'supabase.auth.token'] // Manter configurações essenciais
     const allKeys = Object.keys(localStorage)
     
     allKeys.forEach(key => {
-      if (!keysToKeep.includes(key)) {
+      if (!keysToKeep.includes(key) && !key.startsWith('supabase.auth')) {
         localStorage.removeItem(key)
         console.log(`🧹 [CacheCleaner] Removido do localStorage: ${key}`)
       }
     })
     
-    // Limpar sessionStorage
-    sessionStorage.clear()
-    console.log('🧹 [CacheCleaner] sessionStorage limpo')
+    // Limpar sessionStorage de forma seletiva
+    const sessionKeysToKeep = ['temp-auth-data']
+    const allSessionKeys = Object.keys(sessionStorage)
     
-    // Limpar caches do navegador (se disponível)
+    allSessionKeys.forEach(key => {
+      if (!sessionKeysToKeep.includes(key)) {
+        sessionStorage.removeItem(key)
+        console.log(`🧹 [CacheCleaner] Removido do sessionStorage: ${key}`)
+      }
+    })
+    
+    // Limpar caches do navegador (se disponível) de forma seletiva
     if ('caches' in window) {
       caches.keys().then(cacheNames => {
         cacheNames.forEach(cacheName => {
-          caches.delete(cacheName)
-          console.log(`🧹 [CacheCleaner] Cache removido: ${cacheName}`)
+          // Manter caches essenciais
+          if (!cacheName.includes('auth') && !cacheName.includes('user')) {
+            caches.delete(cacheName)
+            console.log(`🧹 [CacheCleaner] Cache removido: ${cacheName}`)
+          }
         })
       })
     }
     
-    // Limpar IndexedDB (se disponível)
+    // Limpar IndexedDB (se disponível) de forma seletiva
     if ('indexedDB' in window) {
       indexedDB.databases().then(databases => {
         databases.forEach(db => {
-          if (db.name) {
+          if (db.name && !db.name.includes('auth') && !db.name.includes('user')) {
             indexedDB.deleteDatabase(db.name)
             console.log(`🧹 [CacheCleaner] IndexedDB removido: ${db.name}`)
           }
@@ -53,12 +63,13 @@ export const clearAuthCache = () => {
   console.log('🧹 [CacheCleaner] Limpando cache de autenticação...')
   
   try {
-    // Remover dados de autenticação do localStorage
+    // Remover dados de autenticação específicos do localStorage
     const authKeys = [
       'sb-zibuyabpsvgulvigvdtb-auth-token',
       'sb-zibuyabpsvgulvigvdtb-refresh-token',
       'supabase.auth.token',
-      'supabase.auth.refreshToken'
+      'supabase.auth.refreshToken',
+      'sispac-auth-token'
     ]
     
     authKeys.forEach(key => {
@@ -68,8 +79,18 @@ export const clearAuthCache = () => {
       }
     })
     
-    // Limpar sessionStorage
-    sessionStorage.clear()
+    // Limpar sessionStorage de autenticação
+    const sessionAuthKeys = [
+      'temp-auth-data',
+      'auth-session'
+    ]
+    
+    sessionAuthKeys.forEach(key => {
+      if (sessionStorage.getItem(key)) {
+        sessionStorage.removeItem(key)
+        console.log(`🧹 [CacheCleaner] Dados de sessão removidos: ${key}`)
+      }
+    })
     
     console.log('✅ [CacheCleaner] Cache de autenticação limpo com sucesso')
     return true
@@ -109,6 +130,15 @@ export const checkCacheHealth = () => {
     
     if (hasExpiredTokens) {
       issues.push('Tokens expirados detectados')
+    }
+    
+    // Verificar se há dados de autenticação corrompidos
+    const hasCorruptedAuth = Object.keys(localStorage).some(key => 
+      key.includes('auth') && localStorage.getItem(key) === 'null'
+    )
+    
+    if (hasCorruptedAuth) {
+      issues.push('Dados de autenticação corrompidos')
     }
     
     console.log(`🔍 [CacheCleaner] Problemas encontrados: ${issues.length}`)

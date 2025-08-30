@@ -123,7 +123,7 @@ export default function Dashboard(){
     }
 
     return filteredData
-  }, [rows, debouncedQuery, advancedFilters])
+  }, [rows, debouncedQuery, advancedFilters.status, advancedFilters.scoreMin, advancedFilters.scoreMax, advancedFilters.dateFrom, advancedFilters.dateTo])
 
   const sortedData = useMemo(() => {
     const sorted = [...filtered].sort((a, b) => {
@@ -146,7 +146,7 @@ export default function Dashboard(){
     })
     
     return sorted
-  }, [filtered, sortConfig])
+  }, [filtered, sortConfig.key, sortConfig.direction])
 
   // Estatísticas calculadas
   const stats = useMemo(() => {

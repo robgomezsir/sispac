@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function ApiPanel(){
   return (
-    <div className="card">
+    <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-6">
       <h2 className="text-xl font-bold mb-2">Painel de API</h2>
       <p className="text-gray-600 mb-4">Endpoints disponíveis para integrações (ex.: Gupy):</p>
       <ul className="list-disc list-inside space-y-1 text-sm">

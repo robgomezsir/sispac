@@ -161,8 +161,8 @@ export class PerformanceMonitor {
       this.metrics.set(label, duration)
       this.startTimes.delete(label)
       
-      // Log performance warnings
-      if (duration > 100) {
+      // Log performance warnings apenas em desenvolvimento
+      if (import.meta.env.DEV && duration > 100) {
         console.warn(`⚠️ Performance: ${label} levou ${duration.toFixed(2)}ms`)
       }
     }

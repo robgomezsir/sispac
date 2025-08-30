@@ -1,50 +1,48 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: { 
-    port: 5173,
-    host: true, // Permite acesso externo
-    open: true  // Abre o navegador automaticamente
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
   },
   build: {
+    target: 'es2015',
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
-          supabase: ['@supabase/supabase-js']
-        }
-      }
+          supabase: ['@supabase/supabase-js'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs', '@radix-ui/react-tooltip'],
+        },
+      },
     },
-    chunkSizeWarningLimit: 1000,
-    // Configurações para produção
-    minify: 'esbuild',
-    target: 'es2015'
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
   },
-  define: {
-    global: 'globalThis'
+  server: {
+    port: 5173,
+    host: true,
+    open: true,
   },
-  // Configurações de desenvolvimento
-  mode: process.env.NODE_ENV || 'development',
-  // Variáveis de ambiente para desenvolvimento
-  envPrefix: 'VITE_',
-  // Configurações de debug
-  logLevel: 'info',
-  clearScreen: false,
-  // Configurações de assets
-  assetsInclude: ['**/*.ico', '**/*.png', '**/*.svg'],
-  // Configurações de favicon
-  publicDir: 'public',
-  // Configurações para SPA
-  base: '/',
-  // Configurações de preview
   preview: {
     port: 4173,
-    host: true
-  }
+    host: true,
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+  },
 })

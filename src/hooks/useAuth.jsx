@@ -1,6 +1,6 @@
 import React from 'react'
 import { supabase, clearInvalidTokens, checkSupabaseHealth } from '../lib/supabase'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { clearAuthCache, checkCacheHealth } from '../lib/cache-cleaner.js'
 
 const Ctx = React.createContext(null)
@@ -25,7 +25,8 @@ function useProvideAuth(){
   const [isInitialized, setIsInitialized] = React.useState(false)
   const [isInvitePending, setIsInvitePending] = React.useState(false)
   const [authError, setAuthError] = React.useState(null)
-  const navigate = React.useRef(useNavigate())
+  const navigate = useNavigate()
+  const location = useLocation()
   
   // Cache para evitar consultas repetidas
   const roleCache = React.useRef(new Map())
@@ -108,6 +109,17 @@ function useProvideAuth(){
           }
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
+          
+          // Verificar se é o usuário admin principal primeiro
+          if (currentUser.email === 'robgomez.sir@gmail.com') {
+            console.log('🔍 [useAuth] Usuário admin principal detectado')
+            const adminRole = 'admin'
+            roleCache.current.set(currentUser.id, adminRole)
+            setRole(adminRole)
+            setUser(currentUser)
+            setAuthError(null)
+            return
+          }
           
           // Verificar se o usuário tem perfil na tabela profiles
           try {
@@ -200,6 +212,17 @@ function useProvideAuth(){
       console.log('🔍 [useAuth] Evento de auth:', event, session?.user?.email)
       
       if (event === 'SIGNED_IN' && session?.user) {
+        // Verificar se é o usuário admin principal primeiro
+        if (session.user.email === 'robgomez.sir@gmail.com') {
+          console.log('🔍 [useAuth] Usuário admin principal logado')
+          const adminRole = 'admin'
+          roleCache.current.set(session.user.id, adminRole)
+          setRole(adminRole)
+          setUser(session.user)
+          setAuthError(null)
+          return
+        }
+        
         // Verificar perfil do usuário logado
         try {
           console.log('🔍 [useAuth] Verificando perfil do usuário logado...')
@@ -388,19 +411,19 @@ function useProvideAuth(){
       isLoading, 
       isInvitePending,
       hasRedirected: hasRedirected.current,
-      currentPath: window.location.pathname
+      currentPath: location.pathname
     })
     
     // Só redirecionar se estiver inicializado, logado, não for convite pendente e ainda não redirecionou
     if (isInitialized && user && role && !isLoading && !isInvitePending && !hasRedirected.current) {
-      const currentPath = window.location.pathname
+      const currentPath = location.pathname
       if (currentPath === '/' || currentPath === '/login') {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
         hasRedirected.current = true
-        navigate.current('/dashboard', { replace: true })
+        navigate('/dashboard', { replace: true })
       }
     }
-  }, [isInitialized, user, role, isLoading, isInvitePending])
+  }, [isInitialized, user, role, isLoading, isInvitePending, navigate, location.pathname])
 
   const signIn = React.useCallback(async (email, password) => {
     try {
@@ -442,9 +465,7 @@ function useProvideAuth(){
       clearAuthCache()
       
       // Redirecionar para home
-      if (navigate.current) {
-        navigate.current('/')
-      }
+      navigate('/')
       
       console.log('✅ [useAuth] Logout realizado com sucesso')
     } catch (error) {

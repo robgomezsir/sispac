@@ -24,6 +24,9 @@ export function Navigation() {
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   
+  // Debug: logar o estado atual
+  console.log('🔍 [Navigation] Estado atual:', { user: !!user, role, isAdmin: role === 'admin' })
+  
   const handleSignOut = useCallback(async () => {
     try {
       await signOut()
@@ -34,32 +37,44 @@ export function Navigation() {
     }
   }, [signOut, navigate])
   
-  const navLinks = useMemo(() => [
-    { to: "/", label: "Início", icon: Home, isActive: location.pathname === "/" },
-    { to: "/form", label: "Formulário", icon: FileText, isActive: location.pathname === "/form" },
-    ...(user ? [{ 
-      to: "/dashboard", 
-      label: "Dashboard", 
-      icon: BarChart3, 
-      isActive: location.pathname === "/dashboard" 
-    }] : []),
-    ...(role === 'admin' ? [
-      { 
-        to: "/config", 
-        label: "Configurações", 
-        icon: Settings, 
-        isActive: location.pathname === "/config",
-        isAdmin: true 
-      },
-      { 
-        to: "/api", 
-        label: "API Panel", 
-        icon: Database, 
-        isActive: location.pathname === "/api",
-        isAdmin: true 
-      }
-    ] : [])
-  ], [user, role, location.pathname])
+  const navLinks = useMemo(() => {
+    const links = [
+      { to: "/", label: "Início", icon: Home, isActive: location.pathname === "/" },
+      { to: "/form", label: "Formulário", icon: FileText, isActive: location.pathname === "/form" },
+      ...(user ? [{ 
+        to: "/dashboard", 
+        label: "Dashboard", 
+        icon: BarChart3, 
+        isActive: location.pathname === "/dashboard" 
+      }] : [])
+    ]
+    
+    // Adicionar links admin se aplicável
+    if (role === 'admin') {
+      console.log('🔍 [Navigation] Adicionando links admin para role:', role)
+      links.push(
+        { 
+          to: "/config", 
+          label: "Configurações", 
+          icon: Settings, 
+          isActive: location.pathname === "/config",
+          isAdmin: true 
+        },
+        { 
+          to: "/api", 
+          label: "API Panel", 
+          icon: Database, 
+          isActive: location.pathname === "/api",
+          isAdmin: true 
+        }
+      )
+    } else {
+      console.log('🔍 [Navigation] Role não é admin:', role)
+    }
+    
+    console.log('🔍 [Navigation] Links finais:', links.map(l => ({ to: l.to, label: l.label, isAdmin: l.isAdmin })))
+    return links
+  }, [user, role, location.pathname])
   
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(!isMobileMenuOpen)

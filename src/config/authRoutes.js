@@ -32,3 +32,28 @@ export const ERROR_MESSAGES = {
   RESET_SUCCESS: "✅ Senha redefinida com sucesso!",
   EMAIL_SENT: "✅ Email de redefinição enviado! Verifique sua caixa de entrada.",
 };
+
+// Configurações de segurança
+export const SECURITY_CONFIG = {
+  SESSION_TIMEOUT: 3600, // 1 hora
+  MAX_LOGIN_ATTEMPTS: 5,
+  LOCKOUT_DURATION: 900, // 15 minutos
+  PASSWORD_HISTORY_SIZE: 3,
+  REQUIRE_PASSWORD_CHANGE: 90, // 90 dias
+};
+
+// Configurações de cache
+export const CACHE_CONFIG = {
+  AUTH_TOKEN_TTL: 3600, // 1 hora
+  USER_PROFILE_TTL: 1800, // 30 minutos
+  ROLE_CACHE_TTL: 300, // 5 minutos
+  MAX_CACHE_SIZE: 100,
+};
+
+// Configurações de logging
+export const LOGGING_CONFIG = {
+  ENABLE_AUTH_LOGS: true,
+  ENABLE_PERFORMANCE_LOGS: import.meta.env.DEV,
+  ENABLE_ERROR_LOGS: true,
+  LOG_LEVEL: import.meta.env.DEV ? 'debug' : 'error',
+};

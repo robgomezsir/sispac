@@ -229,7 +229,7 @@ export default function Formulario(){
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header de Sucesso */}
-        <div className="card p-8 text-center">
+        <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-8 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={32} className="text-green-600" />
           </div>

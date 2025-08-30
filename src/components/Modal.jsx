@@ -51,13 +51,13 @@ export default function Modal({ open, onClose, title, children, size = "default"
       onClick={handleBackdropClick}
     >
       <div className={cn(
-        "card w-full max-h-[90vh] overflow-hidden shadow-2xl border-0",
+        "bg-card text-card-foreground rounded-lg border shadow-lg w-full max-h-[90vh] overflow-hidden",
         sizeClasses[size]
       )}>
         <div className="flex items-center justify-between p-6 border-b bg-muted/50">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button 
-            className="btn-ghost h-8 w-8 p-0 hover:bg-muted" 
+            className="h-8 w-8 p-0 hover:bg-muted rounded-md transition-colors" 
             onClick={handleClose}
             aria-label="Fechar modal"
           >

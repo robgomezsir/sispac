@@ -177,23 +177,23 @@ export default function AuthCallback() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Processando convite...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-8 w-full max-w-md text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Processando convite...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (action === "create_password") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-full max-w-md bg-card text-card-foreground rounded-lg border shadow-lg p-8">
+          <h2 className="text-2xl font-bold mb-4 text-center">
             Bem-vindo ao SisPAC!
           </h2>
-          <p className="text-gray-600 text-center mb-6">
+          <p className="text-muted-foreground text-center mb-6">
             Olá, {inviteData?.user?.email}. Crie sua senha para começar a usar o sistema.
           </p>
           
@@ -202,7 +202,7 @@ export default function AuthCallback() {
               type="password"
               name="password"
               placeholder="Crie sua senha"
-              className="w-full p-3 border rounded-xl focus:ring focus:ring-indigo-400"
+              className="w-full p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
               required
               minLength={6}
             />
@@ -210,13 +210,13 @@ export default function AuthCallback() {
               type="password"
               name="confirmPassword"
               placeholder="Confirme sua senha"
-              className="w-full p-3 border rounded-xl focus:ring focus:ring-indigo-400"
+              className="w-full p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
               required
               minLength={6}
             />
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? "Criando senha..." : "Criar Senha e Entrar"}
@@ -225,7 +225,7 @@ export default function AuthCallback() {
           
           {message && (
             <p className={`mt-4 text-center text-sm ${
-              message.includes("❌") ? "text-red-600" : 
+              message.includes("❌") ? "text-destructive" : 
               message.includes("⚠️") ? "text-yellow-600" : 
               "text-green-600"
             }`}>
@@ -234,21 +234,21 @@ export default function AuthCallback() {
           )}
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Autenticação</h2>
-        <p className="text-gray-600 mb-6">{message}</p>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-md bg-card text-card-foreground rounded-lg border shadow-lg p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Autenticação</h2>
+        <p className="text-muted-foreground mb-6">{message}</p>
         <button
           onClick={() => navigate("/")}
-          className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
+          className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 transition"
         >
           Voltar ao Início
         </button>
       </div>
     </div>
-  );
+  )
 }

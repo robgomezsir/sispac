@@ -128,182 +128,98 @@ export default function Configuracoes(){
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">⚙️ Painel de Configurações</h1>
-          <p className="text-gray-600">Gerencie usuários e configurações do sistema</p>
-        </div>
-        <div className="text-sm text-gray-500">
-          Logado como: <span className="font-medium">{user?.email}</span>
-        </div>
-      </div>
-
-      {/* Mensagens */}
-      {message && (
-        <div className={`p-4 rounded-lg border ${
-          messageType === 'success' 
-            ? 'bg-green-50 border-green-200 text-green-700' 
-            : messageType === 'error'
-            ? 'bg-red-50 border-red-200 text-red-700'
-            : 'bg-blue-50 border-blue-200 text-blue-700'
-        }`}>
-          {message}
-        </div>
-      )}
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Gerenciar Usuários */}
-        <div className="card">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            👥 Gerenciar Usuários do Dashboard
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-3">
-              <div>
-                <label className="label">Nome Completo *</label>
-                <input 
-                  className="input" 
-                  value={name} 
-                  onChange={e => setName(e.target.value)} 
-                  placeholder="Nome do usuário"
-                  disabled={loading}
-                />
-              </div>
-              <div>
-                <label className="label">Email *</label>
-                <input 
-                  className="input" 
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)} 
-                  placeholder="email@exemplo.com"
-                  type="email"
-                  disabled={loading}
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="label">Papel/Função</label>
-              <select 
-                className="input" 
-                value={roleSelect} 
-                onChange={e => setRoleSelect(e.target.value)}
-                disabled={loading}
-              >
-                <option value="rh">👤 Usuário RH</option>
-                <option value="admin">👑 ADMIN GERAL</option>
-              </select>
-            </div>
-            
-            <div className="flex gap-2 flex-wrap">
-              <button 
-                className="btn-primary flex-1" 
-                disabled={loading || !email.trim() || !name.trim()} 
-                onClick={handleAddUser}
-              >
-                {loading ? '⏳ Adicionando...' : '➕ Adicionar Usuário'}
-              </button>
-              <button 
-                className="btn-danger" 
-                disabled={loading || !email.trim()} 
-                onClick={handleDeleteUser}
-              >
-                {loading ? '⏳ Removendo...' : '🗑️ Remover Usuário'}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Configuração do Supabase */}
-        <div className="card">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            🔧 Configuração do Supabase
-          </h3>
-          
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-green-600">Site URL (Recomendado):</h4>
-              <code className="block bg-gray-100 p-2 rounded text-sm">
-                https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app
-              </code>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-green-600">Redirect URLs (Recomendadas):</h4>
-              <div className="space-y-2">
-                <code className="block bg-gray-100 p-2 rounded text-sm">
-                  https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/setup-password
-                </code>
-                <code className="block bg-gray-100 p-2 rounded text-sm">
-                  https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/complete-invite
-                </code>
-              </div>
-            </div>
-            
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-800">⚠️ URLs que NÃO funcionam:</h4>
-              <p className="text-yellow-700 text-sm mt-2">
-                O Vercel intercepta estas rotas: <code>/welcome</code>, <code>/join</code>, <code>/auth/confirm</code>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Manutenção de Dados */}
-      <div className="card">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          🛠️ Manutenção de Dados
-        </h3>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-6">
+        <h1 className="text-3xl font-bold mb-6">Configurações do Sistema</h1>
         
-        <div className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-700">
-              <strong>💡 Dica:</strong> Faça backup antes de executar operações de manutenção.
-            </p>
-          </div>
-          
-          <div className="flex gap-2 flex-wrap">
-            <button 
-              className="btn-secondary flex-1" 
-              disabled={loading} 
-              onClick={handleBackup}
+        {/* Adicionar Usuário */}
+        <div className="space-y-4 mb-8">
+          <h2 className="text-xl font-semibold">Adicionar Usuário</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Nome completo"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+            />
+            <select
+              value={roleSelect}
+              onChange={e => setRoleSelect(e.target.value)}
+              className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             >
-              {loading ? '⏳ Preparando...' : '💾 Download Backup'}
-            </button>
-            <button 
-              className="btn-danger" 
-              disabled={loading} 
-              onClick={handlePurge}
-            >
-              {loading ? '⏳ Limpando...' : '⚠️ Limpar Tudo'}
-            </button>
+              <option value="rh">RH</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
+          <button
+            onClick={handleAddUser}
+            disabled={loading}
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition disabled:opacity-50"
+          >
+            {loading ? 'Adicionando...' : 'Adicionar Usuário'}
+          </button>
         </div>
-      </div>
 
-      {/* Informações do Sistema */}
-      <div className="card">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            ℹ️ Informações do Sistema
-          </h3>
-        <div className="grid md:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span className="font-medium text-gray-700">Usuário Atual:</span>
-            <p className="text-gray-600">{user?.email}</p>
-          </div>
-          <div>
-            <span className="font-medium text-gray-700">Função:</span>
-            <p className="text-gray-600">{role === 'admin' ? '👑 Administrador' : '👤 Usuário RH'}</p>
-          </div>
-          <div>
-            <span className="font-medium text-gray-700">Status:</span>
-            <p className="text-green-600">✅ Ativo</p>
+        {/* Remover Usuário */}
+        <div className="space-y-4 mb-8">
+          <h2 className="text-xl font-semibold">Remover Usuário</h2>
+          <div className="flex gap-4">
+            <input
+              type="email"
+              placeholder="Email do usuário"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="flex-1 p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+            />
+            <button
+              onClick={handleDeleteUser}
+              disabled={loading}
+              className="bg-destructive text-destructive-foreground px-6 py-3 rounded-lg hover:bg-destructive/90 transition disabled:opacity-50"
+            >
+              {loading ? 'Removendo...' : 'Remover Usuário'}
+            </button>
           </div>
         </div>
+
+        {/* Operações do Sistema */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Operações do Sistema</h2>
+          <div className="flex gap-4">
+            <button
+              onClick={handleBackup}
+              disabled={loading}
+              className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:bg-secondary/80 transition disabled:opacity-50"
+            >
+              {loading ? 'Fazendo backup...' : 'Fazer Backup'}
+            </button>
+            <button
+              onClick={handlePurge}
+              disabled={loading}
+              className="bg-destructive text-destructive-foreground px-6 py-3 rounded-lg hover:bg-destructive/90 transition disabled:opacity-50"
+            >
+              {loading ? 'Limpando...' : 'Limpar Dados'}
+            </button>
+          </div>
+        </div>
+
+        {/* Mensagens */}
+        {message && (
+          <div className={`mt-6 p-4 rounded-lg border ${
+            messageType === 'error' 
+              ? 'bg-destructive/10 border-destructive/20 text-destructive' 
+              : 'bg-green-100 border-green-200 text-green-800'
+          }`}>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   )

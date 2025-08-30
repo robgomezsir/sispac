@@ -56,4 +56,54 @@ export const devError = (message, error = null) => {
   }
 }
 
+// Função para log seguro em produção
+export const safeLog = (message, data = null) => {
+  if (isDevelopment()) {
+    console.log(`🔧 [DEV] ${message}`, data || '')
+  } else {
+    // Em produção, log apenas mensagens não sensíveis
+    if (!message.includes('token') && !message.includes('key') && !message.includes('password')) {
+      console.log(`ℹ️ [APP] ${message}`)
+    }
+  }
+}
+
+// Função para log de erro seguro em produção
+export const safeError = (message, error = null) => {
+  if (isDevelopment()) {
+    console.error(`❌ [DEV] ${message}`, error || '')
+  } else {
+    // Em produção, log apenas mensagens de erro não sensíveis
+    if (!message.includes('token') && !message.includes('key') && !message.includes('password')) {
+      console.error(`❌ [APP] ${message}`)
+    }
+  }
+}
+
+// Função para debug de performance
+export const debugPerformance = (label, fn) => {
+  if (isDevelopment()) {
+    const start = performance.now()
+    const result = fn()
+    const end = performance.now()
+    console.log(`⚡ [PERF] ${label}: ${(end - start).toFixed(2)}ms`)
+    return result
+  }
+  return fn()
+}
+
+// Função para debug de estado
+export const debugState = (componentName, state) => {
+  if (isDevelopment()) {
+    console.log(`🔍 [STATE] ${componentName}:`, state)
+  }
+}
+
+// Função para debug de props
+export const debugProps = (componentName, props) => {
+  if (isDevelopment()) {
+    console.log(`🔍 [PROPS] ${componentName}:`, props)
+  }
+}
+
 export default devConfig

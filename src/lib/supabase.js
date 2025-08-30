@@ -31,9 +31,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.log('✅ [Supabase] Configuração carregada com sucesso!')
 }
 
-// Função para validar token
+// Função para validar token de forma mais robusta
 const validateToken = (token) => {
-  if (!token) return false
+  if (!token || typeof token !== 'string') return false
   
   try {
     // Verificar se o token tem formato válido (JWT básico)
@@ -44,8 +44,15 @@ const validateToken = (token) => {
     const payload = JSON.parse(atob(parts[1]))
     const now = Math.floor(Date.now() / 1000)
     
+    // Verificar se o token não expirou
     if (payload.exp && payload.exp < now) {
       console.warn('⚠️ [Supabase] Token expirado detectado')
+      return false
+    }
+    
+    // Verificar se o token não é muito antigo (mais de 1 hora)
+    if (payload.iat && (now - payload.iat) > 3600) {
+      console.warn('⚠️ [Supabase] Token muito antigo detectado')
       return false
     }
     
@@ -86,7 +93,11 @@ supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'TOKEN_REFRESHED' && session?.access_token) {
     if (!validateToken(session.access_token)) {
       console.warn('⚠️ [Supabase] Token inválido após refresh, fazendo logout...')
-      await supabase.auth.signOut()
+      try {
+        await supabase.auth.signOut()
+      } catch (error) {
+        console.error('❌ [Supabase] Erro ao fazer logout:', error)
+      }
     }
   }
 })
@@ -103,7 +114,9 @@ if (import.meta.env.DEV) {
         // Validar token da sessão
         if (!validateToken(data.session.access_token)) {
           console.warn('⚠️ [Supabase] Token da sessão inválido, fazendo logout...')
-          supabase.auth.signOut()
+          supabase.auth.signOut().catch(error => {
+            console.error('❌ [Supabase] Erro ao fazer logout:', error)
+          })
         }
       } else {
         console.log('ℹ️ [Supabase] Nenhuma sessão ativa')

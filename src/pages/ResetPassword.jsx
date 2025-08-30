@@ -68,21 +68,21 @@ export default function ResetPassword() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
-          <p className="text-gray-600">Verificando autenticação...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-8">
+          <p className="text-muted-foreground">Verificando autenticação...</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-md bg-card text-card-foreground rounded-lg border shadow-lg p-8">
+        <h2 className="text-2xl font-bold mb-4 text-center">
           Redefinir Senha
         </h2>
-        <p className="text-gray-600 text-center mb-6">
+        <p className="text-muted-foreground text-center mb-6">
           Olá, {user.email}. Digite sua nova senha abaixo.
         </p>
         
@@ -90,7 +90,7 @@ export default function ResetPassword() {
           <input
             type="password"
             placeholder="Nova senha"
-            className="w-full p-3 border rounded-xl focus:ring focus:ring-indigo-400"
+            className="w-full p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -99,7 +99,7 @@ export default function ResetPassword() {
           <input
             type="password"
             placeholder="Confirme a nova senha"
-            className="w-full p-3 border rounded-xl focus:ring focus:ring-indigo-400"
+            className="w-full p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -107,7 +107,7 @@ export default function ResetPassword() {
           />
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Salvando..." : "Salvar nova senha"}
@@ -116,7 +116,7 @@ export default function ResetPassword() {
         
         {message && (
           <p className={`mt-4 text-center text-sm ${
-            message.includes("❌") ? "text-red-600" : 
+            message.includes("❌") ? "text-destructive" : 
             message.includes("⚠️") ? "text-yellow-600" : 
             "text-green-600"
           }`}>
@@ -125,5 +125,5 @@ export default function ResetPassword() {
         )}
       </div>
     </div>
-  );
+  )
 }
