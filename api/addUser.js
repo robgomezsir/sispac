@@ -2,21 +2,67 @@ import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
 
 export default async function handler(req, res){
   try{
-    assertAuth(req)
+    // Validar autenticação e permissões
+    await assertAuth(req)
+    
     const { name, email, role } = req.body || {}
-    if(!email) throw new Error('email obrigatório')
+    
+    // Validação dos campos obrigatórios
+    if(!name || !name.trim()) {
+      return fail(res, { message: 'Nome é obrigatório' }, 400)
+    }
+    
+    if(!email || !email.trim()) {
+      return fail(res, { message: 'Email é obrigatório' }, 400)
+    }
+    
+    // Validação básica de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if(!emailRegex.test(email.trim())) {
+      return fail(res, { message: 'Email inválido' }, 400)
+    }
+    
+    // Validação de role
+    const validRoles = ['rh', 'admin']
+    if(role && !validRoles.includes(role)) {
+      return fail(res, { message: 'Role inválido. Use "rh" ou "admin"' }, 400)
+    }
+    
     const supabase = getSupabaseAdmin()
     
-    // Criar usuário auth (senha aleatória de 4 dígitos)
-    const password = ('' + Math.floor(1000 + Math.random()*9000))
+    // Verificar se o usuário já existe
+    const { data: existingUser, error: checkError } = await supabase.auth.admin.listUsers()
+    
+    if(checkError) {
+      console.error('❌ Erro ao verificar usuários existentes:', checkError)
+      return fail(res, { message: 'Erro ao verificar usuários existentes' }, 500)
+    }
+    
+    const userExists = existingUser.users.some(user => user.email === email.trim().toLowerCase())
+    
+    if(userExists) {
+      return fail(res, { message: 'Usuário com este email já existe' }, 409)
+    }
+    
+    // Criar usuário auth (senha aleatória de 6 dígitos)
+    const password = Math.floor(100000 + Math.random() * 900000).toString()
+    
     const { data, error } = await supabase.auth.admin.createUser({
-      email, 
+      email: email.trim().toLowerCase(), 
       password, 
       email_confirm: true, 
-      user_metadata: { name, role: role || 'rh' }
+      user_metadata: { 
+        name: name.trim(), 
+        role: role || 'rh',
+        created_by: req.user.email,
+        created_at: new Date().toISOString()
+      }
     })
     
-    if(error) throw error
+    if(error) {
+      console.error('❌ Erro ao criar usuário:', error)
+      return fail(res, { message: 'Erro ao criar usuário: ' + error.message }, 500)
+    }
     
     // Criar perfil na tabela profiles
     const { error: profileError } = await supabase
@@ -25,20 +71,35 @@ export default async function handler(req, res){
         id: data.user.id,
         email: data.user.email,
         role: role || 'rh',
-        password_set: false // Usuário convidado ainda não definiu senha
+        name: name.trim(),
+        password_set: false, // Usuário convidado ainda não definiu senha
+        created_at: new Date().toISOString(),
+        created_by: req.user.id
       })
     
     if(profileError) {
       console.error('⚠️ Erro ao criar perfil:', profileError)
-      // Não falhar se o perfil não puder ser criado, apenas logar
+      // Tentar deletar o usuário criado se o perfil falhar
+      try {
+        await supabase.auth.admin.deleteUser(data.user.id)
+      } catch (deleteError) {
+        console.error('❌ Erro ao deletar usuário após falha no perfil:', deleteError)
+      }
+      return fail(res, { message: 'Usuário criado mas erro ao criar perfil. Usuário removido.' }, 500)
     }
     
+    console.log('✅ Usuário criado com sucesso:', { email: data.user.email, role: role || 'rh' })
+    
     ok(res, { 
-      message: `Usuário criado com senha ${password}`,
+      message: `Usuário ${name.trim()} criado com sucesso! Senha temporária: ${password}`,
       userId: data.user.id,
-      profileCreated: !profileError
+      email: data.user.email,
+      role: role || 'rh',
+      profileCreated: true
     })
+    
   }catch(e){ 
+    console.error('❌ Erro na API addUser:', e)
     fail(res, e) 
   }
 }

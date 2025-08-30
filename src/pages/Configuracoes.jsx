@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase.js'
 
 export default function Configuracoes(){
   const { user, role } = useAuth()
@@ -35,9 +36,19 @@ export default function Configuracoes(){
     setMessage(null)
     
     try {
+      // Obter token de sessão atual
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        throw new Error('Sessão expirada. Faça login novamente.')
+      }
+      
       const res = await fetch(`/api/${route}`, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
         body: JSON.stringify(body || {})
       })
       
