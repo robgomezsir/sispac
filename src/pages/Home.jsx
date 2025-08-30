@@ -25,6 +25,21 @@ export default function Home(){
   const [err, setErr] = useState(null)
   const navigate = useNavigate()
 
+  // Verificar se há parâmetros de convite na URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const accessToken = urlParams.get('access_token')
+    const refreshToken = urlParams.get('refresh_token')
+    const type = urlParams.get('type')
+    
+    // Se há tokens de convite, redirecionar para /welcome
+    if (accessToken && refreshToken && (type === 'invite' || type === 'signup')) {
+      console.log('🔍 [Home] Detectado convite, redirecionando para /welcome')
+      navigate('/welcome?' + window.location.search, { replace: true })
+      return
+    }
+  }, [navigate])
+
   // Redirecionar automaticamente se já estiver logado
   useEffect(() => {
     if (user) {
