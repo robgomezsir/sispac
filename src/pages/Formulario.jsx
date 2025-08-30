@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { questions } from '../data/questions'
 import { computeScore, classify } from '../utils/scoring'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseAdmin } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import { 
   CheckCircle, 
@@ -62,6 +62,7 @@ export default function Formulario(){
     try{
       // verificação nome + sobrenome
       if(!nome.trim().includes(' ')) throw new Error('Informe Nome e Sobrenome.')
+      
       // checar duplicidade (nome+email) já respondeu
       const { data: existing, error: e1 } = await supabase
         .from('candidates')
@@ -87,19 +88,60 @@ export default function Formulario(){
         status
       }
 
-      const { data: inserted, error: e2 } = await supabase.from('candidates').insert(payload).select().single()
-      if(e2) throw e2
+      // Tentar primeiro com cliente normal, depois com admin se falhar
+      let inserted, insertError
+      
+      try {
+        const result = await supabase
+          .from('candidates')
+          .insert(payload)
+          .select()
+          .single()
+        inserted = result.data
+        insertError = result.error
+      } catch (err) {
+        insertError = err
+      }
+
+      // Se falhou com cliente normal, tentar com admin
+      if (insertError && supabaseAdmin !== supabase) {
+        try {
+          const result = await supabaseAdmin
+            .from('candidates')
+            .insert(payload)
+            .select()
+            .single()
+          inserted = result.data
+          insertError = result.error
+        } catch (err) {
+          insertError = err
+        }
+      }
+      
+      if(insertError || !inserted) {
+        console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
+        throw new Error(`Erro ao salvar dados: ${insertError?.message || 'Falha na inserção'}`)
+      }
 
       // opcional: salvar detalhamento textual simples
       const details = buildDetails(answers, score, status)
-      await supabase.from('results').insert({
-        candidate_id: inserted.id,
-        details
-      })
+      
+      try {
+        await supabase
+          .from('results')
+          .insert({
+            candidate_id: inserted.id,
+            details
+          })
+      } catch (err) {
+        console.error('❌ [Formulario] Erro ao inserir resultados:', err)
+        // Não falhar se apenas os resultados não puderem ser salvos
+      }
 
       setSent(true)
       alert('Respostas enviadas com sucesso!')
     }catch(err){
+      console.error('❌ [Formulario] Erro no envio:', err)
       setError(err.message)
     }finally{
       setSending(false)
