@@ -118,13 +118,12 @@ export default function Home(){
         ))}
       </div>
 
-      {/* Login Section */}
+      {/* Login Section - Centralizado */}
       {!user && (
-        <div id="login-form" className="grid lg:grid-cols-2 gap-8 items-start">
-          {/* Login Form */}
-          <div className="card p-8 space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+        <div id="login-form" className="flex justify-center">
+          <div className="card p-8 space-y-6 w-full max-w-md">
+            <div className="space-y-2 text-center">
+              <h2 className="text-2xl font-bold flex items-center justify-center gap-2">
                 <LogIn size={24} />
                 Acesso ao Dashboard
               </h2>
@@ -187,42 +186,7 @@ export default function Home(){
               <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg">
                 ❌ {err}
               </div>
-            )}
-          </div>
-
-          {/* Quick Access Info */}
-          <div className="card p-8 space-y-6">
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <Shield size={20} />
-                Acesso Administrativo
-              </h3>
-              <p className="text-muted-foreground">
-                Credenciais para administradores e gestores do sistema.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <div className="text-sm font-medium text-muted-foreground mb-1">Admin Geral</div>
-                <div className="font-mono text-sm">robgomez.sir@gmail.com</div>
-              </div>
-              
-              <div className="p-4 bg-muted rounded-lg">
-                <div className="text-sm font-medium text-muted-foreground mb-1">Senha Inicial</div>
-                <div className="font-mono text-sm">admin1630</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  Configure no Supabase após o primeiro acesso
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-              <div className="text-sm text-primary">
-                💡 <strong>Dica:</strong> Você também pode acessar apenas o formulário 
-                de teste sem fazer login, ideal para candidatos.
-              </div>
-            </div>
+              )}
           </div>
         </div>
       )}
