@@ -160,7 +160,10 @@ function useProvideAuth(){
       const currentPath = window.location.pathname
       if (currentPath === '/' || currentPath === '/login') {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
-        navigate('/dashboard', { replace: true })
+        // Usar setTimeout para garantir que o estado seja atualizado
+        setTimeout(() => {
+          navigate('/dashboard', { replace: true })
+        }, 100)
       }
     }
   }, [user, role, isLoading, isInitialized, navigate])
