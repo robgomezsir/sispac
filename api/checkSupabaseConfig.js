@@ -17,15 +17,18 @@ export default async function handler(req, res){
       configInfo: {
         siteUrl: process.env.SUPABASE_URL,
         redirectUrls: [
-          'https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/invite-callback',
-          'https://*.rob-gomezs-projects.vercel.app/invite-callback'
+          'https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome',
+          'https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/join',
+          'https://*.rob-gomezs-projects.vercel.app/welcome',
+          'https://*.rob-gomezs-projects.vercel.app/join'
         ],
         instructions: [
           '1. Acesse Authentication > URL Configuration no Supabase',
           '2. Configure Site URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app',
-          '3. Adicione as Redirect URLs listadas acima (use /invite-callback)',
+          '3. Adicione as Redirect URLs listadas acima (use /welcome ou /join)',
           '4. Salve as configurações',
-          '5. ⚠️ IMPORTANTE: Use /invite-callback em vez de /auth/confirm'
+          '5. ⚠️ IMPORTANTE: Use /welcome ou /join em vez de /auth/confirm',
+          '6. 🆕 Teste primeiro: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome'
         ]
       }
     })

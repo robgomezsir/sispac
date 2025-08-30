@@ -70,11 +70,13 @@ https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app
 Adicione as seguintes URLs na lista de redirecionamentos permitidos:
 
 ```
-https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/invite-callback
-https://*.rob-gomezs-projects.vercel.app/invite-callback
+https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome
+https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/join
+https://*.rob-gomezs-projects.vercel.app/welcome
+https://*.rob-gomezs-projects.vercel.app/join
 ```
 
-**⚠️ IMPORTANTE:** Use `/invite-callback` em vez de `/auth/confirm` para evitar que o Vercel intercepte a rota.
+**⚠️ IMPORTANTE:** Use `/welcome` ou `/join` em vez de `/auth/confirm` para evitar que o Vercel intercepte a rota.
 
 ### 4. Configuração de Email Templates (Opcional)
 

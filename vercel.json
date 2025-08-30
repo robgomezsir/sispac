@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/welcome",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/join",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/invite-callback",
+      "destination": "/index.html"
+    },
+    {
       "source": "/auth/confirm",
       "destination": "/index.html"
     },
@@ -15,7 +27,12 @@
   ],
   "redirects": [
     {
-      "source": "/auth/confirm",
+      "source": "/welcome",
+      "destination": "/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/join",
       "destination": "/index.html",
       "permanent": false
     }

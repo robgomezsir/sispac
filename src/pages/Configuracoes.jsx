@@ -244,8 +244,9 @@ export default function Configuracoes(){
               <p><strong>URLs que devem estar configuradas:</strong></p>
               <ul className="list-disc list-inside mt-1 space-y-1">
                 <li>Site URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app</li>
-                <li>Redirect URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/invite-callback</li>
-                <li className="text-yellow-600 font-medium">⚠️ Use /invite-callback em vez de /auth/confirm</li>
+                <li>Redirect URL: https://sispac-kfs8jdgkd-rob-gomezs-projects.vercel.app/welcome</li>
+                <li className="text-yellow-600 font-medium">⚠️ Use /welcome ou /join em vez de /auth/confirm</li>
+                <li className="text-green-600 font-medium">🆕 Teste: /welcome ou /join</li>
               </ul>
             </div>
           </div>

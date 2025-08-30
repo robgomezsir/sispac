@@ -54,6 +54,14 @@ export default function App(){
       element: <AuthCallback /> 
     },
     { 
+      path: "/welcome", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/join", 
+      element: <AuthCallback /> 
+    },
+    { 
       path: "*", 
       element: <Navigate to="/" replace /> 
     }
