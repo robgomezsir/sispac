@@ -1,5 +1,5 @@
 import React from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, clearInvalidTokens, checkSupabaseHealth } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import { clearAuthCache, checkCacheHealth } from '../lib/cache-cleaner.js'
 
@@ -24,6 +24,7 @@ function useProvideAuth(){
   const [isLoading, setIsLoading] = React.useState(true)
   const [isInitialized, setIsInitialized] = React.useState(false)
   const [isInvitePending, setIsInvitePending] = React.useState(false)
+  const [authError, setAuthError] = React.useState(null)
   const navigate = React.useRef(useNavigate())
   
   // Cache para evitar consultas repetidas
@@ -31,6 +32,8 @@ function useProvideAuth(){
   const isMounted = React.useRef(true)
   const authSubscription = React.useRef(null)
   const hasRedirected = React.useRef(false)
+  const retryCount = React.useRef(0)
+  const maxRetries = 3
 
   // Verificar saúde dos caches na inicialização
   React.useEffect(() => {
@@ -43,6 +46,23 @@ function useProvideAuth(){
     }
   }, [])
 
+  // Verificar saúde da conexão Supabase
+  React.useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const isHealthy = await checkSupabaseHealth()
+        if (!isHealthy) {
+          console.warn('⚠️ [useAuth] Problemas de conectividade detectados')
+          setAuthError('Problemas de conectividade com o servidor')
+        }
+      } catch (error) {
+        console.error('❌ [useAuth] Erro ao verificar conectividade:', error)
+      }
+    }
+    
+    checkConnection()
+  }, [])
+
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
     console.log('🔍 [useAuth] useEffect de inicialização executando...')
@@ -50,6 +70,9 @@ function useProvideAuth(){
     const initializeAuth = async () => {
       try {
         console.log('🔍 [useAuth] Iniciando autenticação...')
+        
+        // Limpar tokens inválidos antes de começar
+        await clearInvalidTokens()
         
         // Buscar usuário atual
         console.log('🔍 [useAuth] Chamando supabase.auth.getUser()...')
@@ -63,10 +86,25 @@ function useProvideAuth(){
         
         if (error) {
           console.error("❌ [useAuth] Erro ao buscar usuário:", error)
-          // Se houver erro de autenticação, limpar cache
-          if (error.message.includes('token') || error.message.includes('expired')) {
-            console.log('🔍 [useAuth] Token expirado detectado, limpando cache...')
+          
+          // Tratar erros específicos
+          if (error.message.includes('token') || error.message.includes('expired') || error.message.includes('invalid')) {
+            console.log('🔍 [useAuth] Token inválido/expirado detectado, limpando cache...')
             clearAuthCache()
+            setAuthError('Sessão expirada. Faça login novamente.')
+          } else if (error.message.includes('network') || error.message.includes('fetch')) {
+            console.log('🔍 [useAuth] Erro de rede detectado...')
+            setAuthError('Erro de conexão. Verifique sua internet.')
+          } else {
+            setAuthError('Erro de autenticação. Tente novamente.')
+          }
+          
+          // Tentar novamente se não excedeu o limite
+          if (retryCount.current < maxRetries) {
+            retryCount.current++
+            console.log(`🔄 [useAuth] Tentativa ${retryCount.current} de ${maxRetries}...`)
+            setTimeout(initializeAuth, 2000 * retryCount.current) // Backoff exponencial
+            return
           }
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
@@ -119,6 +157,7 @@ function useProvideAuth(){
             
             // Definir usuário após verificar perfil
             setUser(currentUser)
+            setAuthError(null) // Limpar erro se tudo funcionou
             
           } catch (profileError) {
             console.log('🔍 [useAuth] Erro ao verificar perfil, usando configuração padrão:', profileError)
@@ -133,6 +172,15 @@ function useProvideAuth(){
         }
       } catch (err) {
         console.error("❌ [useAuth] Erro na inicialização:", err)
+        setAuthError('Erro inesperado na inicialização')
+        
+        // Tentar novamente se não excedeu o limite
+        if (retryCount.current < maxRetries) {
+          retryCount.current++
+          console.log(`🔄 [useAuth] Tentativa ${retryCount.current} de ${maxRetries}...`)
+          setTimeout(initializeAuth, 2000 * retryCount.current)
+          return
+        }
       } finally {
         if (isMounted.current) {
           console.log('🔍 [useAuth] Finalizando inicialização, definindo estados...')
@@ -175,56 +223,59 @@ function useProvideAuth(){
             if (insertError) {
               console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
             }
-            
-            // Usar role padrão
+          }
+          
+          // Atualizar estado
+          setUser(session.user)
+          setAuthError(null)
+          
+          // Definir role
+          if (profileData?.role) {
+            roleCache.current.set(session.user.id, profileData.role)
+            setRole(profileData.role)
+          } else {
             const defaultRole = 'rh'
             roleCache.current.set(session.user.id, defaultRole)
             setRole(defaultRole)
-          } else if (profileData) {
-            // Perfil existe, usar role do banco
-            const userRole = profileData?.role || 'rh'
-            roleCache.current.set(session.user.id, userRole)
-            setRole(userRole)
-          } else {
-            // Em caso de erro, usar role padrão
-            const fallbackRole = 'rh'
-            roleCache.current.set(session.user.id, fallbackRole)
-            setRole(fallbackRole)
           }
           
+        } catch (error) {
+          console.error("❌ [useAuth] Erro ao verificar perfil após login:", error)
+          // Usar role padrão em caso de erro
+          const defaultRole = 'rh'
+          roleCache.current.set(session.user.id, defaultRole)
+          setRole(defaultRole)
           setUser(session.user)
-          setIsInvitePending(false)
-          
-        } catch (profileError) {
-          console.log('🔍 [useAuth] Erro ao verificar perfil, usando configuração padrão:', profileError)
-          // Em caso de erro, usar configuração padrão
-          const fallbackRole = 'rh'
-          roleCache.current.set(session.user.id, fallbackRole)
-          setRole(fallbackRole)
-          setUser(session.user)
-          setIsInvitePending(false)
         }
       } else if (event === 'SIGNED_OUT') {
+        console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
         setUser(null)
         setRole(null)
-        setIsInvitePending(false)
+        setAuthError(null)
         roleCache.current.clear()
-        hasRedirected.current = false
+        
+        // Limpar cache de autenticação
+        clearAuthCache()
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log('🔍 [useAuth] Token atualizado com sucesso')
+        setAuthError(null)
+      } else if (event === 'USER_UPDATED') {
+        console.log('🔍 [useAuth] Usuário atualizado:', session?.user?.email)
+        if (session?.user) {
+          setUser(session.user)
+        }
       }
-      
-      setIsLoading(false)
     })
-
+    
     authSubscription.current = subscription
 
+    // Cleanup
     return () => {
-      console.log('🔍 [useAuth] Cleanup do useEffect...')
-      isMounted.current = false
       if (authSubscription.current) {
         authSubscription.current.unsubscribe()
       }
     }
-  }, []) // SEM dependências para evitar loops
+  }, [])
 
   // Função para finalizar convite e permitir login normal
   const finalizeInvite = React.useCallback(async (userData, accessToken, refreshToken) => {
@@ -375,46 +426,52 @@ function useProvideAuth(){
     }
   }, [])
 
-  const signOut = React.useCallback(async () => {
+  // Função para fazer logout
+  const signOut = async () => {
     try {
-      console.log('🔐 [useAuth] Iniciando logout...')
-      
+      console.log('🔍 [useAuth] Fazendo logout...')
       await supabase.auth.signOut()
+      
+      // Limpar estado local
       setUser(null)
       setRole(null)
-      setIsInvitePending(false)
+      setAuthError(null)
       roleCache.current.clear()
-      hasRedirected.current = false
       
-      // Limpar cache de autenticação ao fazer logout
+      // Limpar cache
       clearAuthCache()
       
+      // Redirecionar para home
+      if (navigate.current) {
+        navigate.current('/')
+      }
+      
       console.log('✅ [useAuth] Logout realizado com sucesso')
-    } catch (err) {
-      console.error("❌ [useAuth] Erro no logout:", err)
+    } catch (error) {
+      console.error('❌ [useAuth] Erro ao fazer logout:', error)
+      setAuthError('Erro ao fazer logout')
     }
-  }, [])
+  }
 
-  // Função para limpar cache manualmente
-  const clearCache = React.useCallback(() => {
-    console.log('🧹 [useAuth] Limpando cache manualmente...')
-    clearAuthCache()
-    roleCache.current.clear()
-    hasRedirected.current = false
-    setUser(null)
-    setRole(null)
-    setIsInvitePending(false)
+  // Função para limpar erro
+  const clearError = () => {
+    setAuthError(null)
+  }
+
+  // Função para tentar reconectar
+  const retryConnection = async () => {
+    retryCount.current = 0
+    setAuthError(null)
     setIsLoading(true)
     setIsInitialized(false)
     
-    // Reinicializar após limpeza
+    // Aguardar um pouco antes de tentar novamente
     setTimeout(() => {
       if (isMounted.current) {
-        setIsLoading(false)
-        setIsInitialized(true)
+        window.location.reload()
       }
-    }, 100)
-  }, [])
+    }, 1000)
+  }
 
   // Memoizar o objeto de retorno para evitar re-renders
   const authValue = React.useMemo(() => ({
@@ -425,8 +482,11 @@ function useProvideAuth(){
     finalizeInvite,
     signIn,
     signOut,
-    clearCache
-  }), [user, role, isLoading, isInvitePending, finalizeInvite, signIn, signOut, clearCache])
+    clearCache: clearAuthCache, // Manter a chamada para compatibilidade
+    authError,
+    clearError,
+    retryConnection
+  }), [user, role, isLoading, isInvitePending, finalizeInvite, signIn, signOut, authError, clearError, retryConnection])
 
   return authValue
 }

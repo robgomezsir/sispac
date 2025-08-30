@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { AuthProvider } from './hooks/useAuth.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import { devLog, isDevelopment } from './config/development.js'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import './styles.css'
 
 // Configuração de desenvolvimento
@@ -35,13 +36,15 @@ try {
   
   root.render(
     <React.StrictMode>
-      <ThemeProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </BrowserRouter>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   )
   

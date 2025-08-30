@@ -16,9 +16,10 @@ import {
   Input,
   Label
 } from '../components/ui'
+import AuthErrorDisplay from '../components/AuthErrorDisplay.jsx'
 
 export default function Home(){
-  const { user, signIn, isLoading } = useAuth()
+  const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,8 +30,8 @@ export default function Home(){
   // Debug logs
   useEffect(() => {
     console.log('🔍 [Home] Componente Home renderizado')
-    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading })
-  }, [user, isLoading, loading])
+    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
+  }, [user, isLoading, loading, authError])
 
   // Redirecionar automaticamente se já estiver logado - SEM dependências circulares
   useEffect(() => {
@@ -112,6 +113,18 @@ export default function Home(){
             Sistema Propósito de Avaliação Comportamental
           </p>
         </div>
+
+        {/* Exibir erros de autenticação globais */}
+        {authError && (
+          <div className="mb-6">
+            <AuthErrorDisplay 
+              error={authError}
+              onClear={clearError}
+              onRetry={retryConnection}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
 
         {/* Formulário de Login */}
         <Card className="shadow-2xl border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
