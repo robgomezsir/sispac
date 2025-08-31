@@ -309,19 +309,7 @@ export default function Dashboard(){
     }
   }, [])
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'SUPEROU A EXPECTATIVA':
-        return <TrendingUp size={18} className="text-success" />
-      case 'ACIMA DA EXPECTATIVA':
-        return <TrendingUp size={18} className="text-info" />
-      case 'DENTRO DA EXPECTATIVA':
-        return <Minus size={18} className="text-warning" />
-      default:
-        return <Minus size={18} className="text-muted-foreground" />
-    }
-  }
-
+  // Função para obter badge de status
   const getStatusBadge = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
@@ -335,6 +323,21 @@ export default function Dashboard(){
     }
   }
 
+  // Função para obter ícone de status
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'SUPEROU A EXPECTATIVA':
+        return <TrendingUp size={18} className="text-success" />
+      case 'ACIMA DA EXPECTATIVA':
+        return <TrendingUp size={18} className="text-info" />
+      case 'DENTRO DA EXPECTATIVA':
+        return <Minus size={18} className="text-warning" />
+      default:
+        return <Minus size={18} className="text-muted-foreground" />
+    }
+  }
+
+  // Função para obter cor de status
   const getStatusColor = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
