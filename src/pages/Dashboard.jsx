@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
 import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
+import { StatusProfileStats } from '../components/StatusProfileStats.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
@@ -451,11 +452,329 @@ export default function Dashboard(){
           </Card>
         </div>
 
-        {/* Filtros Avançados */}
-        <AdvancedFilters 
-          filters={advancedFilters}
-          onFiltersChange={handleAdvancedFiltersChange}
-        />
+        {/* Abas de Análise */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="overview" className="text-base py-3">
+              <BarChart3 size={18} className="mr-2" />
+              Visão Geral
+            </TabsTrigger>
+            <TabsTrigger value="profiles" className="text-base py-3">
+              <Target size={18} className="mr-2" />
+              Análise de Perfis
+            </TabsTrigger>
+            <TabsTrigger value="candidates" className="text-base py-3">
+              <Users size={18} className="mr-2" />
+              Candidatos
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Aba: Visão Geral */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Filtros Avançados */}
+            <AdvancedFilters 
+              filters={advancedFilters}
+              onFiltersChange={handleAdvancedFiltersChange}
+            />
+
+            
+          </TabsContent>
+
+          {/* Aba: Análise de Perfis */}
+          <TabsContent value="profiles" className="space-y-6">
+            <StatusProfileStats candidates={rows} />
+          </TabsContent>
+
+          {/* Aba: Candidatos */}
+          <TabsContent value="candidates" className="space-y-6">
+            {/* Filtros Avançados */}
+            <AdvancedFilters 
+              filters={advancedFilters}
+              onFiltersChange={handleAdvancedFiltersChange}
+            />
+
+            {/* Controles de busca e exportação */}
+            <Card className="card-modern">
+              <CardHeader className="pb-6">
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                    <Search size={20} className="text-primary" />
+                  </div>
+                  Controles de Busca e Exportação
+                </CardTitle>
+                <CardDescription className="text-lg">
+                  Busque candidatos e exporte dados em diferentes formatos
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="space-y-8">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                  <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                    <div className="relative flex-1 max-w-md">
+                      <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input 
+                        className="input-modern pl-12 h-14 text-base" 
+                        placeholder="Buscar candidatos..." 
+                        value={q} 
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                    <Button 
+                      variant="outline"
+                      onClick={load} 
+                      disabled={loading}
+                      className="btn-secondary-modern h-14 px-8"
+                    >
+                      {loading ? (
+                        <RefreshCw size={18} className="animate-spin mr-2" />
+                      ) : (
+                        <RefreshCw size={18} className="mr-2" />
+                      )}
+                      Atualizar
+                    </Button>
+                  </div>
+                  
+                  {/* Exibição de erro */}
+                  {error && (
+                    <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-xl flex items-center gap-3">
+                      <AlertCircle size={18} />
+                      <span className="font-medium">{error}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex items-center gap-3">
+                      <Label className="text-sm font-medium">Colunas para exportar:</Label>
+                      <select 
+                        multiple 
+                        className="input-modern h-28 min-w-[200px]" 
+                        value={columnsToExport}
+                        onChange={handleColumnsChange}
+                        className="input-modern h-28 min-w-[200px]" 
+                        value={columnsToExport}
+                        onChange={handleColumnsChange}
+                      >
+                        {['id','name','email','score','status','created_at'].map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <Button 
+                      onClick={exportAll}
+                      disabled={filtered.length === 0}
+                      className="btn-primary-modern h-14 px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <Download size={18} className="mr-2" />
+                      Exportar Todos (XLSX)
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Seletor de visualização */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Label className="text-sm font-medium">Visualização:</Label>
+                    <div className="flex rounded-xl border border-border/50 overflow-hidden">
+                      <Button
+                        variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                        size="lg"
+                        onClick={() => setViewMode('cards')}
+                        className="rounded-r-none px-6"
+                      >
+                        <FileText size={18} className="mr-2" />
+                        Cartões
+                      </Button>
+                      <Button
+                        variant={viewMode === 'table' ? 'default' : 'ghost'}
+                        size="lg"
+                        onClick={() => setViewMode('table')}
+                        className="rounded-l-none px-6"
+                      >
+                        <BarChart3 size={18} className="mr-2" />
+                        Tabela
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground font-medium">
+                    {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+                  </div>
+                </div>
+
+                {/* Conteúdo dos candidatos */}
+                {!initialLoad ? (
+                  <div className="text-center py-16">
+                    <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+                      <Zap size={32} className="text-muted-foreground" />
+                    </div>
+                    <div className="text-muted-foreground text-lg font-medium">Clique em "Atualizar" para carregar os dados</div>
+                  </div>
+                ) : loading ? (
+                  <div className="text-center py-16">
+                    <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                      <RefreshCw size={24} className="animate-spin" />
+                      <span className="text-lg font-medium">Carregando candidatos...</span>
+                    </div>
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+                      <Search size={32} className="text-muted-foreground" />
+                    </div>
+                    <div className="text-muted-foreground text-lg font-medium">
+                      {q || Object.values(advancedFilters).some(v => v !== '') 
+                        ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
+                        : 'Nenhum candidato cadastrado'}
+                    </div>
+                  </div>
+                ) : viewMode === 'cards' ? (
+                  // Visualização em cartões com design moderno
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sortedData.map(row => (
+                      <Card 
+                        key={row.id} 
+                        className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                      >
+                        <CardHeader className="pb-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                                {row.name}
+                              </CardTitle>
+                              <CardDescription className="text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
+                                {row.email}
+                              </CardDescription>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {getStatusIcon(row.status)}
+                              {getStatusBadge(row.status)}
+                            </div>
+                          </div>
+                        </CardHeader>
+                        
+                        <CardContent className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-muted-foreground">Pontuação:</span>
+                            <span className={`text-2xl font-bold ${getStatusColor(row.status)}`}>
+                              {row.score}
+                              {row.score}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-muted-foreground">Date:</span>
+                            <span className="text-sm text-muted-foreground">
+                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                            </span>
+                          </div>
+                          
+                          <Separator />
+                          
+                          <div className="flex items-center justify-between">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => setCurrent(row)}
+                              className="btn-secondary-modern flex-1 mr-2"
+                            >
+                              <Eye size={16} className="mr-2" />
+                              Ver Detalhes
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="2sm" 
+                              onClick={() => handleDelete(row.id)}
+                              className="btn-destructive flex-1"
+                            >
+                              <Trash2 size={16} className="mr-2" />
+                              Excluir
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  // Visualização em tabela
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Nome</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Pontuação</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Data</TableHead>
+                          <TableHead>Ações</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {sortedData.map(row => (
+                          <TableRow key={row.id}>
+                            <TableCell className="font-medium">{row.name}</TableCell>
+                            <TableCell>{row.email}</TableCell>
+                            <TableCell className={getStatusColor(row.status)}>
+                              {row.score}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {getStatusIcon(row.status)}
+                                {getStatusBadge(row.status)}
+                                {getStatusIcon(row.status)}
+                                {getStatusBadge(row.status)}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setCurrent(row)}
+                                  className="btn-secondary-modern"
+                                >
+                                  <Eye size={16} className="mr-2" />
+                                  Ver
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleDelete(row.id)}
+                                  className="btn-destructive"
+                                >
+                                  <Trash2 size={16} className="mr-2" />
+                                  Excluir
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Modal de detalhes do candidato */}
+        {current && (
+          <Modal
+            isOpen={!!current}
+            onClose={() => setCurrent(null)}
+            title="Detalhes do Candidato"
+            size="4xl"
+          >
+            <CandidateDetails id={current.id} onClose={() => setCurrent(null)} />
+          </Modal>
+        )}
+      </div>
+    </div>
+  )
+}
 
         {/* Controles de busca e exportação */}
         <Card className="card-modern">

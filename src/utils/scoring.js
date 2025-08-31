@@ -149,8 +149,41 @@ export function classify(score) {
   return 'SUPEROU A EXPECTATIVA'
 }
 
+// Função para obter perfil detalhado do status
+export function getStatusProfile(status) {
+  // Importação dinâmica para evitar dependência circular
+  try {
+    const { getStatusProfile: getProfile } = require('../config/statusProfiles.js')
+    return getProfile(status)
+  } catch (error) {
+    console.warn('Perfis de status não disponíveis:', error.message)
+    return null
+  }
+}
+
+// Função para obter recomendações personalizadas
+export function getPersonalizedRecommendations(score, questionScores = {}) {
+  try {
+    const { getPersonalizedRecommendations: getRecs } = require('../config/statusProfiles.js')
+    return getRecs(score, questionScores)
+  } catch (error) {
+    console.warn('Recomendações personalizadas não disponíveis:', error.message)
+    return []
+  }
+}
+
 // Função para gerar feedback personalizado
 export function generateFeedback(score, questionScores) {
+  try {
+    const profile = getStatusProfile(classify(score))
+    if (profile) {
+      return profile.perfil
+    }
+  } catch (error) {
+    console.warn('Erro ao obter perfil para feedback:', error.message)
+  }
+  
+  // Fallback para feedback básico
   let feedback = ""
   
   if (score <= 67) {
