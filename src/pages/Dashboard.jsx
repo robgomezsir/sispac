@@ -8,6 +8,7 @@ import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
 import { getStatusProfile } from '../config/statusProfiles.js'
+import { classify } from '../utils/scoring.js'
 import { 
   Settings, 
   BarChart3, 
@@ -893,6 +894,19 @@ function CandidateDetails({ id }){
 
   const statusProfile = getStatusProfile(details.status)
   
+  // Debug: verificar se o perfil está sendo obtido corretamente
+  console.log('🔍 [CandidateDetails] Debug perfilamento:', {
+    candidateId: id,
+    candidateStatus: details.status,
+    candidateScore: details.score,
+    statusProfile: statusProfile,
+    hasProfile: !!statusProfile,
+    profileKeys: statusProfile ? Object.keys(statusProfile) : null
+  })
+
+  // Verificação adicional: se não há perfil, tentar obter pelo score
+  const finalStatusProfile = statusProfile || (details.score !== undefined ? getStatusProfile(classify(details.score)) : null)
+
   return (
     <div className="space-y-6">
       {/* Informações Básicas */}
@@ -946,19 +960,19 @@ function CandidateDetails({ id }){
             <div className="text-center">
               <div className="text-6xl font-bold text-success mb-2">{details.score}</div>
               <div className="text-muted-foreground">pontos de 100</div>
-              {statusProfile && (
-                <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/50">
-                  <div className="text-sm font-medium text-foreground mb-1">Faixa de Pontuação</div>
-                  <div className="text-sm text-muted-foreground">{statusProfile.faixa}</div>
-                </div>
-              )}
+                             {finalStatusProfile && (
+                 <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/50">
+                   <div className="text-sm font-medium text-foreground mb-1">Faixa de Pontuação</div>
+                   <div className="text-sm text-muted-foreground">{finalStatusProfile.faixa}</div>
+                 </div>
+               )}
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* Análise de Perfil */}
-      {statusProfile && (
+      {finalStatusProfile && (
         <Card className="card-modern">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -972,32 +986,32 @@ function CandidateDetails({ id }){
             {/* Perfil */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Perfil</h4>
-              <p className="text-muted-foreground leading-relaxed">{statusProfile.perfil}</p>
+              <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.perfil}</p>
             </div>
 
             {/* Comportamento */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Comportamento</h4>
-              <p className="text-muted-foreground leading-relaxed">{statusProfile.comportamento}</p>
+              <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.comportamento}</p>
             </div>
 
             {/* Competências */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Competências</h4>
-              <p className="text-muted-foreground leading-relaxed">{statusProfile.competencias}</p>
+              <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.competencias}</p>
             </div>
 
             {/* Liderança */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Liderança</h4>
-              <p className="text-muted-foreground leading-relaxed">{statusProfile.lideranca}</p>
+              <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.lideranca}</p>
             </div>
 
             {/* Áreas de Desenvolvimento */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Áreas de Desenvolvimento</h4>
               <ul className="space-y-2">
-                {statusProfile.areas_desenvolvimento.map((area, index) => (
+                {finalStatusProfile.areas_desenvolvimento.map((area, index) => (
                   <li key={index} className="flex items-start gap-2 text-muted-foreground">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
                     <span>{area}</span>
@@ -1009,7 +1023,7 @@ function CandidateDetails({ id }){
             {/* Recomendações */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Recomendações</h4>
-              <p className="text-muted-foreground leading-relaxed">{statusProfile.recomendacoes}</p>
+              <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.recomendacoes}</p>
             </div>
           </CardContent>
         </Card>
