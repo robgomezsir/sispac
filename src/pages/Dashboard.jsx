@@ -37,7 +37,9 @@ import {
   AlertCircle,
   XCircle,
   Info,
-  Trash2
+  Trash2,
+  User,
+  Code
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -789,23 +791,26 @@ function CandidateDetails({ id }){
       setError(null)
       
       try {
+        // Buscar dados do candidato da tabela candidates
         const { data, error: fetchError } = await supabase
-          .from('results')
+          .from('candidates')
           .select('*')
-          .eq('candidate_id', id)
+          .eq('id', id)
           .single()
         
         if (!isMounted) return
         
         if (fetchError) {
+          console.error("❌ Erro ao buscar detalhes do candidato:", fetchError)
           setError(fetchError.message)
         } else {
+          console.log("✅ Detalhes do candidato carregados:", data)
           setDetails(data)
         }
       } catch (err) {
         if (!isMounted) return
-        setError('Erro ao buscar detalhes do candidato')
-        console.error("Erro ao buscar detalhes:", err)
+        console.error("❌ Exceção ao buscar detalhes:", err)
+        setError('Erro ao buscar detalhes do candidato: ' + err.message)
       } finally {
         if (isMounted) {
           setLoading(false)
@@ -838,6 +843,9 @@ function CandidateDetails({ id }){
           <XCircle size={32} className="text-destructive" />
         </div>
         <div className="text-destructive font-medium">❌ {error}</div>
+        <div className="text-sm text-muted-foreground mt-2">
+          Erro ao processar dados do candidato
+        </div>
       </div>
     )
   }
@@ -855,21 +863,44 @@ function CandidateDetails({ id }){
   
   return (
     <div className="space-y-6">
+      {/* Informações Básicas */}
       <Card className="card-modern">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-              <Activity size={20} className="text-primary" />
+              <User size={20} className="text-primary" />
             </div>
-            Detalhes da Avaliação
+            Informações do Candidato
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <pre className="whitespace-pre-wrap text-sm bg-muted/30 p-4 rounded-xl border border-border/50">{details.details}</pre>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-muted-foreground">Nome</Label>
+              <div className="text-foreground font-medium">{details.name}</div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+              <div className="text-foreground font-medium">{details.email}</div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-muted-foreground">Data de Criação</Label>
+              <div className="text-foreground font-medium">
+                {new Date(details.created_at).toLocaleDateString('pt-BR')}
+              </div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+              <div className="flex items-center gap-2">
+                {getStatusBadge(details.status)}
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
-      
-      {details.score && (
+
+      {/* Pontuação */}
+      {details.score !== undefined && (
         <Card className="card-modern">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -880,7 +911,57 @@ function CandidateDetails({ id }){
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-success text-center">{details.score}</div>
+            <div className="text-center">
+              <div className="text-6xl font-bold text-success mb-2">{details.score}</div>
+              <div className="text-muted-foreground">pontos de 100</div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Respostas */}
+      {details.answers && (
+        <Card className="card-modern">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
+                <FileText size={20} className="text-info" />
+              </div>
+              Respostas do Questionário
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {Object.entries(details.answers).map(([questionId, answers]) => (
+                <div key={questionId} className="p-4 bg-muted/30 rounded-xl border border-border/50">
+                  <div className="font-medium text-foreground mb-2">
+                    Questão {questionId.replace('question_', '')}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {Array.isArray(answers) ? answers.join(', ') : answers}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Dados Brutos (para debug) */}
+      {process.env.NODE_ENV === 'development' && (
+        <Card className="card-modern">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20">
+                <Code size={20} className="text-warning" />
+              </div>
+              Dados Brutos (Dev)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-64">
+              {JSON.stringify(details, null, 2)}
+            </pre>
           </CardContent>
         </Card>
       )}
