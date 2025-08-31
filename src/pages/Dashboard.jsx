@@ -550,9 +550,6 @@ export default function Dashboard(){
                         className="input-modern h-28 min-w-[200px]" 
                         value={columnsToExport}
                         onChange={handleColumnsChange}
-                        className="input-modern h-28 min-w-[200px]" 
-                        value={columnsToExport}
-                        onChange={handleColumnsChange}
                       >
                         {['id','name','email','score','status','created_at'].map(c => (
                           <option key={c} value={c}>{c}</option>
@@ -657,7 +654,6 @@ export default function Dashboard(){
                             <span className="text-sm font-medium text-muted-foreground">Pontuação:</span>
                             <span className={`text-2xl font-bold ${getStatusColor(row.status)}`}>
                               {row.score}
-                              {row.score}
                             </span>
                           </div>
                           
@@ -683,7 +679,7 @@ export default function Dashboard(){
                             <Button 
                               variant="outline" 
                               size="2sm" 
-                              onClick={() => handleDelete(row.id)}
+                              onClick={() => handleDeleteCandidate(row)}
                               className="btn-destructive flex-1"
                             >
                               <Trash2 size={16} className="mr-2" />
@@ -720,8 +716,6 @@ export default function Dashboard(){
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(row.status)}
                                 {getStatusBadge(row.status)}
-                                {getStatusIcon(row.status)}
-                                {getStatusBadge(row.status)}
                               </div>
                             </TableCell>
                             <TableCell>
@@ -741,7 +735,7 @@ export default function Dashboard(){
                                 <Button 
                                   variant="outline" 
                                   size="sm"
-                                  onClick={() => handleDelete(row.id)}
+                                  onClick={() => handleDeleteCandidate(row)}
                                   className="btn-destructive"
                                 >
                                   <Trash2 size={16} className="mr-2" />
@@ -771,321 +765,6 @@ export default function Dashboard(){
             <CandidateDetails id={current.id} onClose={() => setCurrent(null)} />
           </Modal>
         )}
-      </div>
-    </div>
-  )
-}
-          <CardHeader className="pb-6">
-            <CardTitle className="flex items-center gap-3 text-2xl">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-                <Search size={20} className="text-primary" />
-              </div>
-              Controles de Busca e Exportação
-            </CardTitle>
-            <CardDescription className="text-lg">
-              Busque candidatos e exporte dados em diferentes formatos
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="space-y-8">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-              <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                <div className="relative flex-1 max-w-md">
-                  <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                  <Input 
-                    className="input-modern pl-12 h-14 text-base" 
-                    placeholder="Buscar candidatos..." 
-                    value={q} 
-                    onChange={handleSearchChange}
-                  />
-                </div>
-                <Button 
-                  variant="outline"
-                  onClick={load} 
-                  disabled={loading}
-                  className="btn-secondary-modern h-14 px-8"
-                >
-                  {loading ? (
-                    <RefreshCw size={18} className="animate-spin mr-2" />
-                  ) : (
-                    <RefreshCw size={18} className="mr-2" />
-                  )}
-                  Atualizar
-                </Button>
-              </div>
-              
-              {/* Exibição de erro */}
-              {error && (
-                <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-xl flex items-center gap-3">
-                  <AlertCircle size={18} />
-                  <span className="font-medium">{error}</span>
-                </div>
-              )}
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex items-center gap-3">
-                  <Label className="text-sm font-medium">Colunas para exportar:</Label>
-                  <select 
-                    multiple 
-                    className="input-modern h-28 min-w-[200px]" 
-                    value={columnsToExport}
-                    onChange={handleColumnsChange}
-                  >
-                    {['id','name','email','score','status','created_at'].map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <Button 
-                  onClick={exportAll}
-                  disabled={filtered.length === 0}
-                  className="btn-primary-modern h-14 px-8 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <Download size={18} className="mr-2" />
-                  Exportar Todos (XLSX)
-                </Button>
-              </div>
-            </div>
-
-            {/* Seletor de visualização */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Label className="text-sm font-medium">Visualização:</Label>
-                <div className="flex rounded-xl border border-border/50 overflow-hidden">
-                  <Button
-                    variant={viewMode === 'cards' ? 'default' : 'ghost'}
-                    size="lg"
-                    onClick={() => setViewMode('cards')}
-                    className="rounded-r-none px-6"
-                  >
-                    <FileText size={18} className="mr-2" />
-                    Cartões
-                  </Button>
-                  <Button
-                    variant={viewMode === 'table' ? 'default' : 'ghost'}
-                    size="lg"
-                    onClick={() => setViewMode('table')}
-                    className="rounded-l-none px-6"
-                  >
-                    <BarChart3 size={18} className="mr-2" />
-                    Tabela
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="text-sm text-muted-foreground font-medium">
-                {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
-              </div>
-            </div>
-
-            {/* Conteúdo dos candidatos */}
-            {!initialLoad ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
-                  <Zap size={32} className="text-muted-foreground" />
-                </div>
-                <div className="text-muted-foreground text-lg font-medium">Clique em "Atualizar" para carregar os dados</div>
-              </div>
-            ) : loading ? (
-              <div className="text-center py-16">
-                <div className="flex items-center justify-center gap-3 text-muted-foreground">
-                  <RefreshCw size={24} className="animate-spin" />
-                  <span className="text-lg font-medium">Carregando candidatos...</span>
-                </div>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
-                  <Search size={32} className="text-muted-foreground" />
-                </div>
-                <div className="text-muted-foreground text-lg font-medium">
-                  {q || Object.values(advancedFilters).some(v => v !== '') 
-                    ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
-                    : 'Nenhum candidato cadastrado'}
-                </div>
-              </div>
-            ) : viewMode === 'cards' ? (
-              // Visualização em cartões com design moderno
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sortedData.map(row => (
-                  <Card 
-                    key={row.id} 
-                    className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
-                  >
-                    <CardHeader className="pb-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-xl mb-2 font-bold">{row.name}</CardTitle>
-                          <CardDescription className="mb-3 text-muted-foreground">{row.email}</CardDescription>
-                          <div className="flex items-center gap-2 mb-3">
-                            {getStatusBadge(row.status)}
-                            <Badge variant="outline" className="text-xs bg-muted/30">
-                              <Calendar size={12} className="mr-1" />
-                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-4xl font-bold text-primary group-hover:scale-110 transition-transform duration-300">
-                            {row.score}
-                          </div>
-                          <div className="text-xs text-muted-foreground/70">Pontuação</div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    
-                    <CardFooter className="pt-0">
-                      <div className="flex gap-3 w-full">
-                        <Button 
-                          variant="outline" 
-                          className="flex-1 btn-secondary-modern" 
-                          onClick={() => openModal(row)}
-                        >
-                          <Eye size={18} className="mr-2" />
-                          Detalhar
-                        </Button>
-                        <Button 
-                          className="flex-1 btn-primary-modern shadow-lg hover:shadow-xl transition-all duration-300" 
-                          onClick={() => exportOne(row)}
-                        >
-                          <Download size={18} className="mr-2" />
-                          Download
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="btn-destructive px-3" 
-                          onClick={() => handleDeleteCandidate(row)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              // Visualização em tabela com design moderno
-              <div className="rounded-2xl border border-border/50 overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/30">
-                      <TableHead 
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
-                        onClick={() => handleSort('name')}
-                      >
-                        <div className="flex items-center gap-2 font-semibold">
-                          Nome
-                          <ArrowUpDown size={18} className="text-muted-foreground" />
-                        </div>
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
-                        onClick={() => handleSort('email')}
-                      >
-                        <div className="flex items-center gap-2 font-semibold">
-                          Email
-                          <ArrowUpDown size={18} className="text-muted-foreground" />
-                        </div>
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
-                        onClick={() => handleSort('score')}
-                      >
-                        <div className="flex items-center gap-2 font-semibold">
-                          Pontuação
-                          <ArrowUpDown size={18} className="text-muted-foreground" />
-                        </div>
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
-                        onClick={() => handleSort('status')}
-                      >
-                        <div className="flex items-center gap-2 font-semibold">
-                          Status
-                          <ArrowUpDown size={18} className="text-muted-foreground" />
-                        </div>
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
-                        onClick={() => handleSort('created_at')}
-                      >
-                        <div className="flex items-center gap-2 font-semibold">
-                          Data
-                          <ArrowUpDown size={18} className="text-muted-foreground" />
-                        </div>
-                      </TableHead>
-                      <TableHead className="text-right h-14 px-6 font-semibold">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedData.map((row) => (
-                      <TableRow key={row.id} className="hover:bg-muted/30 transition-colors duration-200">
-                        <TableCell className="font-semibold px-6 py-4">{row.name}</TableCell>
-                        <TableCell className="text-muted-foreground px-6 py-4">{row.email}</TableCell>
-                        <TableCell className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-2xl text-primary">{row.score}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            {getStatusIcon(row.status)}
-                            <span className={`font-medium ${getStatusColor(row.status)}`}>
-                              {row.status}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <Clock size={16} />
-                            {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right px-6 py-4">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-xl">
-                                <MoreHorizontal size={18} />
-                                <span className="sr-only">Abrir menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem onClick={() => openModal(row)}>
-                                <Eye size={18} className="mr-2" />
-                                Ver detalhes
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => exportOne(row)}>
-                                <Download size={18} className="mr-2" />
-                                Exportar
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem 
-                                onClick={() => handleDeleteCandidate(row)}
-                                className="text-destructive focus:text-destructive focus:bg-destructive/10"
-                              >
-                                <Trash2 size={18} className="mr-2" />
-                                Remover
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Modal 
-          open={!!current} 
-          onClose={closeModal} 
-          title="Detalhamento do Candidato"
-        >
-          {current ? <CandidateDetails id={current.id} /> : null}
-        </Modal>
       </div>
     </div>
   )
