@@ -34,7 +34,11 @@ export function downloadXlsx(filename, data, columns = null) {
             // Formatação especial para perfil comportamental
             if (col === 'behavioral_profile' && typeof value === 'string') {
               // Garantir que quebras de linha sejam preservadas no Excel
+              // Usar quebras de linha do Windows para melhor compatibilidade
               value = value.replace(/\n/g, '\r\n')
+              
+              // Adicionar espaçamento extra para melhor legibilidade
+              value = value.replace(/([A-ZÇÃÂÁÀÉÊÍÓÔÕÚÛ]+:)/g, '\r\n$1')
             }
             
             filteredRow[friendlyName] = value
