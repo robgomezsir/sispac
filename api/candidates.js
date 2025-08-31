@@ -21,10 +21,20 @@ function getBehavioralProfile(status) {
 
 export default async function handler(req, res){
   try{
+    console.log('🔍 [candidates] Iniciando requisição')
+    console.log('🔍 [candidates] Headers:', req.headers)
+    
     // Validar autenticação e permissões
-    await assertAuth(req)
+    try {
+      await assertAuth(req)
+      console.log('✅ [candidates] Autenticação bem-sucedida')
+    } catch (authError) {
+      console.error('❌ [candidates] Erro de autenticação:', authError)
+      return fail(res, authError, authError.status || 401)
+    }
     
     const supabase = getSupabaseAdmin()
+    console.log('✅ [candidates] Cliente Supabase criado')
     
     const { data, error } = await supabase
       .from('candidates')
@@ -35,6 +45,8 @@ export default async function handler(req, res){
       console.error('❌ Erro ao buscar candidatos:', error)
       return fail(res, { message: 'Erro ao buscar candidatos: ' + error.message }, 500)
     }
+    
+    console.log('✅ [candidates] Dados do Supabase obtidos:', data?.length || 0, 'registros')
     
     // Adicionar perfil comportamental para cada candidato
     const candidatesWithProfile = data?.map(candidate => {
