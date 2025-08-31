@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { computeScore, classify, generateFeedback, getQuestionDetails } from '../utils/scoring'
 import { questions } from '../data/questions'
 import { supabase, supabaseAdmin } from '../lib/supabase'
@@ -37,6 +37,11 @@ export default function Formulario(){
   const [finalStatus, setFinalStatus] = useState(null)
   const [questionDetails, setQuestionDetails] = useState(null)
   const [feedback, setFeedback] = useState(null)
+
+  // Auto-scroll para o topo quando mudar de pergunta
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
 
   // Função para alternar resposta
   const toggleAnswer = useCallback((questionId, answer) => {
