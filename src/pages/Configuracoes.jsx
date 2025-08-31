@@ -23,19 +23,25 @@ import {
 export default function Configuracoes(){
   const { user, role } = useAuth()
   const navigate = useNavigate()
+  
+  // Estados para usuários
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [roleSelect, setRoleSelect] = useState('rh')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState('info')
   
   // Estados para candidatos de teste
   const [testCandidateName, setTestCandidateName] = useState('')
   const [testCandidateEmail, setTestCandidateEmail] = useState('')
   const [testCandidateScore, setTestCandidateScore] = useState('')
   const [testCandidateStatus, setTestCandidateStatus] = useState('DENTRO DA EXPECTATIVA')
+  
+  // Estados para remoção de candidatos de teste
   const [removeTestCandidateEmail, setRemoveTestCandidateEmail] = useState('')
+  
+  // Estados gerais
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('info')
 
   // Verificar se o usuário tem permissão
   useEffect(() => {
@@ -55,299 +61,366 @@ export default function Configuracoes(){
     }
   }, [message])
 
-  async function callApi(route, body){
+  // Função para exibir mensagens
+  const showMessage = (msg, type = 'info') => {
+    setMessage(msg)
+    setMessageType(type)
+  }
+
+  // Função para adicionar usuário
+  const handleAddUser = async () => {
+    if (!email.trim() || !name.trim()) {
+      showMessage('Por favor, preencha todos os campos obrigatórios.', 'error')
+      return
+    }
+    
+    if (!email.includes('@')) {
+      showMessage('Por favor, insira um email válido.', 'error')
+      return
+    }
+    
     setLoading(true)
-    setMessage(null)
     
     try {
-      // Obter token de sessão atual
-      const { data: { session } } = await supabase.auth.getSession()
+      // Verificar se o usuário já existe
+      const { data: existingUser, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email.trim().toLowerCase())
+        .single()
       
-      if (!session?.access_token) {
-        throw new Error('Sessão expirada. Faça login novamente.')
+      if (existingUser) {
+        showMessage('Usuário com este email já existe.', 'error')
+        return
       }
       
-      const res = await fetch(`/api/${route}`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(body || {})
-      })
+      // Criar perfil do usuário diretamente (sem criar no Auth por enquanto)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{
+          email: email.trim().toLowerCase(),
+          name: name.trim(),
+          role: roleSelect,
+          created_at: new Date().toISOString()
+        }])
       
-      const data = await res.json()
-      
-      if (!res.ok) {
-        throw new Error(data.error || 'Erro na operação')
+      if (profileError) {
+        throw new Error(`Erro ao criar perfil: ${profileError.message}`)
       }
       
-      setMessage(data.message || 'Operação realizada com sucesso!')
-      setMessageType('success')
+      showMessage(`Usuário "${name.trim()}" criado com sucesso! (Perfil criado, login será configurado posteriormente)`, 'success')
       
-      // Limpar campos após sucesso
-      if (route === 'addUser') {
-        setEmail('')
-        setName('')
-        setRoleSelect('rh')
-      }
+      // Limpar campos
+      setEmail('')
+      setName('')
+      setRoleSelect('rh')
       
-      // Retornar dados para uso externo
-      return { success: true, data, message: data.message }
-      
-    } catch (e) {
-      setMessage('Erro: ' + e.message)
-      setMessageType('error')
+    } catch (error) {
+      console.error('Erro ao adicionar usuário:', error)
+      showMessage(`Erro ao adicionar usuário: ${error.message}`, 'error')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleAddUser = () => {
-    if (!email.trim() || !name.trim()) {
-      setMessage('Por favor, preencha todos os campos obrigatórios.')
-      setMessageType('error')
-      return
-    }
-    
-    if (!email.includes('@')) {
-      setMessage('Por favor, insira um email válido.')
-      setMessageType('error')
-      return
-    }
-    
-    callApi('addUser', { name: name.trim(), email: email.trim().toLowerCase(), role: roleSelect })
-  }
-
-  const handleDeleteUser = () => {
+  // Função para remover usuário
+  const handleDeleteUser = async () => {
     if (!email.trim()) {
-      setMessage('Por favor, insira o email do usuário a ser removido.')
-      setMessageType('error')
+      showMessage('Por favor, insira o email do usuário a ser removido.', 'error')
       return
     }
     
-    if (confirm(`Tem certeza que deseja remover o usuário ${email}?`)) {
-      callApi('deleteUser', { email: email.trim().toLowerCase() })
+    if (!confirm(`Tem certeza que deseja remover o usuário ${email}?`)) {
+      return
     }
-  }
-
-  const handleBackup = () => {
-    callApi('backup', {})
-  }
-
-  const handlePurge = () => {
-    if (confirm('⚠️ ATENÇÃO: Esta operação irá APAGAR TODOS os dados do sistema. Esta ação não pode ser desfeita. Tem certeza?')) {
-      if (confirm('Digite "CONFIRMAR" para prosseguir:')) {
-        callApi('purge', {})
+    
+    setLoading(true)
+    
+    try {
+      // Buscar usuário
+      const { data: userProfile, error: searchError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .eq('email', email.trim().toLowerCase())
+        .single()
+      
+      if (searchError || !userProfile) {
+        showMessage('Usuário não encontrado.', 'error')
+        return
       }
+      
+      // Remover perfil
+      const { error: deleteError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userProfile.id)
+      
+      if (deleteError) {
+        throw new Error(`Erro ao remover perfil: ${deleteError.message}`)
+      }
+      
+      showMessage(`Usuário "${userProfile.name}" removido com sucesso!`, 'success')
+      setEmail('')
+      
+    } catch (error) {
+      console.error('Erro ao remover usuário:', error)
+      showMessage(`Erro ao remover usuário: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleCheckSupabaseConfig = () => {
-    callApi('checkSupabaseConfig', {})
-  }
-
-  // Funções para gerenciar candidatos de teste
-
-  const handleAddTestCandidate = () => {
+  // Função para adicionar candidato de teste
+  const handleAddTestCandidate = async () => {
     if (!testCandidateName.trim() || !testCandidateEmail.trim() || !testCandidateScore.trim()) {
-      setMessage('Por favor, preencha todos os campos obrigatórios.')
-      setMessageType('error')
+      showMessage('Por favor, preencha todos os campos obrigatórios.', 'error')
       return
     }
     
     if (!testCandidateEmail.includes('@')) {
-      setMessage('Por favor, insira um email válido.')
-      setMessageType('error')
+      showMessage('Por favor, insira um email válido.', 'error')
       return
     }
     
     const score = parseInt(testCandidateScore)
     if (isNaN(score) || score < 0 || score > 100) {
-      setMessage('A pontuação deve ser um número entre 0 e 100.')
-      setMessageType('error')
+      showMessage('A pontuação deve ser um número entre 0 e 100.', 'error')
       return
     }
     
-    // Criar dados simulados de candidato de teste
-    const testCandidateData = {
-      name: testCandidateName.trim(),
-      email: testCandidateEmail.trim().toLowerCase(),
-      score: score,
-      status: testCandidateStatus,
-      answers: {
-        // Simular respostas básicas para teste
-        question_1: ['opcao_1'],
-        question_2: ['opcao_2'],
-        question_3: ['opcao_1', 'opcao_3'],
-        question_4: ['opcao_2'],
-        question_5: ['opcao_1']
-      },
-      created_at: new Date().toISOString()
-    }
-    
-    // Inserir diretamente no Supabase
-    addTestCandidateToDatabase(testCandidateData)
-  }
-
-  const handleRemoveTestCandidate = () => {
-    if (!removeTestCandidateEmail.trim()) {
-      setMessage('Por favor, insira o email do candidato de teste a ser removido.')
-      setMessageType('error')
-      return
-    }
-    
-    if (confirm(`Tem certeza que deseja remover o candidato de teste ${removeTestCandidateEmail}?`)) {
-      removeTestCandidateFromDatabase('email', removeTestCandidateEmail.trim().toLowerCase(), '', '')
-    }
-  }
-
-  const addTestCandidateToDatabase = async (candidateData) => {
     setLoading(true)
-    setMessage(null)
     
     try {
-      const { data, error } = await supabase
+      // Verificar se o candidato já existe
+      const { data: existingCandidate, error: checkError } = await supabase
         .from('candidates')
-        .insert([candidateData])
-        .select()
+        .select('id')
+        .eq('email', testCandidateEmail.trim().toLowerCase())
+        .single()
       
-      if (error) {
-        throw new Error(error.message)
+      if (existingCandidate) {
+        showMessage('Candidato com este email já existe.', 'error')
+        return
       }
       
-      setMessage(`Candidato de teste "${candidateData.name}" adicionado com sucesso!`)
-      setMessageType('success')
+      // Criar dados do candidato de teste
+      const testCandidateData = {
+        name: testCandidateName.trim(),
+        email: testCandidateEmail.trim().toLowerCase(),
+        score: score,
+        status: testCandidateStatus,
+        answers: {
+          question_1: ['opcao_1'],
+          question_2: ['opcao_2'],
+          question_3: ['opcao_1', 'opcao_3'],
+          question_4: ['opcao_2'],
+          question_5: ['opcao_1']
+        },
+        created_at: new Date().toISOString()
+      }
       
-      // Limpar campos após sucesso
+      // Inserir no banco
+      const { error: insertError } = await supabase
+        .from('candidates')
+        .insert([testCandidateData])
+      
+      if (insertError) {
+        throw new Error(`Erro ao inserir candidato: ${insertError.message}`)
+      }
+      
+      showMessage(`Candidato de teste "${testCandidateName.trim()}" adicionado com sucesso!`, 'success')
+      
+      // Limpar campos
       setTestCandidateName('')
       setTestCandidateEmail('')
       setTestCandidateScore('')
       setTestCandidateStatus('DENTRO DA EXPECTATIVA')
       
-    } catch (e) {
-      setMessage('Erro ao adicionar candidato de teste: ' + e.message)
-      setMessageType('error')
+    } catch (error) {
+      console.error('Erro ao adicionar candidato de teste:', error)
+      showMessage(`Erro ao adicionar candidato de teste: ${error.message}`, 'error')
     } finally {
       setLoading(false)
     }
   }
 
-  const removeTestCandidateFromDatabase = async (method, email, id, name) => {
+  // Função para remover candidato de teste
+  const handleRemoveTestCandidate = async () => {
+    if (!removeTestCandidateEmail.trim()) {
+      showMessage('Por favor, insira o email do candidato de teste a ser removido.', 'error')
+      return
+    }
+    
+    if (!confirm(`Tem certeza que deseja remover o candidato de teste ${removeTestCandidateEmail}?`)) {
+      return
+    }
+    
     setLoading(true)
-    setMessage(null)
     
     try {
-      // Validar parâmetros baseados no método
-      if (method === 'email' && (!email || !email.trim())) {
-        throw new Error('Email é obrigatório')
+      // Buscar candidato
+      const { data: candidate, error: searchError } = await supabase
+        .from('candidates')
+        .select('id, name')
+        .eq('email', removeTestCandidateEmail.trim().toLowerCase())
+        .single()
+      
+      if (searchError || !candidate) {
+        showMessage('Candidato não encontrado.', 'error')
+        return
       }
       
-      if (method === 'id' && !id) {
-        throw new Error('ID é obrigatório')
+      // Remover candidato
+      const { error: deleteError } = await supabase
+        .from('candidates')
+        .delete()
+        .eq('id', candidate.id)
+      
+      if (deleteError) {
+        throw new Error(`Erro ao remover candidato: ${deleteError.message}`)
       }
       
-      if (method === 'name' && (!name || !name.trim())) {
-        throw new Error('Nome é obrigatório')
-      }
-      
-      // Validar formato do email se for o método selecionado
-      if (method === 'email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(email.trim())) {
-          throw new Error('Formato de email inválido')
-        }
-      }
-      
-      // Obter token de sessão atual
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session?.access_token) {
-        throw new Error('Sessão expirada. Faça login novamente.')
-      }
-      
-      console.log('🔍 [Configurações] Tentando remover candidato por', method, ':', email || id || name)
-      
-      // Preparar dados para a API baseado no método
-      const requestBody = {}
-      if (method === 'email') {
-        requestBody.email = email.trim().toLowerCase()
-      } else if (method === 'id') {
-        requestBody.id = id
-      } else if (method === 'name') {
-        requestBody.name = name.trim()
-      }
-      
-      // Chamar a API de remoção
-      const res = await fetch('/api/deleteCandidate', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(requestBody)
-      })
-      
-      console.log('📡 [Configurações] Resposta da API:', res.status, res.statusText)
-      
-      // Verificar se a resposta tem conteúdo antes de tentar fazer parse JSON
-      const responseText = await res.text()
-      
-      console.log('📄 [Configurações] Conteúdo da resposta:', responseText)
-      
-      if (!responseText) {
-        throw new Error('Resposta vazia da API - verifique se o servidor está funcionando')
-      }
-      
-      let data
+      // Tentar remover da tabela results se existir
       try {
-        data = JSON.parse(responseText)
-      } catch (parseError) {
-        console.error('❌ [Configurações] Erro ao fazer parse da resposta:', parseError)
-        console.error('❌ [Configurações] Resposta recebida:', responseText)
-        throw new Error('Resposta inválida da API - formato JSON incorreto')
+        await supabase
+          .from('results')
+          .delete()
+          .eq('candidate_id', candidate.id)
+      } catch (resultsError) {
+        console.log('Tabela results não existe ou erro ao acessar:', resultsError.message)
       }
       
-      if (!res.ok) {
-        const errorMessage = data.error || data.message || `Erro HTTP ${res.status}`
-        throw new Error(errorMessage)
-      }
-      
-      // Verificar se a resposta indica sucesso
-      if (!data.success && !data.message) {
-        throw new Error('Resposta da API não indica sucesso')
-      }
-      
-      // Sucesso
-      const successMessage = data.message || 'Candidato de teste removido com sucesso!'
-      setMessage(successMessage)
-      setMessageType('success')
-      
-      // Limpar campos após sucesso
+      showMessage(`Candidato de teste "${candidate.name}" removido com sucesso!`, 'success')
       setRemoveTestCandidateEmail('')
-      setRemoveTestCandidateId('')
-      setRemoveTestCandidateName('')
-      setRemoveMethod('email') // Resetar método de remoção
       
-      console.log('✅ [Configurações] Candidato de teste removido com sucesso:', data)
+    } catch (error) {
+      console.error('Erro ao remover candidato de teste:', error)
+      showMessage(`Erro ao remover candidato de teste: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Função para fazer backup
+  const handleBackup = async () => {
+    setLoading(true)
+    
+    try {
+      // Buscar todos os dados
+      const { data: candidates, error: candidatesError } = await supabase
+        .from('candidates')
+        .select('*')
       
-    } catch (e) {
-      console.error('❌ [Configurações] Erro ao remover candidato de teste:', e)
-      
-      let errorMessage = 'Erro ao remover candidato de teste'
-      
-      if (e.name === 'TypeError' && e.message.includes('fetch')) {
-        errorMessage += ': Problema de conexão com o servidor'
-      } else if (e.message.includes('JSON')) {
-        errorMessage += ': Problema na resposta do servidor'
-      } else if (e.message.includes('sessão')) {
-        errorMessage += ': Sessão expirada - faça login novamente'
-      } else {
-        errorMessage += ': ' + e.message
+      if (candidatesError) {
+        throw new Error(`Erro ao buscar candidatos: ${candidatesError.message}`)
       }
       
-      setMessage(errorMessage)
-      setMessageType('error')
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+      
+      if (profilesError) {
+        console.log('Erro ao buscar perfis:', profilesError.message)
+      }
+      
+      // Criar objeto de backup
+      const backupData = {
+        timestamp: new Date().toISOString(),
+        candidates: candidates || [],
+        profiles: profiles || [],
+        totalRecords: (candidates?.length || 0) + (profiles?.length || 0)
+      }
+      
+      // Criar arquivo de download
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `backup_sispac_${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      
+      showMessage(`Backup realizado com sucesso! ${backupData.totalRecords} registros exportados.`, 'success')
+      
+    } catch (error) {
+      console.error('Erro ao fazer backup:', error)
+      showMessage(`Erro ao fazer backup: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Função para limpar dados
+  const handlePurge = async () => {
+    if (!confirm('⚠️ ATENÇÃO: Esta operação irá APAGAR TODOS os dados do sistema. Esta ação não pode ser desfeita. Tem certeza?')) {
+      return
+    }
+    
+    if (!confirm('Digite "CONFIRMAR" para prosseguir:')) {
+      return
+    }
+    
+    setLoading(true)
+    
+    try {
+      // Remover todos os candidatos
+      const { error: candidatesError } = await supabase
+        .from('candidates')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000') // Deletar todos
+      
+      if (candidatesError) {
+        throw new Error(`Erro ao limpar candidatos: ${candidatesError.message}`)
+      }
+      
+      // Tentar limpar tabela results se existir
+      try {
+        await supabase
+          .from('results')
+          .delete()
+          .neq('id', '00000000-0000-0000-0000-000000000000')
+      } catch (resultsError) {
+        console.log('Tabela results não existe ou erro ao acessar:', resultsError.message)
+      }
+      
+      showMessage('Todos os dados foram removidos com sucesso!', 'success')
+      
+    } catch (error) {
+      console.error('Erro ao limpar dados:', error)
+      showMessage(`Erro ao limpar dados: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Função para verificar configuração do Supabase
+  const handleCheckSupabaseConfig = async () => {
+    setLoading(true)
+    
+    try {
+      // Testar conexão com o banco
+      const { data, error } = await supabase
+        .from('candidates')
+        .select('count')
+        .limit(1)
+      
+      if (error) {
+        throw new Error(`Erro de conexão: ${error.message}`)
+      }
+      
+      // Verificar variáveis de ambiente
+      const config = {
+        supabaseUrl: process.env.REACT_APP_SUPABASE_URL || 'Configurada',
+        supabaseAnonKey: process.env.REACT_APP_SUPABASE_ANON_KEY ? 'Configurada' : 'Não configurada'
+      }
+      
+      showMessage(`Configuração do Supabase: OK! URL: ${config.supabaseUrl}, Chave: ${config.supabaseAnonKey}`, 'success')
+      
+    } catch (error) {
+      console.error('Erro ao verificar configuração:', error)
+      showMessage(`Erro na configuração: ${error.message}`, 'error')
     } finally {
       setLoading(false)
     }
