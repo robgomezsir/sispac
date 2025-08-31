@@ -16,7 +16,6 @@ import {
   Input,
   Label
 } from '../components/ui'
-import AuthErrorDisplay from '../components/AuthErrorDisplay.jsx'
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()
@@ -102,10 +101,10 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
-      <div className="w-full max-w-md px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-4">
+      <div className="w-full max-w-md">
         {/* Título Principal */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
             SisPAC
           </h1>
@@ -114,36 +113,24 @@ export default function Home(){
           </p>
         </div>
 
-        {/* Exibir erros de autenticação globais */}
-        {authError && (
-          <div className="mb-6">
-            <AuthErrorDisplay 
-              error={authError}
-              onClear={clearError}
-              onRetry={retryConnection}
-              isLoading={isLoading}
-            />
-          </div>
-        )}
-
         {/* Formulário de Login */}
         <Card className="shadow-2xl border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardHeader className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <LogIn size={32} className="text-primary" />
+          <CardHeader className="text-center space-y-3 pb-4">
+            <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+              <LogIn size={28} className="text-primary" />
             </div>
-            <div className="space-y-2">
-              <CardTitle className="text-2xl">Acesso ao Sistema</CardTitle>
-              <CardDescription className="text-base">
+            <div className="space-y-1">
+              <CardTitle className="text-xl">Acesso ao Sistema</CardTitle>
+              <CardDescription className="text-sm">
                 Faça login para acessar o painel administrativo
               </CardDescription>
             </div>
           </CardHeader>
           
-          <CardContent>
-            <form onSubmit={onSubmit} className="space-y-6">
+          <CardContent className="pb-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm">Email</Label>
                 <Input 
                   id="email"
                   type="email"
@@ -151,12 +138,12 @@ export default function Home(){
                   onChange={e => setEmail(e.target.value)} 
                   required
                   placeholder="seu@email.com"
-                  className="h-12 text-base"
+                  className="h-11 text-sm"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password" className="text-sm">Senha</Label>
                 <Input 
                   id="password"
                   type="password" 
@@ -164,23 +151,23 @@ export default function Home(){
                   onChange={e => setPassword(e.target.value)} 
                   required
                   placeholder="••••••••"
-                  className="h-12 text-base"
+                  className="h-11 text-sm"
                 />
               </div>
               
               <Button 
                 type="submit"
-                className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300" 
+                className="w-full h-11 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mt-2" 
                 disabled={loading}
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                     Entrando...
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <LogIn size={18} />
+                    <LogIn size={16} />
                     Entrar no Sistema
                   </div>
                 )}
@@ -188,10 +175,48 @@ export default function Home(){
             </form>
           </CardContent>
 
+          {/* Exibir erros de autenticação de forma discreta */}
+          {authError && (
+            <CardFooter className="pt-0 pb-4">
+              <div className="w-full p-3 bg-destructive/5 border border-destructive/20 text-destructive rounded-lg text-sm">
+                <div className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="flex-1">{authError}</span>
+                  <button
+                    onClick={clearError}
+                    className="text-destructive/70 hover:text-destructive transition-colors"
+                    title="Fechar"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                {retryConnection && (
+                  <button
+                    onClick={retryConnection}
+                    disabled={isLoading}
+                    className="mt-2 text-xs text-destructive/80 hover:text-destructive underline transition-colors"
+                  >
+                    Tentar novamente
+                  </button>
+                )}
+              </div>
+            </CardFooter>
+          )}
+
+          {/* Exibir erros de formulário de forma discreta */}
           {err && (
-            <CardFooter className="pt-0">
-              <div className="w-full p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg">
-                ❌ {err}
+            <CardFooter className="pt-0 pb-4">
+              <div className="w-full p-3 bg-destructive/5 border border-destructive/20 text-destructive rounded-lg text-sm">
+                <div className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{err}</span>
+                </div>
               </div>
             </CardFooter>
           )}
