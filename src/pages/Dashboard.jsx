@@ -72,6 +72,7 @@ export default function Dashboard(){
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(false)
   const [initialLoad, setInitialLoad] = useState(false)
+  const [error, setError] = useState(null)
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
@@ -170,14 +171,20 @@ export default function Dashboard(){
         .select('*')
         .order('created_at', { ascending: false })
       
-      if (!error) {
+      if (error) {
+        console.error("❌ [Dashboard] Erro ao carregar dados:", error)
+        setError(`Erro ao carregar dados: ${error.message}`)
+        setRows([])
+      } else {
+        console.log("✅ [Dashboard] Dados carregados com sucesso:", data?.length || 0, "registros")
         setRows(data || [])
         setInitialLoad(true)
-      } else {
-        console.error("❌ [Dashboard] Erro ao carregar dados:", error)
+        setError(null) // Limpar erro anterior
       }
     } catch (err) {
       console.error("❌ [Dashboard] Exceção ao carregar dados:", err)
+      setError(`Erro inesperado: ${err.message}`)
+      setRows([])
     } finally {
       setLoading(false)
     }
@@ -417,6 +424,14 @@ export default function Dashboard(){
                 Atualizar
               </Button>
             </div>
+            
+            {/* Exibição de erro */}
+            {error && (
+              <div className="w-full p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg flex items-center gap-2">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
             
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex items-center gap-2">
