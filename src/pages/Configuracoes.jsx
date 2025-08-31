@@ -599,7 +599,8 @@ export default function Configuracoes(){
     try {
       console.log('🔄 [Configurações] Iniciando migração de candidatos para resultados...')
 
-      const response = await migrateCandidatesToResults()
+      // FUNÇÃO DE MIGRAÇÃO IMPLEMENTADA DIRETAMENTE NO COMPONENTE
+      const response = await migrateCandidatesToResultsDirect()
 
       if (!response.success) {
         throw new Error(response.message || 'Erro na migração')
@@ -613,6 +614,150 @@ export default function Configuracoes(){
       showMessage(`Erro na migração: ${error.message}`, 'error')
     } finally {
       setLoading(false)
+    }
+  }
+
+  // FUNÇÃO DE MIGRAÇÃO IMPLEMENTADA DIRETAMENTE NO COMPONENTE
+  const migrateCandidatesToResultsDirect = async () => {
+    console.log('🔄 [Migration] Iniciando migração direta via frontend...')
+    
+    try {
+      // 1. Verificar se o usuário está autenticado
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Usuário não autenticado')
+      }
+      
+      console.log('✅ [Migration] Usuário autenticado:', user.email)
+      
+      // 2. Buscar todos os candidatos existentes
+      console.log('🔄 [Migration] Buscando candidatos...')
+      const { data: candidates, error: candidatesError } = await supabase
+        .from('candidates')
+        .select('*')
+        .order('created_at', { ascending: true })
+      
+      if (candidatesError) {
+        console.error('❌ [Migration] Erro ao buscar candidatos:', candidatesError)
+        throw new Error(`Erro ao buscar candidatos: ${candidatesError.message}`)
+      }
+      
+      if (!candidates || candidates.length === 0) {
+        console.log('ℹ️ [Migration] Nenhum candidato encontrado')
+        return {
+          success: true,
+          message: 'Nenhum candidato encontrado para migração',
+          migrated: 0,
+          total: 0
+        }
+      }
+      
+      console.log(`📊 [Migration] Encontrados ${candidates.length} candidatos`)
+      
+      // 3. Processar cada candidato
+      let migratedCount = 0
+      let errorCount = 0
+      const errors = []
+      const results = []
+      
+      for (const candidate of candidates) {
+        try {
+          console.log(`🔄 [Migration] Processando candidato ${candidate.id}: ${candidate.name}`)
+          
+          // Verificar se já existem resultados para este candidato
+          const { data: existingResults, error: checkError } = await supabase
+            .from('results')
+            .select('id')
+            .eq('candidate_id', candidate.id)
+            .limit(1)
+          
+          if (checkError) {
+            console.warn(`⚠️ [Migration] Erro ao verificar resultados para candidato ${candidate.id}:`, checkError.message)
+            continue
+          }
+          
+          if (existingResults && existingResults.length > 0) {
+            console.log(`⏭️ [Migration] Candidato ${candidate.id} já possui resultados, pulando...`)
+            continue
+          }
+          
+          // Se não tem respostas, pular
+          if (!candidate.answers || Object.keys(candidate.answers).length === 0) {
+            console.log(`⏭️ [Migration] Candidato ${candidate.id} não possui respostas, pulando...`)
+            continue
+          }
+          
+          // Criar resultados baseados nas respostas existentes
+          const resultsToInsert = Object.entries(candidate.answers).map(([questionId, selectedAnswers]) => {
+            return {
+              candidate_id: candidate.id,
+              question_id: parseInt(questionId),
+              question_title: `Questão ${questionId}`,
+              selected_answers: Array.isArray(selectedAnswers) ? selectedAnswers : [selectedAnswers],
+              max_choices: 5, // Valor padrão
+              question_category: 'comportamental',
+              question_weight: 1.00,
+              score_question: 0, // Não temos o score individual histórico
+              is_correct: false // Não temos essa informação histórica
+            }
+          })
+          
+          console.log(`📝 [Migration] Candidato ${candidate.id} tem ${resultsToInsert.length} questões`)
+          
+          // Inserir resultados
+          const { error: insertError } = await supabase
+            .from('results')
+            .insert(resultsToInsert)
+          
+          if (insertError) {
+            console.error(`❌ [Migration] Erro ao inserir resultados para candidato ${candidate.id}:`, insertError)
+            throw new Error(`Erro ao inserir resultados: ${insertError.message}`)
+          }
+          
+          console.log(`✅ [Migration] Candidato ${candidate.id} migrado com sucesso`)
+          migratedCount++
+          
+          // Adicionar aos resultados para retorno
+          results.push({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            questionsMigrated: resultsToInsert.length
+          })
+          
+        } catch (candidateError) {
+          console.error(`❌ [Migration] Erro ao migrar candidato ${candidate.id}:`, candidateError.message)
+          errorCount++
+          errors.push({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            error: candidateError.message
+          })
+        }
+      }
+      
+      console.log(`🎉 [Migration] Migração concluída: ${migratedCount} candidatos migrados, ${errorCount} erros`)
+      
+      return {
+        success: true,
+        message: 'Migração concluída com sucesso',
+        migrated: migratedCount,
+        errors: errorCount,
+        total: candidates.length,
+        results: results,
+        errorDetails: errors,
+        timestamp: new Date().toISOString()
+      }
+      
+    } catch (error) {
+      console.error('❌ [Migration] Erro na migração:', error)
+      
+      return {
+        success: false,
+        message: 'Erro durante a migração',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      }
     }
   }
 
