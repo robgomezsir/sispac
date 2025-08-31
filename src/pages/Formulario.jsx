@@ -10,7 +10,15 @@ import {
   Mail,
   Send,
   AlertCircle,
-  ChevronUp
+  ChevronUp,
+  Sparkles,
+  Target,
+  Award,
+  Clock,
+  Star,
+  Heart,
+  Zap,
+  Shield
 } from 'lucide-react'
 import { 
   Button, 
@@ -33,21 +41,17 @@ export default function Formulario(){
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
-  // Removidas variáveis não utilizadas: finalScore, finalStatus, questionDetails, feedback, showResults
 
   // Auto-scroll para o topo quando mudar de pergunta
   useEffect(() => {
-    // Scroll suave para o topo com fallback para navegadores que não suportam smooth
     const scrollToTop = () => {
       try {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } catch (error) {
-        // Fallback para navegadores que não suportam smooth
         window.scrollTo(0, 0)
       }
     }
     
-    // Pequeno delay para garantir que o DOM foi atualizado
     const timer = setTimeout(scrollToTop, 100)
     return () => clearTimeout(timer)
   }, [step])
@@ -66,26 +70,11 @@ export default function Formulario(){
     }
   }, [sent])
 
-  // Scroll para o topo quando enviar formulário
-  useEffect(() => {
-    if (sent) {
-      const timer = setTimeout(() => {
-        try {
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        } catch (error) {
-          window.scrollTo(0, 0)
-        }
-      }, 100)
-      return () => clearTimeout(timer)
-    }
-  }, [sent])
-
   // Função para scroll manual para o topo (fallback)
   const scrollToTop = useCallback(() => {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
-      // Fallback para navegadores que não suportam smooth
       window.scrollTo(0, 0)
     }
   }, [])
@@ -145,20 +134,6 @@ export default function Formulario(){
     }
   }, [canGoBack, step])
 
-  // Função calculateResults removida - não está sendo usada
-  // const calculateResults = useCallback(() => {
-  //   const { totalScore, questionScores } = computeScore(answers, questions)
-  //   const status = classify(totalScore)
-  //   const feedbackText = generateFeedback(totalScore, questionScores)
-  //   const details = getQuestionDetails(questionScores)
-  //   
-  //   setFinalScore(totalScore)
-  //   setFinalStatus(status)
-  //   setQuestionDetails(details)
-  //   setFeedback(feedbackText)
-  //   setShowResults(true)
-  // }, [answers])
-
   // Função para enviar respostas
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -189,7 +164,6 @@ export default function Formulario(){
         answers,
         score: totalScore,
         status
-        // Removido 'feedback' e 'question_scores' pois as colunas não existem na tabela
       }
 
       // Tentar primeiro com cliente normal, depois com admin se falhar
@@ -227,20 +201,6 @@ export default function Formulario(){
         throw new Error(`Erro ao salvar dados: ${insertError?.message || 'Falha na inserção'}`)
       }
 
-      // Inserção na tabela results removida - focar apenas na inserção principal
-      // const details = buildDetails(answers, totalScore, status)
-      // try {
-      //   await supabase
-      //     .from('results')
-      //     .insert({
-      //       candidate_id: inserted.id,
-      //       details
-      //     })
-      // } catch (err) {
-      //   console.error('❌ [Formulario] Erro ao inserir resultados:', err)
-      //   // Não falhar se apenas os resultados não puderem ser salvos
-      // }
-
       setSent(true)
       alert('Respostas enviadas com sucesso!')
     }catch(err){
@@ -251,33 +211,38 @@ export default function Formulario(){
     }
   }
 
-  // Função para construir detalhes
-  const buildDetails = (answers, score, status) => {
-    return `Score: ${score}, Status: ${status}, Respostas: ${JSON.stringify(answers)}`
-  }
-
   // Se já foi enviado, mostrar confirmação
   if(sent) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <Card className="text-center p-8">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle size={32} className="text-green-600" />
-          </div>
-          <h2 className="text-3xl font-bold mb-2">🎉 Obrigado por participar!</h2>
-          <p className="text-muted-foreground text-lg mb-6">
-            Suas respostas foram enviadas com sucesso e estão sendo processadas.
-          </p>
-          
-          {/* Botão Sair */}
-          <Button 
-            onClick={() => window.close()}
-            variant="outline"
-            className="px-8 py-3"
-          >
-            Sair
-          </Button>
-        </Card>
+      <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+        {/* Elementos decorativos de fundo */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-8 p-6 relative z-10">
+          <Card className="card-modern text-center p-12">
+            <div className="w-24 h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-success/20 shadow-glow-success">
+              <CheckCircle size={48} className="text-success" />
+            </div>
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-success to-success/80 bg-clip-text text-transparent">
+              🎉 Obrigado por participar!
+            </h2>
+            <p className="text-muted-foreground text-xl mb-8 font-medium">
+              Suas respostas foram enviadas com sucesso e estão sendo processadas.
+            </p>
+            
+            {/* Botão Sair */}
+            <Button 
+              onClick={() => window.close()}
+              variant="outline"
+              className="btn-secondary-modern px-10 py-4 text-lg"
+            >
+              Sair
+            </Button>
+          </Card>
+        </div>
       </div>
     )
   }
@@ -285,96 +250,109 @@ export default function Formulario(){
   // Se está no passo final, mostrar resultados
   if(step === questions.length){
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header de Sucesso */}
-        <div className="bg-card text-card-foreground rounded-lg border shadow-lg p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle size={32} className="text-green-600" />
-          </div>
-          <h2 className="text-3xl font-bold mb-2">🎉 Obrigado por participar!</h2>
-          <p className="text-muted-foreground text-lg">
-            Agora preencha suas informações pessoais abaixo e clique em enviar para finalizar o processo.
-          </p>
+      <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+        {/* Elementos decorativos de fundo */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
         </div>
 
-        {/* Mensagem de Orientação */}
-        <Card className="p-6 bg-blue-50 border-blue-200">
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl text-blue-800">📝 Próximo Passo</CardTitle>
-            <CardDescription className="text-blue-700">
-              Para finalizar sua participação, preencha as informações pessoais abaixo e clique em "Enviar Respostas".
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="max-w-4xl mx-auto space-y-8 p-6 relative z-10">
+          {/* Header de Sucesso */}
+          <div className="card-modern p-10 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-success/20 shadow-glow-success">
+              <Award size={40} className="text-success" />
+            </div>
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-success to-success/80 bg-clip-text text-transparent">
+              🎉 Parabéns!
+            </h2>
+            <p className="text-muted-foreground text-xl font-medium">
+              Agora preencha suas informações pessoais abaixo e clique em enviar para finalizar o processo.
+            </p>
+          </div>
 
-        {/* Formulário de Dados */}
-        <Card className="p-8">
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
-              <User size={20} />
-              Informações Pessoais
-            </CardTitle>
-            <CardDescription>
-              Preencha seus dados para finalizar o processo
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="nome">Nome Completo</Label>
-                <Input 
-                  id="nome"
-                  type="text" 
-                  value={nome} 
-                  onChange={e => setNome(e.target.value)} 
-                  required
-                  placeholder="Seu nome completo"
-                  className="h-12"
-                />
+          {/* Mensagem de Orientação */}
+          <Card className="card-modern p-6 bg-gradient-to-r from-info/10 to-info/5 border-info/20">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl text-info flex items-center justify-center gap-2">
+                <Target size={20} />
+                Próximo Passo
+              </CardTitle>
+              <CardDescription className="text-info/80 text-lg">
+                Para finalizar sua participação, preencha as informações pessoais abaixo e clique em "Enviar Respostas".
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Formulário de Dados */}
+          <Card className="card-modern p-10">
+            <CardHeader className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                <User size={32} className="text-primary" />
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email"
-                  type="email" 
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)} 
-                  required
-                  placeholder="seu@email.com"
-                  className="h-12"
-                />
-              </div>
-              
-              <Button 
-                type="submit"
-                className="w-full h-12 text-base font-semibold" 
-                disabled={sending}
-              >
-                {sending ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Enviando...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Send size={18} />
-                    Enviar Respostas
-                  </div>
-                )}
-              </Button>
-            </form>
-          </CardContent>
-          
-          {error && (
-            <CardFooter className="pt-0">
-              <div className="w-full p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg flex items-center gap-2">
-                <AlertCircle size={16} />
-                {error}
-              </div>
-            </CardFooter>
-          )}
-        </Card>
+              <CardTitle className="text-2xl font-bold">Informações Pessoais</CardTitle>
+              <CardDescription className="text-lg">
+                Preencha seus dados para finalizar o processo
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-3">
+                  <Label htmlFor="nome" className="text-base font-medium">Nome Completo</Label>
+                  <Input 
+                    id="nome"
+                    type="text" 
+                    value={nome} 
+                    onChange={e => setNome(e.target.value)} 
+                    required
+                    placeholder="Seu nome completo"
+                    className="input-modern h-14 text-base"
+                  />
+                </div>
+                
+                <div className="space-y-3">
+                  <Label htmlFor="email" className="text-base font-medium">Email</Label>
+                  <Input 
+                    id="email"
+                    type="email" 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    required
+                    placeholder="seu@email.com"
+                    className="input-modern h-14 text-base"
+                  />
+                </div>
+                
+                <Button 
+                  type="submit"
+                  className="btn-primary-modern w-full h-14 text-lg font-semibold mt-6" 
+                  disabled={sending}
+                >
+                  {sending ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      <span>Enviando...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <Send size={20} />
+                      <span>Enviar Respostas</span>
+                    </div>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+            
+            {error && (
+              <CardFooter className="pt-0">
+                <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-xl flex items-center gap-3">
+                  <AlertCircle size={20} />
+                  <span className="font-medium">{error}</span>
+                </div>
+              </CardFooter>
+            )}
+          </Card>
+        </div>
       </div>
     )
   }
@@ -385,116 +363,135 @@ export default function Formulario(){
   const isComplete = questionAnswers.length === question.maxChoices
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-          Teste Comportamental
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Questão {step + 1} de {questions.length}
-        </p>
-        
-        {/* Barra de Progresso */}
-        <div className="w-full bg-muted rounded-full h-2">
-          <div 
-            className="bg-primary h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((step + 1) / questions.length) * 100}%` }}
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+      {/* Elementos decorativos de fundo */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
       </div>
 
-      {/* Questão */}
-      <Card className="p-8">
-        <CardHeader className="text-center space-y-4">
-          <CardTitle className="text-2xl">{question.title}</CardTitle>
-          <CardDescription className="text-lg">
-            Escolha até <strong>{question.maxChoices}</strong> opções
-          </CardDescription>
-          <div className="flex items-center justify-center gap-2">
-            <Badge variant="outline">
-              {questionAnswers.length}/{question.maxChoices} selecionadas
-            </Badge>
-            {isComplete && (
-              <Badge variant="default" className="bg-green-100 text-green-800">
-                ✓ Completo
+      <div className="max-w-5xl mx-auto space-y-8 p-6 relative z-10">
+        {/* Header */}
+        <div className="text-center space-y-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">
+            <Sparkles size={40} className="text-primary" />
+          </div>
+          <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+            Teste Comportamental
+          </h1>
+          <p className="text-xl text-muted-foreground font-medium">
+            Questão {step + 1} de {questions.length}
+          </p>
+          
+          {/* Barra de Progresso */}
+          <div className="w-full max-w-2xl mx-auto">
+            <div className="w-full bg-muted/50 rounded-full h-3 border border-border/50">
+              <div 
+                className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-500 shadow-glow"
+                style={{ width: `${((step + 1) / questions.length) * 100}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-sm text-muted-foreground mt-2">
+              <span>Início</span>
+              <span>Final</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Questão */}
+        <Card className="card-modern p-10">
+          <CardHeader className="text-center space-y-6">
+            <CardTitle className="text-3xl font-bold">{question.title}</CardTitle>
+            <CardDescription className="text-xl text-muted-foreground">
+              Escolha até <strong className="text-foreground">{question.maxChoices}</strong> opções
+            </CardDescription>
+            <div className="flex items-center justify-center gap-3">
+              <Badge className="badge-modern text-base px-4 py-2">
+                {questionAnswers.length}/{question.maxChoices} selecionadas
               </Badge>
-            )}
-          </div>
-        </CardHeader>
-        
-        <CardContent>
-          <div className={`grid gap-4 ${question.columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
-            {question.answers.map((answer, index) => {
-              const isSelected = questionAnswers.includes(answer.text)
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => toggleAnswer(question.id, answer.text)}
-                  disabled={!isSelected && questionAnswers.length >= question.maxChoices}
-                  className={`p-4 text-left rounded-lg border-2 transition-all duration-200 ${
-                    isSelected
-                      ? 'border-primary bg-primary/10 text-primary shadow-md'
-                      : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                  } ${
-                    !isSelected && questionAnswers.length >= question.maxChoices
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer hover:scale-105'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+              {isComplete && (
+                <Badge className="badge-success text-base px-4 py-2">
+                  <CheckCircle size={16} className="mr-2" />
+                  Completo
+                </Badge>
+              )}
+            </div>
+          </CardHeader>
+          
+          <CardContent>
+            <div className={`grid gap-6 ${question.columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
+              {question.answers.map((answer, index) => {
+                const isSelected = questionAnswers.includes(answer.text)
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => toggleAnswer(question.id, answer.text)}
+                    disabled={!isSelected && questionAnswers.length >= question.maxChoices}
+                    className={`p-6 text-left rounded-2xl border-2 transition-all duration-300 ${
                       isSelected
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-muted-foreground'
-                    }`}>
-                      {isSelected && <CheckCircle size={16} />}
+                        ? 'border-primary bg-gradient-to-r from-primary/10 to-primary/5 text-primary shadow-glow scale-105'
+                        : 'border-border/50 hover:border-primary/50 hover:bg-muted/30 hover:scale-102'
+                    } ${
+                      !isSelected && questionAnswers.length >= question.maxChoices
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'cursor-pointer'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                        isSelected
+                          ? 'border-primary bg-primary text-primary-foreground scale-110'
+                          : 'border-muted-foreground'
+                      }`}>
+                        {isSelected && <CheckCircle size={16} />}
+                      </div>
+                      <span className="font-semibold text-lg">{answer.text}</span>
                     </div>
-                    <span className="font-medium">{answer.text}</span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </CardContent>
-        
-        <CardFooter className="flex justify-between">
+                  </button>
+                )
+              })}
+            </div>
+          </CardContent>
+          
+          <CardFooter className="flex justify-between pt-8">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={prevStep}
+              disabled={!canGoBack}
+              className="btn-secondary-modern px-8 py-3 text-base"
+            >
+              <ChevronLeft size={18} className="mr-2" />
+              Anterior
+            </Button>
+            
+            <Button
+              type="button"
+              onClick={nextStep}
+              disabled={!canProceed}
+              className="btn-primary-modern px-8 py-3 text-base"
+            >
+              <span>Próxima</span>
+              <ChevronRight size={18} className="ml-2" />
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Botão Voltar ao Topo */}
+        <div className="flex justify-center pt-6">
           <Button
             type="button"
             variant="outline"
-            onClick={prevStep}
-            disabled={!canGoBack}
-            className="flex items-center gap-2"
+            size="lg"
+            onClick={scrollToTop}
+            className="btn-secondary-modern opacity-70 hover:opacity-100 transition-all duration-300"
           >
-            <ChevronLeft size={16} />
-            Anterior
+            <ChevronUp size={18} className="mr-2" />
+            Voltar ao Topo
           </Button>
-          
-          <Button
-            type="button"
-            onClick={nextStep}
-            disabled={!canProceed}
-            className="flex items-center gap-2"
-          >
-            Próxima
-            <ChevronRight size={16} />
-          </Button>
-        </CardFooter>
-      </Card>
-
-      {/* Botão Voltar ao Topo */}
-      <div className="flex justify-center pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={scrollToTop}
-          className="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <ChevronUp size={16} />
-          Voltar ao Topo
-        </Button>
+        </div>
       </div>
     </div>
   )

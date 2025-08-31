@@ -28,7 +28,15 @@ import {
   Filter as FilterIcon,
   ChevronDown,
   ArrowUpDown,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Sparkles,
+  Zap,
+  Star,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  XCircle,
+  Info
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -246,437 +254,461 @@ export default function Dashboard(){
   const getStatusIcon = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
-        return <TrendingUp size={16} className="text-green-600" />
+        return <TrendingUp size={18} className="text-success" />
       case 'ACIMA DA EXPECTATIVA':
-        return <TrendingUp size={16} className="text-blue-600" />
+        return <TrendingUp size={18} className="text-info" />
       case 'DENTRO DA EXPECTATIVA':
-        return <Minus size={16} className="text-yellow-600" />
+        return <Minus size={18} className="text-warning" />
       default:
-        return <Minus size={16} className="text-gray-600" />
+        return <Minus size={18} className="text-muted-foreground" />
     }
   }
 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
-        return <Badge variant="default" className="bg-green-100 text-green-800 border-green-200 hover:bg-green-200">Excelente</Badge>
+        return <Badge className="badge-success">Excelente</Badge>
       case 'ACIMA DA EXPECTATIVA':
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200">Muito Bom</Badge>
+        return <Badge className="badge-info">Muito Bom</Badge>
       case 'DENTRO DA EXPECTATIVA':
-        return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200">Bom</Badge>
+        return <Badge className="badge-warning">Bom</Badge>
       default:
-        return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Regular</Badge>
+        return <Badge className="badge-modern">Regular</Badge>
     }
   }
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
-        return 'text-green-600'
+        return 'text-success'
       case 'ACIMA DA EXPECTATIVA':
-        return 'text-blue-600'
+        return 'text-info'
       case 'DENTRO DA EXPECTATIVA':
-        return 'text-yellow-600'
+        return 'text-warning'
       default:
-        return 'text-gray-600'
+        return 'text-muted-foreground'
     }
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header do Dashboard */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-              <BarChart3 size={28} className="text-primary" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                Dashboard de Candidatos
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Gerencie e visualize os resultados dos testes comportamentais
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        {/* Ações rápidas para admin */}
-        {role === 'admin' && (
-          <div className="flex flex-wrap gap-3">
-            <Button variant="outline" asChild>
-              <Link to="/config">
-                <Settings size={16} className="mr-2" />
-                Configurações
-              </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/api">
-                <BarChart3 size={16} className="mr-2" />
-                API Panel
-              </Link>
-            </Button>
-          </div>
-        )}
+    <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+      {/* Elementos decorativos de fundo */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
       </div>
 
-      {/* Estatísticas rápidas */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+      <div className="space-y-8 p-6 relative z-10">
+        {/* Header do Dashboard */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-glow">
+                <BarChart3 size={32} className="text-primary" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total de Candidatos</p>
-                <p className="text-3xl font-bold text-foreground">{stats.total}</p>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+                  Dashboard de Candidatos
+                </h1>
+                <p className="text-xl text-muted-foreground font-medium">
+                  Gerencie e visualize os resultados dos testes comportamentais
+                </p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-300">
-                <Users size={24} className="text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Superaram Expectativa</p>
-                <p className="text-3xl font-bold text-green-600">{stats.superou}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-50 rounded-xl flex items-center justify-center border border-green-200 group-hover:scale-110 transition-transform duration-300">
-                <TrendingUp size={24} className="text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Acima da Expectativa</p>
-                <p className="text-3xl font-bold text-blue-600">{stats.acima}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center border border-blue-200 group-hover:scale-110 transition-transform duration-300">
-                <TrendingUp size={24} className="text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Dentro da Expectativa</p>
-                <p className="text-3xl font-bold text-yellow-600">{stats.dentro}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-yellow-50 rounded-xl flex items-center justify-center border border-yellow-200 group-hover:scale-110 transition-transform duration-300">
-                <Minus size={24} className="text-yellow-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filtros Avançados */}
-      <AdvancedFilters 
-        filters={advancedFilters}
-        onFiltersChange={handleAdvancedFiltersChange}
-      />
-
-      {/* Controles de busca e exportação */}
-      <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl">
-        <CardHeader className="pb-6">
-          <CardTitle className="flex items-center gap-2">
-            <Search size={20} className="text-primary" />
-            Controles de Busca e Exportação
-          </CardTitle>
-          <CardDescription>
-            Busque candidatos e exporte dados em diferentes formatos
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row gap-3 flex-1">
-              <div className="relative flex-1 max-w-md">
-                <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                <Input 
-                  className="pl-10 h-12 text-base" 
-                  placeholder="Buscar candidatos..." 
-                  value={q} 
-                  onChange={handleSearchChange}
-                />
-              </div>
-              <Button 
-                variant="outline"
-                onClick={load} 
-                disabled={loading}
-                className="h-12 px-6"
-              >
-                {loading ? (
-                  <RefreshCw size={16} className="animate-spin mr-2" />
-                ) : (
-                  <RefreshCw size={16} className="mr-2" />
-                )}
-                Atualizar
-              </Button>
-            </div>
-            
-            {/* Exibição de erro */}
-            {error && (
-              <div className="w-full p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg flex items-center gap-2">
-                <AlertCircle size={16} />
-                {error}
-              </div>
-            )}
-            
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm">Colunas para exportar:</Label>
-                <select 
-                  multiple 
-                  className="h-24 min-w-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" 
-                  value={columnsToExport}
-                  onChange={handleColumnsChange}
-                >
-                  {['id','name','email','score','status','created_at'].map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-              <Button 
-                onClick={exportAll}
-                disabled={filtered.length === 0}
-                className="h-12 px-6 shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <Download size={16} className="mr-2" />
-                Exportar Todos (XLSX)
-              </Button>
             </div>
           </div>
-
-          {/* Seletor de visualização */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm font-medium">Visualização:</Label>
-              <div className="flex rounded-md border">
-                <Button
-                  variant={viewMode === 'cards' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('cards')}
-                  className="rounded-r-none"
-                >
-                  <FileText size={16} className="mr-2" />
-                  Cartões
-                </Button>
-                <Button
-                  variant={viewMode === 'table' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('table')}
-                  className="rounded-l-none"
-                >
-                  <BarChart3 size={16} className="mr-2" />
-                  Tabela
-                </Button>
-              </div>
-            </div>
-            
-            <div className="text-sm text-muted-foreground">
-              {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
-            </div>
-          </div>
-
-          {/* Conteúdo dos candidatos */}
-          {!initialLoad ? (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground text-lg">Clique em "Atualizar" para carregar os dados</div>
-            </div>
-          ) : loading ? (
-            <div className="text-center py-12">
-              <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                <RefreshCw size={20} className="animate-spin" />
-                Carregando candidatos...
-              </div>
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground text-lg">
-                {q || Object.values(advancedFilters).some(v => v !== '') 
-                  ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
-                  : 'Nenhum candidato cadastrado'}
-              </div>
-            </div>
-          ) : viewMode === 'cards' ? (
-            // Visualização em cartões
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedData.map(row => (
-                <Card 
-                  key={row.id} 
-                  className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm"
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg mb-2">{row.name}</CardTitle>
-                        <CardDescription className="mb-3">{row.email}</CardDescription>
-                        <div className="flex items-center gap-2">
-                          {getStatusBadge(row.status)}
-                          <Badge variant="outline" className="text-xs">
-                            <Calendar size={12} className="mr-1" />
-                            {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-bold text-primary group-hover:scale-110 transition-transform duration-300">
-                          {row.score}
-                        </div>
-                        <div className="text-xs text-muted-foreground">Pontuação</div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardFooter className="pt-0">
-                    <div className="flex gap-2 w-full">
-                      <Button 
-                        variant="outline" 
-                        className="flex-1" 
-                        onClick={() => openModal(row)}
-                      >
-                        <Eye size={16} className="mr-2" />
-                        Detalhar
-                      </Button>
-                      <Button 
-                        className="flex-1 shadow-lg hover:shadow-xl transition-all duration-300" 
-                        onClick={() => exportOne(row)}
-                      >
-                        <Download size={16} className="mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            // Visualização em tabela
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead 
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleSort('name')}
-                    >
-                      <div className="flex items-center gap-2">
-                        Nome
-                        <ArrowUpDown size={16} className="text-muted-foreground" />
-                      </div>
-                    </TableHead>
-                    <TableHead 
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleSort('email')}
-                    >
-                      <div className="flex items-center gap-2">
-                        Email
-                        <ArrowUpDown size={16} className="text-muted-foreground" />
-                      </div>
-                    </TableHead>
-                    <TableHead 
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleSort('score')}
-                    >
-                      <div className="flex items-center gap-2">
-                        Pontuação
-                        <ArrowUpDown size={16} className="text-muted-foreground" />
-                      </div>
-                    </TableHead>
-                    <TableHead 
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleSort('status')}
-                    >
-                      <div className="flex items-center gap-2">
-                        Status
-                        <ArrowUpDown size={16} className="text-muted-foreground" />
-                      </div>
-                    </TableHead>
-                    <TableHead 
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleSort('created_at')}
-                    >
-                      <div className="flex items-center gap-2">
-                        Data
-                        <ArrowUpDown size={16} className="text-muted-foreground" />
-                      </div>
-                    </TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedData.map((row) => (
-                    <TableRow key={row.id} className="hover:bg-muted/50">
-                      <TableCell className="font-medium">{row.name}</TableCell>
-                      <TableCell className="text-muted-foreground">{row.email}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-primary">{row.score}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(row.status)}
-                          <span className={getStatusColor(row.status)}>
-                            {row.status}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreHorizontal size={16} />
-                              <span className="sr-only">Abrir menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => openModal(row)}>
-                              <Eye size={16} className="mr-2" />
-                              Ver detalhes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => exportOne(row)}>
-                              <Download size={16} className="mr-2" />
-                              Exportar
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-muted-foreground">
-                              <FileSpreadsheet size={16} className="mr-2" />
-                              Ver histórico
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          
+          {/* Ações rápidas para admin */}
+          {role === 'admin' && (
+            <div className="flex flex-wrap gap-3">
+              <Button variant="outline" asChild className="btn-secondary-modern">
+                <Link to="/config">
+                  <Settings size={18} className="mr-2" />
+                  Configurações
+                </Link>
+              </Button>
+              <Button variant="outline" asChild className="btn-secondary-modern">
+                <Link to="/api">
+                  <BarChart3 size={18} className="mr-2" />
+                  API Panel
+                </Link>
+              </Button>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
 
-      <Modal 
-        open={!!current} 
-        onClose={closeModal} 
-        title="Detalhamento do Candidato"
-      >
-        {current ? <CandidateDetails id={current.id} /> : null}
-      </Modal>
+        {/* Estatísticas rápidas com design moderno */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Total de Candidatos</p>
+                  <p className="text-4xl font-bold text-foreground">{stats.total}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Registros no sistema</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-300">
+                  <Users size={28} className="text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Superaram Expectativa</p>
+                  <p className="text-4xl font-bold text-success">{stats.superou}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Resultado excelente</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
+                  <Star size={28} className="text-success" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Acima da Expectativa</p>
+                  <p className="text-4xl font-bold text-info">{stats.acima}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Muito bom desempenho</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
+                  <TrendingUp size={28} className="text-info" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Dentro da Expectativa</p>
+                  <p className="text-4xl font-bold text-warning">{stats.dentro}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Desempenho adequado</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
+                  <CheckCircle size={28} className="text-warning" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Filtros Avançados */}
+        <AdvancedFilters 
+          filters={advancedFilters}
+          onFiltersChange={handleAdvancedFiltersChange}
+        />
+
+        {/* Controles de busca e exportação */}
+        <Card className="card-modern">
+          <CardHeader className="pb-6">
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                <Search size={20} className="text-primary" />
+              </div>
+              Controles de Busca e Exportação
+            </CardTitle>
+            <CardDescription className="text-lg">
+              Busque candidatos e exporte dados em diferentes formatos
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-8">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                <div className="relative flex-1 max-w-md">
+                  <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    className="input-modern pl-12 h-14 text-base" 
+                    placeholder="Buscar candidatos..." 
+                    value={q} 
+                    onChange={handleSearchChange}
+                  />
+                </div>
+                <Button 
+                  variant="outline"
+                  onClick={load} 
+                  disabled={loading}
+                  className="btn-secondary-modern h-14 px-8"
+                >
+                  {loading ? (
+                    <RefreshCw size={18} className="animate-spin mr-2" />
+                  ) : (
+                    <RefreshCw size={18} className="mr-2" />
+                  )}
+                  Atualizar
+                </Button>
+              </div>
+              
+              {/* Exibição de erro */}
+              {error && (
+                <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-xl flex items-center gap-3">
+                  <AlertCircle size={18} />
+                  <span className="font-medium">{error}</span>
+                </div>
+              )}
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center gap-3">
+                  <Label className="text-sm font-medium">Colunas para exportar:</Label>
+                  <select 
+                    multiple 
+                    className="input-modern h-28 min-w-[200px]" 
+                    value={columnsToExport}
+                    onChange={handleColumnsChange}
+                  >
+                    {['id','name','email','score','status','created_at'].map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+                <Button 
+                  onClick={exportAll}
+                  disabled={filtered.length === 0}
+                  className="btn-primary-modern h-14 px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Download size={18} className="mr-2" />
+                  Exportar Todos (XLSX)
+                </Button>
+              </div>
+            </div>
+
+            {/* Seletor de visualização */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Label className="text-sm font-medium">Visualização:</Label>
+                <div className="flex rounded-xl border border-border/50 overflow-hidden">
+                  <Button
+                    variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                    size="lg"
+                    onClick={() => setViewMode('cards')}
+                    className="rounded-r-none px-6"
+                  >
+                    <FileText size={18} className="mr-2" />
+                    Cartões
+                  </Button>
+                  <Button
+                    variant={viewMode === 'table' ? 'default' : 'ghost'}
+                    size="lg"
+                    onClick={() => setViewMode('table')}
+                    className="rounded-l-none px-6"
+                  >
+                    <BarChart3 size={18} className="mr-2" />
+                    Tabela
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="text-sm text-muted-foreground font-medium">
+                {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+
+            {/* Conteúdo dos candidatos */}
+            {!initialLoad ? (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+                  <Zap size={32} className="text-muted-foreground" />
+                </div>
+                <div className="text-muted-foreground text-lg font-medium">Clique em "Atualizar" para carregar os dados</div>
+              </div>
+            ) : loading ? (
+              <div className="text-center py-16">
+                <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                  <RefreshCw size={24} className="animate-spin" />
+                  <span className="text-lg font-medium">Carregando candidatos...</span>
+                </div>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+                  <Search size={32} className="text-muted-foreground" />
+                </div>
+                <div className="text-muted-foreground text-lg font-medium">
+                  {q || Object.values(advancedFilters).some(v => v !== '') 
+                    ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
+                    : 'Nenhum candidato cadastrado'}
+                </div>
+              </div>
+            ) : viewMode === 'cards' ? (
+              // Visualização em cartões com design moderno
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedData.map(row => (
+                  <Card 
+                    key={row.id} 
+                    className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                  >
+                    <CardHeader className="pb-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-2 font-bold">{row.name}</CardTitle>
+                          <CardDescription className="mb-3 text-muted-foreground">{row.email}</CardDescription>
+                          <div className="flex items-center gap-2 mb-3">
+                            {getStatusBadge(row.status)}
+                            <Badge variant="outline" className="text-xs bg-muted/30">
+                              <Calendar size={12} className="mr-1" />
+                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-4xl font-bold text-primary group-hover:scale-110 transition-transform duration-300">
+                            {row.score}
+                          </div>
+                          <div className="text-xs text-muted-foreground/70">Pontuação</div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardFooter className="pt-0">
+                      <div className="flex gap-3 w-full">
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 btn-secondary-modern" 
+                          onClick={() => openModal(row)}
+                        >
+                          <Eye size={18} className="mr-2" />
+                          Detalhar
+                        </Button>
+                        <Button 
+                          className="flex-1 btn-primary-modern shadow-lg hover:shadow-xl transition-all duration-300" 
+                          onClick={() => exportOne(row)}
+                        >
+                          <Download size={18} className="mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              // Visualização em tabela com design moderno
+              <div className="rounded-2xl border border-border/50 overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/30">
+                      <TableHead 
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
+                        onClick={() => handleSort('name')}
+                      >
+                        <div className="flex items-center gap-2 font-semibold">
+                          Nome
+                          <ArrowUpDown size={18} className="text-muted-foreground" />
+                        </div>
+                      </TableHead>
+                      <TableHead 
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
+                        onClick={() => handleSort('email')}
+                      >
+                        <div className="flex items-center gap-2 font-semibold">
+                          Email
+                          <ArrowUpDown size={18} className="text-muted-foreground" />
+                        </div>
+                      </TableHead>
+                      <TableHead 
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
+                        onClick={() => handleSort('score')}
+                      >
+                        <div className="flex items-center gap-2 font-semibold">
+                          Pontuação
+                          <ArrowUpDown size={18} className="text-muted-foreground" />
+                        </div>
+                      </TableHead>
+                      <TableHead 
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
+                        onClick={() => handleSort('status')}
+                      >
+                        <div className="flex items-center gap-2 font-semibold">
+                          Status
+                          <ArrowUpDown size={18} className="text-muted-foreground" />
+                        </div>
+                      </TableHead>
+                      <TableHead 
+                        className="cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-14 px-6"
+                        onClick={() => handleSort('created_at')}
+                      >
+                        <div className="flex items-center gap-2 font-semibold">
+                          Data
+                          <ArrowUpDown size={18} className="text-muted-foreground" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-right h-14 px-6 font-semibold">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedData.map((row) => (
+                      <TableRow key={row.id} className="hover:bg-muted/30 transition-colors duration-200">
+                        <TableCell className="font-semibold px-6 py-4">{row.name}</TableCell>
+                        <TableCell className="text-muted-foreground px-6 py-4">{row.email}</TableCell>
+                        <TableCell className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-2xl text-primary">{row.score}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            {getStatusIcon(row.status)}
+                            <span className={`font-medium ${getStatusColor(row.status)}`}>
+                              {row.status}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <Clock size={16} />
+                            {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right px-6 py-4">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-xl">
+                                <MoreHorizontal size={18} />
+                                <span className="sr-only">Abrir menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuItem onClick={() => openModal(row)}>
+                                <Eye size={18} className="mr-2" />
+                                Ver detalhes
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => exportOne(row)}>
+                                <Download size={18} className="mr-2" />
+                                Exportar
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-muted-foreground">
+                                <FileSpreadsheet size={18} className="mr-2" />
+                                Ver histórico
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Modal 
+          open={!!current} 
+          onClose={closeModal} 
+          title="Detalhamento do Candidato"
+        >
+          {current ? <CandidateDetails id={current.id} /> : null}
+        </Modal>
+      </div>
     </div>
   )
 }
@@ -731,7 +763,10 @@ function CandidateDetails({ id }){
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="text-muted-foreground">Carregando detalhes...</div>
+        <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+          <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+        <div className="text-muted-foreground font-medium">Carregando detalhes...</div>
       </div>
     )
   }
@@ -739,7 +774,10 @@ function CandidateDetails({ id }){
   if (error) {
     return (
       <div className="text-center py-8">
-        <div className="text-destructive">❌ {error}</div>
+        <div className="w-16 h-16 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-destructive/20">
+          <XCircle size={32} className="text-destructive" />
+        </div>
+        <div className="text-destructive font-medium">❌ {error}</div>
       </div>
     )
   }
@@ -747,35 +785,42 @@ function CandidateDetails({ id }){
   if (!details) {
     return (
       <div className="text-center py-8">
-        <div className="text-muted-foreground">Nenhum detalhe encontrado</div>
+        <div className="w-16 h-16 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+          <Info size={32} className="text-muted-foreground" />
+        </div>
+        <div className="text-muted-foreground font-medium">Nenhum detalhe encontrado</div>
       </div>
     )
   }
   
   return (
-    <div className="space-y-4">
-      <Card>
+    <div className="space-y-6">
+      <Card className="card-modern">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity size={20} className="text-primary" />
+          <CardTitle className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+              <Activity size={20} className="text-primary" />
+            </div>
             Detalhes da Avaliação
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <pre className="whitespace-pre-wrap text-sm bg-muted p-3 rounded-md">{details.details}</pre>
+          <pre className="whitespace-pre-wrap text-sm bg-muted/30 p-4 rounded-xl border border-border/50">{details.details}</pre>
         </CardContent>
       </Card>
       
       {details.score && (
-        <Card>
+        <Card className="card-modern">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target size={20} className="text-primary" />
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center border border-success/20">
+                <Target size={20} className="text-success" />
+              </div>
               Pontuação Final
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary text-center">{details.score}</div>
+            <div className="text-4xl font-bold text-success text-center">{details.score}</div>
           </CardContent>
         </Card>
       )}
