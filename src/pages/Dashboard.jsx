@@ -7,6 +7,7 @@ import StatusProfileStats from '../components/StatusProfileStats.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
+import { getStatusProfile } from '../config/statusProfiles.js'
 import { 
   Settings, 
   BarChart3, 
@@ -88,50 +89,7 @@ export default function Dashboard(){
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
   
-  // Log quando current muda
-  useEffect(() => {
-    console.log('🔍 [Dashboard] Estado current atualizado:', current)
-  }, [current])
 
-  // TESTE INTERNO: Validar se as funções estão funcionando
-  useEffect(() => {
-    console.log('🧪 [Dashboard] TESTE INTERNO: Iniciando validação das funções...')
-    
-    try {
-      // Testar se Badge está disponível
-      console.log('🔍 [Dashboard] TESTE INTERNO: Componente Badge:', typeof Badge)
-      
-      // Testar se as funções estão definidas
-      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusBadge:', typeof getStatusBadge)
-      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusIcon:', typeof getStatusIcon)
-      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusColor:', typeof getStatusColor)
-      
-      // Testar execução das funções
-      if (typeof getStatusBadge === 'function') {
-        const testBadge = getStatusBadge('DENTRO DA EXPECTATIVA')
-        console.log('✅ [Dashboard] TESTE INTERNO: getStatusBadge executada com sucesso:', testBadge)
-      } else {
-        console.error('❌ [Dashboard] TESTE INTERNO: getStatusBadge não é uma função')
-      }
-      
-      if (typeof getStatusIcon === 'function') {
-        const testIcon = getStatusIcon('DENTRO DA EXPECTATIVA')
-        console.log('✅ [Dashboard] TESTE INTERNO: getStatusIcon executada com sucesso:', testIcon)
-      } else {
-        console.error('❌ [Dashboard] TESTE INTERNO: getStatusIcon não é uma função')
-      }
-      
-      if (typeof getStatusColor === 'function') {
-        const testColor = getStatusColor('DENTRO DA EXPECTATIVA')
-        console.log('✅ [Dashboard] TESTE INTERNO: getStatusColor executada com sucesso:', testColor)
-      } else {
-        console.error('❌ [Dashboard] TESTE INTERNO: getStatusColor não é uma função')
-      }
-      
-    } catch (error) {
-      console.error('❌ [Dashboard] TESTE INTERNO: Erro durante validação:', error)
-    }
-  }, [])
 
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
   const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
@@ -931,67 +889,6 @@ function CandidateDetails({ id }){
         <div className="text-muted-foreground font-medium">Nenhum detalhe encontrado</div>
       </div>
     )
-  }
-
-  // Obter perfil de status baseado no score
-  const getStatusProfile = (status) => {
-    const profiles = {
-      "SUPEROU A EXPECTATIVA": {
-        faixa: "Acima de 95 pontos",
-        perfil: "Perfil de alto desempenho humano: forte congruência entre valores, imagem e ação. Inspira confiança, responsabilidade e empatia.",
-        comportamento: "Atua com autonomia, iniciativa e visão. Resolve problemas complexos com abordagem humana, integrando resultados e cuidado com pessoas.",
-        competencias: "Excelência em competências comportamentais e técnicas; alta adaptabilidade; forte capacidade de ensino e coaching.",
-        lideranca: "Líder natural — influencia por autoridade moral mais que por poder hierárquico. Preparado para papéis estratégicos e de alto impacto.",
-        areas_desenvolvimento: [
-          "Evitar sobrecarga e centralização de decisões",
-          "Estruturar sucessão e multiplicar conhecimento",
-          "Foco em métricas estratégicas e governança"
-        ],
-        recomendacoes: "Promover para papéis de maior alcance, investir em formação executiva e designar como mentor de talentos-chave."
-      },
-      "ACIMA DA EXPECTATIVA": {
-        faixa: "76 a 95 pontos",
-        perfil: "Profissional maduro emocionalmente, com alto alinhamento de valores e imagem percebida. Demonstra empatia ativa e energia para colaborar.",
-        comportamento: "Proatividade clara, busca soluções que beneficiam grupo e organização. Resolve problemas considerando impacto nas pessoas.",
-        competencias: "Fortes competências interpessoais e de execução: comunicação clara, priorização e acompanhamento. Boa relação entre habilidades técnicas e soft skills.",
-        lideranca: "Bom potencial para liderar times com foco em cultura e engajamento. Lidera pelo exemplo e administra conflitos com empatia.",
-        areas_desenvolvimento: [
-          "Delegação eficiente para escalar impacto",
-          "Visão estratégica de médio prazo",
-          "Gestão de stakeholders complexos"
-        ],
-        recomendacoes: "Investir em programas de desenvolvimento de liderança, dar projetos de maior responsabilidade e inserir em comitês interfuncionais."
-      },
-      "DENTRO DA EXPECTATIVA": {
-        faixa: "68 a 75 pontos",
-        perfil: "Indivíduos funcionais e confiáveis: equilibram competências sociais com entrega estável. São vistos como consistentes e responsáveis; têm valores alinhados ao ambiente, mas ainda sem grande diferenciação.",
-        comportamento: "Proativos em doses moderadas: assumem tarefas, colaboram e mantêm bom relacionamento interpessoal. Tendem a seguir processos e buscar segurança nas decisões.",
-        competencias: "Bons fundamentos em comunicação, trabalho em equipe e cumprimento de prazos. Capacidade técnica razoável; aprendem com treinamentos formais.",
-        lideranca: "Potencial para liderança de primeira linha (supervisão), especialmente em ambientes com processos claros.",
-        areas_desenvolvimento: [
-          "Tomada de decisão em ambientes ambíguos",
-          "Pensamento estratégico de curto prazo",
-          "Autonomia para iniciativas fora do manual"
-        ],
-        recomendacoes: "Designar projetos com responsabilidade incremental, treinamentos em resolução de problemas e incentivar participação em iniciativas interdepartamentais."
-      },
-      "ABAIXO DA EXPECTATIVA": {
-        faixa: "Até 67 pontos",
-        perfil: "Pessoas nessa faixa tendem a demonstrar um alinhamento fraco entre como se veem e como são percebidas; apresentam valores selecionados que indicam boa intenção, mas com inconsistência prática.",
-        comportamento: "Comportamento reservado, prefere atuar de acordo com instruções claras. Evita riscos e decisões rápidas; pode reagir de forma passiva sob pressão.",
-        competencias: "Competências interpessoais básicas (escuta, simpatia), mas com lacunas em tomada de decisão, proatividade e organização estratégica.",
-        lideranca: "Pouca ou nenhuma propensão a liderança formal. Se assumir cargo de coordenação, tende a gerir tarefas mais do que pessoas.",
-        areas_desenvolvimento: [
-          "Autoconfiança e assertividade",
-          "Iniciativa e resolução autônoma de problemas",
-          "Clareza de prioridades e organização",
-          "Comunicação direta em situações de conflito"
-        ],
-        recomendacoes: "Oferecer mentoring ou coaching focado em confiança, exercícios de tomada de decisão com baixo risco e treinamentos de comunicação assertiva."
-      }
-    }
-    
-    return profiles[status] || null
   }
 
   const statusProfile = getStatusProfile(details.status)
