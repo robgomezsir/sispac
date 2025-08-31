@@ -9,7 +9,8 @@ import {
   User, 
   Mail,
   Send,
-  AlertCircle
+  AlertCircle,
+  ChevronUp
 } from 'lucide-react'
 import { 
   Button, 
@@ -40,8 +41,58 @@ export default function Formulario(){
 
   // Auto-scroll para o topo quando mudar de pergunta
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Scroll suave para o topo com fallback para navegadores que não suportam smooth
+    const scrollToTop = () => {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } catch (error) {
+        // Fallback para navegadores que não suportam smooth
+        window.scrollTo(0, 0)
+      }
+    }
+    
+    // Pequeno delay para garantir que o DOM foi atualizado
+    const timer = setTimeout(scrollToTop, 100)
+    return () => clearTimeout(timer)
   }, [step])
+
+  // Scroll para o topo quando mostrar resultados
+  useEffect(() => {
+    if (showResults) {
+      const timer = setTimeout(() => {
+        try {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        } catch (error) {
+          window.scrollTo(0, 0)
+        }
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [showResults])
+
+  // Scroll para o topo quando enviar formulário
+  useEffect(() => {
+    if (sent) {
+      const timer = setTimeout(() => {
+        try {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        } catch (error) {
+          window.scrollTo(0, 0)
+        }
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [sent])
+
+  // Função para scroll manual para o topo (fallback)
+  const scrollToTop = useCallback(() => {
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      // Fallback para navegadores que não suportam smooth
+      window.scrollTo(0, 0)
+    }
+  }, [])
 
   // Função para alternar resposta
   const toggleAnswer = useCallback((questionId, answer) => {
@@ -491,6 +542,20 @@ export default function Formulario(){
           </Button>
         </CardFooter>
       </Card>
+
+      {/* Botão Voltar ao Topo */}
+      <div className="flex justify-center pt-4">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={scrollToTop}
+          className="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <ChevronUp size={16} />
+          Voltar ao Topo
+        </Button>
+      </div>
     </div>
   )
 }
