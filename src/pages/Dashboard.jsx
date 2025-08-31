@@ -453,32 +453,17 @@ export default function Dashboard(){
         </div>
 
         {/* Abas de Análise */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="overview" className="text-base py-3">
-              <BarChart3 size={18} className="mr-2" />
-              Visão Geral
+        <Tabs defaultValue="candidates" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="candidates" className="text-base py-3">
+              <Users size={18} className="mr-2" />
+              Candidatos
             </TabsTrigger>
             <TabsTrigger value="profiles" className="text-base py-3">
               <Target size={18} className="mr-2" />
               Análise de Perfis
             </TabsTrigger>
-            <TabsTrigger value="candidates" className="text-base py-3">
-              <Users size={18} className="mr-2" />
-              Candidatos
-            </TabsTrigger>
           </TabsList>
-
-          {/* Aba: Visão Geral */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Filtros Avançados */}
-            <AdvancedFilters 
-              filters={advancedFilters}
-              onFiltersChange={handleAdvancedFiltersChange}
-            />
-
-            
-          </TabsContent>
 
           {/* Aba: Análise de Perfis */}
           <TabsContent value="profiles" className="space-y-6">
@@ -855,6 +840,69 @@ function CandidateDetails({ id }){
       </div>
     )
   }
+
+  // Obter perfil de status baseado no score
+  const getStatusProfile = (status) => {
+    const profiles = {
+      "SUPEROU A EXPECTATIVA": {
+        faixa: "Acima de 95 pontos",
+        perfil: "Perfil de alto desempenho humano: forte congruência entre valores, imagem e ação. Inspira confiança, responsabilidade e empatia.",
+        comportamento: "Atua com autonomia, iniciativa e visão. Resolve problemas complexos com abordagem humana, integrando resultados e cuidado com pessoas.",
+        competencias: "Excelência em competências comportamentais e técnicas; alta adaptabilidade; forte capacidade de ensino e coaching.",
+        lideranca: "Líder natural — influencia por autoridade moral mais que por poder hierárquico. Preparado para papéis estratégicos e de alto impacto.",
+        areas_desenvolvimento: [
+          "Evitar sobrecarga e centralização de decisões",
+          "Estruturar sucessão e multiplicar conhecimento",
+          "Foco em métricas estratégicas e governança"
+        ],
+        recomendacoes: "Promover para papéis de maior alcance, investir em formação executiva e designar como mentor de talentos-chave."
+      },
+      "ACIMA DA EXPECTATIVA": {
+        faixa: "76 a 95 pontos",
+        perfil: "Profissional maduro emocionalmente, com alto alinhamento de valores e imagem percebida. Demonstra empatia ativa e energia para colaborar.",
+        comportamento: "Proatividade clara, busca soluções que beneficiam grupo e organização. Resolve problemas considerando impacto nas pessoas.",
+        competencias: "Fortes competências interpessoais e de execução: comunicação clara, priorização e acompanhamento. Boa relação entre habilidades técnicas e soft skills.",
+        lideranca: "Bom potencial para liderar times com foco em cultura e engajamento. Lidera pelo exemplo e administra conflitos com empatia.",
+        areas_desenvolvimento: [
+          "Delegação eficiente para escalar impacto",
+          "Visão estratégica de médio prazo",
+          "Gestão de stakeholders complexos"
+        ],
+        recomendacoes: "Investir em programas de desenvolvimento de liderança, dar projetos de maior responsabilidade e inserir em comitês interfuncionais."
+      },
+      "DENTRO DA EXPECTATIVA": {
+        faixa: "68 a 75 pontos",
+        perfil: "Indivíduos funcionais e confiáveis: equilibram competências sociais com entrega estável. São vistos como consistentes e responsáveis; têm valores alinhados ao ambiente, mas ainda sem grande diferenciação.",
+        comportamento: "Proativos em doses moderadas: assumem tarefas, colaboram e mantêm bom relacionamento interpessoal. Tendem a seguir processos e buscar segurança nas decisões.",
+        competencias: "Bons fundamentos em comunicação, trabalho em equipe e cumprimento de prazos. Capacidade técnica razoável; aprendem com treinamentos formais.",
+        lideranca: "Potencial para liderança de primeira linha (supervisão), especialmente em ambientes com processos claros.",
+        areas_desenvolvimento: [
+          "Tomada de decisão em ambientes ambíguos",
+          "Pensamento estratégico de curto prazo",
+          "Autonomia para iniciativas fora do manual"
+        ],
+        recomendacoes: "Designar projetos com responsabilidade incremental, treinamentos em resolução de problemas e incentivar participação em iniciativas interdepartamentais."
+      },
+      "ABAIXO DA EXPECTATIVA": {
+        faixa: "Até 67 pontos",
+        perfil: "Pessoas nessa faixa tendem a demonstrar um alinhamento fraco entre como se veem e como são percebidas; apresentam valores selecionados que indicam boa intenção, mas com inconsistência prática.",
+        comportamento: "Comportamento reservado, prefere atuar de acordo com instruções claras. Evita riscos e decisões rápidas; pode reagir de forma passiva sob pressão.",
+        competencias: "Competências interpessoais básicas (escuta, simpatia), mas com lacunas em tomada de decisão, proatividade e organização estratégica.",
+        lideranca: "Pouca ou nenhuma propensão a liderança formal. Se assumir cargo de coordenação, tende a gerir tarefas mais do que pessoas.",
+        areas_desenvolvimento: [
+          "Autoconfiança e assertividade",
+          "Iniciativa e resolução autônoma de problemas",
+          "Clareza de prioridades e organização",
+          "Comunicação direta em situações de conflito"
+        ],
+        recomendacoes: "Oferecer mentoring ou coaching focado em confiança, exercícios de tomada de decisão com baixo risco e treinamentos de comunicação assertiva."
+      }
+    }
+    
+    return profiles[status] || null
+  }
+
+  const statusProfile = getStatusProfile(details.status)
   
   return (
     <div className="space-y-6">
@@ -909,6 +957,70 @@ function CandidateDetails({ id }){
             <div className="text-center">
               <div className="text-6xl font-bold text-success mb-2">{details.score}</div>
               <div className="text-muted-foreground">pontos de 100</div>
+              {statusProfile && (
+                <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/50">
+                  <div className="text-sm font-medium text-foreground mb-1">Faixa de Pontuação</div>
+                  <div className="text-sm text-muted-foreground">{statusProfile.faixa}</div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Análise de Perfil */}
+      {statusProfile && (
+        <Card className="card-modern">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
+                <BarChart3 size={20} className="text-info" />
+              </div>
+              Análise de Perfil Comportamental
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Perfil */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Perfil</h4>
+              <p className="text-muted-foreground leading-relaxed">{statusProfile.perfil}</p>
+            </div>
+
+            {/* Comportamento */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Comportamento</h4>
+              <p className="text-muted-foreground leading-relaxed">{statusProfile.comportamento}</p>
+            </div>
+
+            {/* Competências */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Competências</h4>
+              <p className="text-muted-foreground leading-relaxed">{statusProfile.competencias}</p>
+            </div>
+
+            {/* Liderança */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Liderança</h4>
+              <p className="text-muted-foreground leading-relaxed">{statusProfile.lideranca}</p>
+            </div>
+
+            {/* Áreas de Desenvolvimento */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Áreas de Desenvolvimento</h4>
+              <ul className="space-y-2">
+                {statusProfile.areas_desenvolvimento.map((area, index) => (
+                  <li key={index} className="flex items-start gap-2 text-muted-foreground">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span>{area}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Recomendações */}
+            <div className="space-y-3">
+              <h4 className="text-lg font-semibold text-foreground">Recomendações</h4>
+              <p className="text-muted-foreground leading-relaxed">{statusProfile.recomendacoes}</p>
             </div>
           </CardContent>
         </Card>
@@ -919,8 +1031,8 @@ function CandidateDetails({ id }){
         <Card className="card-modern">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
-                <FileText size={20} className="text-info" />
+              <div className="w-10 h-10 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20">
+                <FileText size={20} className="text-warning" />
               </div>
               Respostas do Questionário
             </CardTitle>
