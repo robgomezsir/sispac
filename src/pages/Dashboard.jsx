@@ -9,7 +9,7 @@ import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
 import { getStatusProfile } from '../config/statusProfiles.js'
 import { classify } from '../utils/scoring.js'
-import { getStatusBadge, getStatusIcon, getStatusColor } from '../utils/statusUtils.js'
+import { getStatusBadge, getStatusIcon, getStatusColor } from '../utils/statusUtils.jsx'
 import { 
   Settings, 
   BarChart3, 
