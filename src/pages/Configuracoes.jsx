@@ -599,7 +599,7 @@ export default function Configuracoes(){
     try {
       console.log('🔄 [Configurações] Iniciando migração de candidatos para resultados...')
 
-      const response = await fetch('/api/migrateResults', {
+      const response = await fetch('/api/simpleMigrate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -618,6 +618,37 @@ export default function Configuracoes(){
     } catch (error) {
       console.error('❌ [Configurações] Erro na migração:', error)
       showMessage(`Erro na migração: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Função para testar API simples
+  const handleTestAPI = async () => {
+    setLoading(true)
+
+    try {
+      console.log('🧪 [Configurações] Testando API simples...')
+
+      const response = await fetch('/api/simpleMigrate', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Erro no teste da API')
+      }
+
+      console.log('✅ [Configurações] Teste da API:', result)
+      showMessage(`API funcionando! ${result.message}`, 'success')
+
+    } catch (error) {
+      console.error('❌ [Configurações] Erro no teste da API:', error)
+      showMessage(`Erro no teste da API: ${error.message}`, 'error')
     } finally {
       setLoading(false)
     }
@@ -1001,6 +1032,24 @@ export default function Configuracoes(){
                 <div className="flex items-center gap-3">
                   <Database size={18} />
                   <span>Migrar Resultados</span>
+                </div>
+              )}
+            </button>
+
+            <button
+              onClick={handleTestAPI}
+              disabled={loading}
+              className="btn-info-modern px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 border-3 border-info-foreground/30 border-t-info-foreground rounded-full animate-spin" />
+                  <span>Testando...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Info size={18} />
+                  <span>Testar API Simples</span>
                 </div>
               )}
             </button>

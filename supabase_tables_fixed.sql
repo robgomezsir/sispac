@@ -430,7 +430,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar candidatos
         CREATE POLICY "Service role can manage candidates" ON public.candidates
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para candidates simplificadas';
     END IF;
@@ -449,7 +449,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar resultados
         CREATE POLICY "Service role can manage results" ON public.results
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para results simplificadas';
     END IF;
@@ -467,7 +467,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar questões
         CREATE POLICY "Service role can manage questions" ON public.questions
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para questions simplificadas';
     END IF;
@@ -485,7 +485,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar respostas
         CREATE POLICY "Service role can manage question answers" ON public.question_answers
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para question_answers simplificadas';
     END IF;
@@ -504,7 +504,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar sessões
         CREATE POLICY "Service role can manage test sessions" ON public.test_sessions
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para test_sessions simplificadas';
     END IF;
@@ -518,7 +518,7 @@ BEGIN
         
         -- POLÍTICA SIMPLIFICADA: Apenas service_role pode acessar logs de auditoria
         CREATE POLICY "Service role can manage audit logs" ON public.audit_logs
-            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+            FOR ALL USING (auth.role() = 'service_role');
         
         RAISE NOTICE 'Políticas RLS para audit_logs simplificadas';
     END IF;
