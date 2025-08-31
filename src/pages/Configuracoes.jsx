@@ -258,43 +258,109 @@ export default function Configuracoes(){
     setLoading(true)
     
     try {
+      console.log('🔍 [Configurações] Iniciando processo de remoção para:', removeTestCandidateEmail.trim().toLowerCase())
+      
+      // Verificar se o usuário tem sessão ativa
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session) {
+        throw new Error('Sessão não encontrada. Faça login novamente.')
+      }
+      console.log('✅ [Configurações] Sessão válida encontrada')
+      
       // Buscar candidato
+      console.log('🔍 [Configurações] Buscando candidato no banco...')
       const { data: candidate, error: searchError } = await supabase
         .from('candidates')
-        .select('id, name')
+        .select('id, name, email')
         .eq('email', removeTestCandidateEmail.trim().toLowerCase())
         .single()
       
-      if (searchError || !candidate) {
+      if (searchError) {
+        console.error('❌ [Configurações] Erro na busca:', searchError)
+        if (searchError.code === 'PGRST116') {
+          showMessage('Candidato não encontrado.', 'error')
+        } else {
+          throw new Error(`Erro na busca: ${searchError.message}`)
+        }
+        return
+      }
+      
+      if (!candidate) {
         showMessage('Candidato não encontrado.', 'error')
         return
       }
       
+      console.log('✅ [Configurações] Candidato encontrado:', candidate)
+      
+      // Verificar se temos permissão para deletar
+      console.log('🔍 [Configurações] Verificando permissões...')
+      const { data: userProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
+      
+      if (profileError) {
+        console.log('⚠️ [Configurações] Não foi possível verificar role do usuário:', profileError.message)
+      } else {
+        console.log('✅ [Configurações] Role do usuário:', userProfile?.role)
+      }
+      
       // Remover candidato
-      const { error: deleteError } = await supabase
+      console.log('🗑️ [Configurações] Tentando remover candidato ID:', candidate.id)
+      const { data: deleteResult, error: deleteError } = await supabase
         .from('candidates')
         .delete()
         .eq('id', candidate.id)
+        .select()
       
       if (deleteError) {
+        console.error('❌ [Configurações] Erro na remoção:', deleteError)
         throw new Error(`Erro ao remover candidato: ${deleteError.message}`)
       }
       
+      console.log('✅ [Configurações] Candidato removido com sucesso:', deleteResult)
+      
       // Tentar remover da tabela results se existir
       try {
-        await supabase
+        console.log('🔍 [Configurações] Tentando remover da tabela results...')
+        const { data: resultsDeleteResult, error: resultsError } = await supabase
           .from('results')
           .delete()
           .eq('candidate_id', candidate.id)
+          .select()
+        
+        if (resultsError) {
+          console.log('⚠️ [Configurações] Erro ao acessar tabela results:', resultsError.message)
+        } else {
+          console.log('✅ [Configurações] Registros removidos da tabela results:', resultsDeleteResult)
+        }
       } catch (resultsError) {
-        console.log('Tabela results não existe ou erro ao acessar:', resultsError.message)
+        console.log('⚠️ [Configurações] Tabela results não existe ou erro ao acessar:', resultsError.message)
+      }
+      
+      // Verificar se realmente foi removido
+      console.log('🔍 [Configurações] Verificando se candidato foi realmente removido...')
+      const { data: verifyCandidate, error: verifyError } = await supabase
+        .from('candidates')
+        .select('id')
+        .eq('id', candidate.id)
+        .single()
+      
+      if (verifyError && verifyError.code === 'PGRST116') {
+        console.log('✅ [Configurações] Confirmação: Candidato foi removido com sucesso')
+      } else if (verifyCandidate) {
+        console.log('⚠️ [Configurações] ATENÇÃO: Candidato ainda existe no banco após tentativa de remoção!')
+        throw new Error('Candidato não foi removido do banco de dados')
       }
       
       showMessage(`Candidato de teste "${candidate.name}" removido com sucesso!`, 'success')
       setRemoveTestCandidateEmail('')
       
+      console.log('🎉 [Configurações] Processo de remoção concluído com sucesso')
+      
     } catch (error) {
-      console.error('Erro ao remover candidato de teste:', error)
+      console.error('❌ [Configurações] Erro ao remover candidato de teste:', error)
       showMessage(`Erro ao remover candidato de teste: ${error.message}`, 'error')
     } finally {
       setLoading(false)
@@ -400,6 +466,15 @@ export default function Configuracoes(){
     setLoading(true)
     
     try {
+      console.log('🔍 [Configurações] Verificando configuração do Supabase...')
+      
+      // Verificar sessão
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session) {
+        throw new Error('Sessão não encontrada')
+      }
+      console.log('✅ [Configurações] Sessão válida:', session.user.id)
+      
       // Testar conexão com o banco
       const { data, error } = await supabase
         .from('candidates')
@@ -409,6 +484,53 @@ export default function Configuracoes(){
       if (error) {
         throw new Error(`Erro de conexão: ${error.message}`)
       }
+      console.log('✅ [Configurações] Conexão com banco OK')
+      
+      // Verificar permissões de leitura
+      const { data: readTest, error: readError } = await supabase
+        .from('candidates')
+        .select('id, name, email')
+        .limit(1)
+      
+      if (readError) {
+        console.log('⚠️ [Configurações] Erro na leitura:', readError.message)
+      } else {
+        console.log('✅ [Configurações] Permissão de leitura OK')
+      }
+      
+      // Verificar permissões de escrita (tentar inserir um registro de teste)
+      const testData = {
+        name: 'TESTE_PERMISSAO_' + Date.now(),
+        email: 'teste_' + Date.now() + '@teste.com',
+        score: 50,
+        status: 'TESTE',
+        created_at: new Date().toISOString()
+      }
+      
+      const { data: insertTest, error: insertError } = await supabase
+        .from('candidates')
+        .insert([testData])
+        .select()
+      
+      if (insertError) {
+        console.log('⚠️ [Configurações] Erro na inserção (pode ser RLS):', insertError.message)
+      } else {
+        console.log('✅ [Configurações] Permissão de inserção OK')
+        
+        // Se conseguiu inserir, tentar remover
+        if (insertTest && insertTest[0]) {
+          const { error: deleteTestError } = await supabase
+            .from('candidates')
+            .delete()
+            .eq('id', insertTest[0].id)
+          
+          if (deleteTestError) {
+            console.log('⚠️ [Configurações] Erro na remoção (pode ser RLS):', deleteTestError.message)
+          } else {
+            console.log('✅ [Configurações] Permissão de remoção OK')
+          }
+        }
+      }
       
       // Verificar variáveis de ambiente
       const config = {
@@ -416,10 +538,13 @@ export default function Configuracoes(){
         supabaseAnonKey: process.env.REACT_APP_SUPABASE_ANON_KEY ? 'Configurada' : 'Não configurada'
       }
       
-      showMessage(`Configuração do Supabase: OK! URL: ${config.supabaseUrl}, Chave: ${config.supabaseAnonKey}`, 'success')
+      const message = `Configuração do Supabase: OK! URL: ${config.supabaseUrl}, Chave: ${config.supabaseAnonKey}`
+      showMessage(message, 'success')
+      
+      console.log('🎉 [Configurações] Verificação concluída:', message)
       
     } catch (error) {
-      console.error('Erro ao verificar configuração:', error)
+      console.error('❌ [Configurações] Erro na verificação:', error)
       showMessage(`Erro na configuração: ${error.message}`, 'error')
     } finally {
       setLoading(false)
