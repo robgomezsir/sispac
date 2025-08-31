@@ -775,9 +775,6 @@ export default function Dashboard(){
     </div>
   )
 }
-
-        {/* Controles de busca e exportação */}
-        <Card className="card-modern">
           <CardHeader className="pb-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
