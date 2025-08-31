@@ -271,9 +271,18 @@ export default function Formulario(){
             <CheckCircle size={32} className="text-green-600" />
           </div>
           <h2 className="text-3xl font-bold mb-2">🎉 Obrigado por participar!</h2>
-          <p className="text-muted-foreground text-lg">
-            Suas respostas foram enviadas com sucesso.
+          <p className="text-muted-foreground text-lg mb-6">
+            Suas respostas foram enviadas com sucesso e estão sendo processadas.
           </p>
+          
+          {/* Botão Sair */}
+          <Button 
+            onClick={() => window.close()}
+            variant="outline"
+            className="px-8 py-3"
+          >
+            Sair
+          </Button>
         </Card>
       </div>
     )
@@ -290,80 +299,18 @@ export default function Formulario(){
           </div>
           <h2 className="text-3xl font-bold mb-2">🎉 Obrigado por participar!</h2>
           <p className="text-muted-foreground text-lg">
-            Confira seus resultados e envie para finalizar o processo.
+            Agora preencha suas informações pessoais abaixo e clique em enviar para finalizar o processo.
           </p>
         </div>
 
-        {/* Resultados */}
-        <Card className="p-6">
-          <CardHeader>
-            <CardTitle className="text-2xl">📊 Seus Resultados</CardTitle>
-            <CardDescription>
-              Análise detalhada das suas respostas
+        {/* Mensagem de Orientação */}
+        <Card className="p-6 bg-blue-50 border-blue-200">
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl text-blue-800">📝 Próximo Passo</CardTitle>
+            <CardDescription className="text-blue-700">
+              Para finalizar sua participação, preencha as informações pessoais abaixo e clique em "Enviar Respostas".
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Pontuação por questão */}
-            {questionDetails && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Pontuação por Questão:</h3>
-                {questionDetails.map((detail, index) => (
-                  <div key={index} className="p-4 bg-muted rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">{detail.question}</span>
-                      <Badge variant="outline">
-                        {detail.score}/{detail.max} ({detail.percentage}%)
-                      </Badge>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${detail.percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Pontuação total */}
-            {finalScore !== null && (
-              <div className="p-4 bg-primary/10 rounded-lg text-center">
-                <h3 className="text-lg font-semibold mb-2">Pontuação Total</h3>
-                <div className="text-3xl font-bold text-primary">
-                  {finalScore}/100
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  Mínimo: 68 | Máximo: 100
-                </div>
-              </div>
-            )}
-
-            {/* Status final */}
-            {finalStatus && (
-              <div className="p-4 bg-muted rounded-lg text-center">
-                <h3 className="text-lg font-semibold mb-2">Status Final</h3>
-                <Badge 
-                  variant={finalStatus === 'SUPEROU A EXPECTATIVA' ? 'default' : 
-                          finalStatus === 'ACIMA DA EXPECTATIVA' ? 'secondary' : 
-                          finalStatus === 'DENTRO DA EXPECTATIVA' ? 'outline' : 'outline'}
-                  className={finalStatus === 'SUPEROU A EXPECTATIVA' ? 'bg-green-100 text-green-800' :
-                           finalStatus === 'ACIMA DA EXPECTATIVA' ? 'bg-blue-100 text-blue-800' :
-                           finalStatus === 'DENTRO DA EXPECTATIVA' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}
-                >
-                  {finalStatus}
-                </Badge>
-              </div>
-            )}
-
-            {/* Feedback */}
-            {feedback && (
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">💡 Feedback</h3>
-                <p className="text-blue-800">{feedback}</p>
-              </div>
-            )}
-          </CardContent>
         </Card>
 
         {/* Formulário de Dados */}
