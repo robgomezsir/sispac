@@ -9,20 +9,20 @@ export const getStatusBadge = (status) => {
   try {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
-        console.log('✅ [getStatusBadge] Retornando badge Excelente')
-        return <Badge className="badge-success">Excelente</Badge>
+        console.log('✅ [getStatusBadge] Retornando badge SUPEROU A EXPECTATIVA')
+        return <Badge className="badge-success">SUPEROU A EXPECTATIVA</Badge>
       case 'ACIMA DA EXPECTATIVA':
-        console.log('✅ [getStatusBadge] Retornando badge Muito Bom')
-        return <Badge className="badge-info">Muito Bom</Badge>
+        console.log('✅ [getStatusBadge] Retornando badge ACIMA DA EXPECTATIVA')
+        return <Badge className="badge-info">ACIMA DA EXPECTATIVA</Badge>
       case 'DENTRO DA EXPECTATIVA':
-        console.log('✅ [getStatusBadge] Retornando badge Bom')
-        return <Badge className="badge-warning">Bom</Badge>
+        console.log('✅ [getStatusBadge] Retornando badge DENTRO DA EXPECTATIVA')
+        return <Badge className="badge-warning">DENTRO DA EXPECTATIVA</Badge>
       case 'ABAIXO DA EXPECTATIVA':
-        console.log('✅ [getStatusBadge] Retornando badge Regular')
-        return <Badge className="badge-modern">Regular</Badge>
+        console.log('✅ [getStatusBadge] Retornando badge ABAIXO DA EXPECTATIVA')
+        return <Badge className="badge-modern">ABAIXO DA EXPECTATIVA</Badge>
       default:
-        console.log('✅ [getStatusBadge] Retornando badge Regular para status:', status)
-        return <Badge className="badge-modern">Regular</Badge>
+        console.log('✅ [getStatusBadge] Retornando badge ABAIXO DA EXPECTATIVA para status:', status)
+        return <Badge className="badge-modern">ABAIXO DA EXPECTATIVA</Badge>
     }
   } catch (error) {
     console.error('❌ [getStatusBadge] Erro na função:', error)
