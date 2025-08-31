@@ -93,7 +93,7 @@ export default function Dashboard(){
   
 
 
-  const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
+  const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status','behavioral_profile'])
   const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' })
   const [advancedFilters, setAdvancedFilters] = useState({
@@ -521,8 +521,16 @@ export default function Dashboard(){
                         value={columnsToExport}
                         onChange={handleColumnsChange}
                       >
-                        {['id','name','email','score','status','created_at'].map(c => (
-                          <option key={c} value={c}>{c}</option>
+                        {[
+                          {value: 'id', label: 'ID'},
+                          {value: 'name', label: 'Nome'},
+                          {value: 'email', label: 'Email'},
+                          {value: 'score', label: 'Pontuação'},
+                          {value: 'status', label: 'Status'},
+                          {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental'},
+                          {value: 'created_at', label: 'Data de Criação'}
+                        ].map(c => (
+                          <option key={c.value} value={c.value}>{c.label}</option>
                         ))}
                       </select>
                     </div>

@@ -9,6 +9,17 @@ export function downloadXlsx(filename, data, columns = null) {
       return
     }
 
+    // Mapeamento de nomes de colunas para nomes amigáveis
+    const columnMapping = {
+      'id': 'ID',
+      'name': 'Nome',
+      'email': 'Email',
+      'score': 'Pontuação',
+      'status': 'Status',
+      'behavioral_profile': 'Análise de Perfil Comportamental',
+      'created_at': 'Data de Criação'
+    }
+
     // Se não foram especificadas colunas, usar todas as colunas disponíveis
     let exportData = data
     if (columns && columns.length > 0) {
@@ -16,7 +27,9 @@ export function downloadXlsx(filename, data, columns = null) {
         const filteredRow = {}
         columns.forEach(col => {
           if (row.hasOwnProperty(col)) {
-            filteredRow[col] = row[col]
+            // Usar nome amigável se disponível, senão usar o nome original
+            const friendlyName = columnMapping[col] || col
+            filteredRow[friendlyName] = row[col]
           }
         })
         return filteredRow
