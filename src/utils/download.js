@@ -9,6 +9,9 @@ export function downloadXlsx(filename, data, columns = null) {
       return
     }
 
+    console.log('🔍 [downloadXlsx] Dados recebidos:', data)
+    console.log('🔍 [downloadXlsx] Colunas solicitadas:', columns)
+
     // Mapeamento de nomes de colunas para nomes amigáveis
     const columnMapping = {
       'id': 'ID',
@@ -26,15 +29,21 @@ export function downloadXlsx(filename, data, columns = null) {
       exportData = data.map(row => {
         const filteredRow = {}
         columns.forEach(col => {
+          console.log(`🔍 [downloadXlsx] Verificando coluna: ${col}, existe: ${row.hasOwnProperty(col)}`)
           if (row.hasOwnProperty(col)) {
             // Usar nome amigável se disponível, senão usar o nome original
             const friendlyName = columnMapping[col] || col
             filteredRow[friendlyName] = row[col]
+            console.log(`✅ [downloadXlsx] Adicionada coluna: ${friendlyName} = ${row[col]}`)
+          } else {
+            console.log(`❌ [downloadXlsx] Coluna não encontrada: ${col}`)
           }
         })
         return filteredRow
       })
     }
+
+    console.log('🔍 [downloadXlsx] Dados finais para exportação:', exportData)
 
     // Criar workbook e worksheet
     const workbook = XLSX.utils.book_new()
@@ -46,9 +55,9 @@ export function downloadXlsx(filename, data, columns = null) {
     // Gerar arquivo e fazer download
     XLSX.writeFile(workbook, filename)
     
-    console.log(`Arquivo ${filename} exportado com sucesso`)
+    console.log(`✅ Arquivo ${filename} exportado com sucesso`)
   } catch (error) {
-    console.error('Erro ao exportar arquivo:', error)
+    console.error('❌ Erro ao exportar arquivo:', error)
     throw new Error('Falha ao exportar arquivo')
   }
 }
