@@ -87,6 +87,12 @@ export default function Dashboard(){
   const [error, setError] = useState(null)
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
+  
+  // Log quando current muda
+  useEffect(() => {
+    console.log('🔍 [Dashboard] Estado current atualizado:', current)
+  }, [current])
+
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
   const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' })
@@ -742,7 +748,7 @@ export default function Dashboard(){
         {/* Modal de detalhes do candidato */}
         {current && (
           <Modal
-            isOpen={!!current}
+            open={!!current}
             onClose={() => setCurrent(null)}
             title="Detalhes do Candidato"
             size="4xl"
