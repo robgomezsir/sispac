@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
-import { computeScore, classify, generateFeedback, getQuestionDetails } from '../utils/scoring'
+import { computeScore, classify } from '../utils/scoring'
 import { questions } from '../data/questions'
 import { supabase, supabaseAdmin } from '../lib/supabase'
 import { 
@@ -33,11 +33,7 @@ export default function Formulario(){
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
-  const [showResults, setShowResults] = useState(false)
-  const [finalScore, setFinalScore] = useState(null)
-  const [finalStatus, setFinalStatus] = useState(null)
-  const [questionDetails, setQuestionDetails] = useState(null)
-  const [feedback, setFeedback] = useState(null)
+  // Removidas variáveis não utilizadas: finalScore, finalStatus, questionDetails, feedback, showResults
 
   // Auto-scroll para o topo quando mudar de pergunta
   useEffect(() => {
@@ -58,7 +54,7 @@ export default function Formulario(){
 
   // Scroll para o topo quando mostrar resultados
   useEffect(() => {
-    if (showResults) {
+    if (sent) {
       const timer = setTimeout(() => {
         try {
           window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -68,7 +64,7 @@ export default function Formulario(){
       }, 100)
       return () => clearTimeout(timer)
     }
-  }, [showResults])
+  }, [sent])
 
   // Scroll para o topo quando enviar formulário
   useEffect(() => {
@@ -149,19 +145,19 @@ export default function Formulario(){
     }
   }, [canGoBack, step])
 
-  // Função para calcular resultados
-  const calculateResults = useCallback(() => {
-    const { totalScore, questionScores } = computeScore(answers, questions)
-    const status = classify(totalScore)
-    const feedbackText = generateFeedback(totalScore, questionScores)
-    const details = getQuestionDetails(questionScores)
-    
-    setFinalScore(totalScore)
-    setFinalStatus(status)
-    setQuestionDetails(details)
-    setFeedback(feedbackText)
-    setShowResults(true)
-  }, [answers])
+  // Função calculateResults removida - não está sendo usada
+  // const calculateResults = useCallback(() => {
+  //   const { totalScore, questionScores } = computeScore(answers, questions)
+  //   const status = classify(totalScore)
+  //   const feedbackText = generateFeedback(totalScore, questionScores)
+  //   const details = getQuestionDetails(questionScores)
+  //   
+  //   setFinalScore(totalScore)
+  //   setFinalStatus(status)
+  //   setQuestionDetails(details)
+  //   setFeedback(feedbackText)
+  //   setShowResults(true)
+  // }, [answers])
 
   // Função para enviar respostas
   const handleSubmit = async (e) => {
@@ -184,18 +180,16 @@ export default function Formulario(){
         return
       }
 
-      const { totalScore, questionScores } = computeScore(answers, questions)
+      const { totalScore } = computeScore(answers, questions)
       const status = classify(totalScore)
-      const feedbackText = generateFeedback(totalScore, questionScores)
 
       const payload = {
         name: nome.trim(),
         email: email.toLowerCase(),
         answers,
         score: totalScore,
-        status,
-        question_scores: questionScores
-        // Removido 'feedback' pois a coluna não existe na tabela
+        status
+        // Removido 'feedback' e 'question_scores' pois as colunas não existem na tabela
       }
 
       // Tentar primeiro com cliente normal, depois com admin se falhar
