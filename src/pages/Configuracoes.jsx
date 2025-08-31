@@ -12,6 +12,13 @@ export default function Configuracoes(){
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('info')
+  
+  // Estados para candidatos de teste
+  const [testCandidateName, setTestCandidateName] = useState('')
+  const [testCandidateEmail, setTestCandidateEmail] = useState('')
+  const [testCandidateScore, setTestCandidateScore] = useState('')
+  const [testCandidateStatus, setTestCandidateStatus] = useState('DENTRO DA EXPECTATIVA')
+  const [removeTestCandidateEmail, setRemoveTestCandidateEmail] = useState('')
 
   // Verificar se o usuário tem permissão
   useEffect(() => {
@@ -120,6 +127,124 @@ export default function Configuracoes(){
     callApi('checkSupabaseConfig', {})
   }
 
+  // Funções para gerenciar candidatos de teste
+
+  const handleAddTestCandidate = () => {
+    if (!testCandidateName.trim() || !testCandidateEmail.trim() || !testCandidateScore.trim()) {
+      setMessage('Por favor, preencha todos os campos obrigatórios.')
+      setMessageType('error')
+      return
+    }
+    
+    if (!testCandidateEmail.includes('@')) {
+      setMessage('Por favor, insira um email válido.')
+      setMessageType('error')
+      return
+    }
+    
+    const score = parseInt(testCandidateScore)
+    if (isNaN(score) || score < 0 || score > 100) {
+      setMessage('A pontuação deve ser um número entre 0 e 100.')
+      setMessageType('error')
+      return
+    }
+    
+    // Criar dados simulados de candidato de teste
+    const testCandidateData = {
+      name: testCandidateName.trim(),
+      email: testCandidateEmail.trim().toLowerCase(),
+      score: score,
+      status: testCandidateStatus,
+      answers: {
+        // Simular respostas básicas para teste
+        question_1: ['opcao_1'],
+        question_2: ['opcao_2'],
+        question_3: ['opcao_1', 'opcao_3'],
+        question_4: ['opcao_2'],
+        question_5: ['opcao_1']
+      },
+      created_at: new Date().toISOString()
+    }
+    
+    // Inserir diretamente no Supabase
+    addTestCandidateToDatabase(testCandidateData)
+  }
+
+  const handleRemoveTestCandidate = () => {
+    if (!removeTestCandidateEmail.trim()) {
+      setMessage('Por favor, insira o email do candidato de teste a ser removido.')
+      setMessageType('error')
+      return
+    }
+    
+    if (confirm(`Tem certeza que deseja remover o candidato de teste ${removeTestCandidateEmail}?`)) {
+      removeTestCandidateFromDatabase(removeTestCandidateEmail.trim().toLowerCase())
+    }
+  }
+
+  const addTestCandidateToDatabase = async (candidateData) => {
+    setLoading(true)
+    setMessage(null)
+    
+    try {
+      const { data, error } = await supabase
+        .from('candidates')
+        .insert([candidateData])
+        .select()
+      
+      if (error) {
+        throw new Error(error.message)
+      }
+      
+      setMessage(`Candidato de teste "${candidateData.name}" adicionado com sucesso!`)
+      setMessageType('success')
+      
+      // Limpar campos após sucesso
+      setTestCandidateName('')
+      setTestCandidateEmail('')
+      setTestCandidateScore('')
+      setTestCandidateStatus('DENTRO DA EXPECTATIVA')
+      
+    } catch (e) {
+      setMessage('Erro ao adicionar candidato de teste: ' + e.message)
+      setMessageType('error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const removeTestCandidateFromDatabase = async (email) => {
+    setLoading(true)
+    setMessage(null)
+    
+    try {
+      const { data, error } = await supabase
+        .from('candidates')
+        .delete()
+        .eq('email', email)
+        .select()
+      
+      if (error) {
+        throw new Error(error.message)
+      }
+      
+      if (data && data.length > 0) {
+        setMessage(`Candidato de teste com email "${email}" removido com sucesso!`)
+        setMessageType('success')
+        setRemoveTestCandidateEmail('')
+      } else {
+        setMessage('Nenhum candidato de teste encontrado com este email.')
+        setMessageType('error')
+      }
+      
+    } catch (e) {
+      setMessage('Erro ao remover candidato de teste: ' + e.message)
+      setMessageType('error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -197,6 +322,78 @@ export default function Configuracoes(){
             >
               {loading ? 'Removendo...' : 'Remover Usuário'}
             </button>
+          </div>
+        </div>
+
+        {/* Gerenciar Candidatos de Teste */}
+        <div className="space-y-4 mb-8">
+          <h2 className="text-xl font-semibold">Gerenciar Candidatos de Teste</h2>
+          
+          {/* Adicionar Candidato de Teste */}
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/20">
+            <h3 className="text-lg font-medium text-muted-foreground">Adicionar Candidato de Teste</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <input
+                type="text"
+                placeholder="Nome completo"
+                value={testCandidateName}
+                onChange={e => setTestCandidateName(e.target.value)}
+                className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={testCandidateEmail}
+                onChange={e => setTestCandidateEmail(e.target.value)}
+                className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              />
+              <input
+                type="number"
+                placeholder="Pontuação (0-100)"
+                value={testCandidateScore}
+                onChange={e => setTestCandidateScore(e.target.value)}
+                min="0"
+                max="100"
+                className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              />
+              <select
+                value={testCandidateStatus}
+                onChange={e => setTestCandidateStatus(e.target.value)}
+                className="p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              >
+                <option value="SUPEROU A EXPECTATIVA">Superou a Expectativa</option>
+                <option value="ACIMA DA EXPECTATIVA">Acima da Expectativa</option>
+                <option value="DENTRO DA EXPECTATIVA">Dentro da Expectativa</option>
+              </select>
+            </div>
+            <button
+              onClick={handleAddTestCandidate}
+              disabled={loading}
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition disabled:opacity-50"
+            >
+              {loading ? 'Adicionando...' : 'Adicionar Candidato de Teste'}
+            </button>
+          </div>
+
+          {/* Remover Candidato de Teste */}
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/20">
+            <h3 className="text-lg font-medium text-muted-foreground">Remover Candidato de Teste</h3>
+            <div className="flex gap-4">
+              <input
+                type="email"
+                placeholder="Email do candidato de teste"
+                value={removeTestCandidateEmail}
+                onChange={e => setRemoveTestCandidateEmail(e.target.value)}
+                className="flex-1 p-3 border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              />
+              <button
+                onClick={handleRemoveTestCandidate}
+                disabled={loading}
+                className="bg-destructive text-destructive-foreground px-6 py-3 rounded-lg hover:bg-destructive/90 transition disabled:opacity-50"
+              >
+                {loading ? 'Removendo...' : 'Remover Candidato de Teste'}
+              </button>
+            </div>
           </div>
         </div>
 
