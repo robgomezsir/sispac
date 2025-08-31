@@ -155,10 +155,10 @@ export default function Formulario(){
         return
       }
 
-      const { totalScore } = computeScore(answers, questions)
+      const { totalScore, questionScores } = computeScore(answers, questions)
       const status = classify(totalScore)
 
-      const payload = {
+      const candidatePayload = {
         name: nome.trim(),
         email: email.toLowerCase(),
         answers,
@@ -172,7 +172,7 @@ export default function Formulario(){
       try {
         const result = await supabase
           .from('candidates')
-          .insert(payload)
+          .insert(candidatePayload)
           .select()
           .single()
         inserted = result.data
@@ -186,7 +186,7 @@ export default function Formulario(){
         try {
           const result = await supabaseAdmin
             .from('candidates')
-            .insert(payload)
+            .insert(candidatePayload)
             .select()
             .single()
           inserted = result.data
@@ -199,6 +199,70 @@ export default function Formulario(){
       if(insertError || !inserted) {
         console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
         throw new Error(`Erro ao salvar dados: ${insertError?.message || 'Falha na inserção'}`)
+      }
+
+      // Agora salvar os resultados individuais na tabela results
+      console.log('✅ [Formulario] Candidato salvo, salvando resultados individuais...')
+      
+      const resultsToInsert = Object.entries(answers).map(([questionId, selectedAnswers]) => {
+        const question = questions.find(q => q.id === parseInt(questionId))
+        const questionScore = questionScores[questionId] || 0
+        
+        return {
+          candidate_id: inserted.id,
+          question_id: parseInt(questionId),
+          question_title: question?.title || `Questão ${questionId}`,
+          selected_answers: Array.isArray(selectedAnswers) ? selectedAnswers : [selectedAnswers],
+          max_choices: question?.maxChoices || 5,
+          question_category: question?.category || 'comportamental',
+          question_weight: question?.weight || 1.00,
+          score_question: questionScore,
+          is_correct: questionScore > 0
+        }
+      })
+
+      // Inserir resultados individuais
+      let resultsInsertError
+      try {
+        const { error: resultsError } = await supabase
+          .from('results')
+          .insert(resultsToInsert)
+        
+        if (resultsError) {
+          console.warn('⚠️ [Formulario] Erro ao salvar resultados individuais:', resultsError)
+          // Tentar com admin se falhar
+          if (supabaseAdmin !== supabase) {
+            const { error: adminResultsError } = await supabaseAdmin
+              .from('results')
+              .insert(resultsToInsert)
+            
+            if (adminResultsError) {
+              console.warn('⚠️ [Formulario] Erro ao salvar resultados com admin:', adminResultsError)
+            } else {
+              console.log('✅ [Formulario] Resultados salvos com admin')
+            }
+          }
+        } else {
+          console.log('✅ [Formulario] Resultados individuais salvos com sucesso')
+        }
+      } catch (resultsErr) {
+        console.warn('⚠️ [Formulario] Exceção ao salvar resultados:', resultsErr)
+        // Tentar com admin se falhar
+        if (supabaseAdmin !== supabase) {
+          try {
+            const { error: adminResultsError } = await supabaseAdmin
+              .from('results')
+              .insert(resultsToInsert)
+            
+            if (adminResultsError) {
+              console.warn('⚠️ [Formulario] Erro ao salvar resultados com admin:', adminResultsError)
+            } else {
+              console.log('✅ [Formulario] Resultados salvos com admin')
+            }
+          } catch (adminErr) {
+            console.warn('⚠️ [Formulario] Exceção ao salvar resultados com admin:', adminErr)
+          }
+        }
       }
 
       setSent(true)

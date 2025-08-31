@@ -588,6 +588,41 @@ export default function Configuracoes(){
     }
   }
 
+  // Função para migrar dados de candidates para results
+  const handleMigrateResults = async () => {
+    if (!confirm('⚠️ ATENÇÃO: Esta operação irá migrar os dados existentes da tabela "candidates" para a tabela "results" para permitir a exibição detalhada. Esta ação é segura e não remove dados. Continuar?')) {
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      console.log('🔄 [Configurações] Iniciando migração de candidatos para resultados...')
+
+      const response = await fetch('/api/migrateResults', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Erro na migração')
+      }
+
+      console.log('✅ [Configurações] Migração concluída:', result)
+      showMessage(`Migração concluída com sucesso! ${result.migrated} candidatos migrados de ${result.total} total.`, 'success')
+
+    } catch (error) {
+      console.error('❌ [Configurações] Erro na migração:', error)
+      showMessage(`Erro na migração: ${error.message}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (role !== 'admin') {
     return (
       <div className="min-h-[50vh] flex items-center justify-center bg-gradient-pastel relative overflow-hidden">
@@ -948,6 +983,24 @@ export default function Configuracoes(){
                 <div className="flex items-center gap-3">
                   <Trash2 size={18} />
                   <span>Limpar Dados</span>
+                </div>
+              )}
+            </button>
+
+            <button
+              onClick={handleMigrateResults}
+              disabled={loading}
+              className="btn-warning-modern px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 border-3 border-warning-foreground/30 border-t-warning-foreground rounded-full animate-spin" />
+                  <span>Migrando...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Database size={18} />
+                  <span>Migrar Resultados</span>
                 </div>
               )}
             </button>

@@ -758,6 +758,7 @@ export default function Dashboard(){
 // Componente otimizado para detalhes do candidato
 function CandidateDetails({ id }){
   const [details, setDetails] = useState(null)
+  const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   
@@ -772,7 +773,7 @@ function CandidateDetails({ id }){
       
       try {
         // Buscar dados do candidato da tabela candidates
-        const { data, error: fetchError } = await supabase
+        const { data: candidateData, error: candidateError } = await supabase
           .from('candidates')
           .select('*')
           .eq('id', id)
@@ -780,13 +781,32 @@ function CandidateDetails({ id }){
         
         if (!isMounted) return
         
-        if (fetchError) {
-          console.error("❌ Erro ao buscar detalhes do candidato:", fetchError)
-          setError(fetchError.message)
-        } else {
-          console.log("✅ Detalhes do candidato carregados:", data)
-          setDetails(data)
+        if (candidateError) {
+          console.error("❌ Erro ao buscar detalhes do candidato:", candidateError)
+          setError(candidateError.message)
+          return
         }
+
+        // Buscar resultados individuais da tabela results
+        const { data: resultsData, error: resultsError } = await supabase
+          .from('results')
+          .select('*')
+          .eq('candidate_id', id)
+          .order('question_id', { ascending: true })
+        
+        if (!isMounted) return
+        
+        if (resultsError) {
+          console.warn("⚠️ Erro ao buscar resultados individuais:", resultsError)
+          // Não falhar se não conseguir buscar resultados, apenas logar warning
+        } else {
+          console.log("✅ Resultados individuais carregados:", resultsData)
+          setResults(resultsData || [])
+        }
+
+        console.log("✅ Detalhes do candidato carregados:", candidateData)
+        setDetails(candidateData)
+        
       } catch (err) {
         if (!isMounted) return
         console.error("❌ Exceção ao buscar detalhes:", err)
@@ -1047,6 +1067,62 @@ function CandidateDetails({ id }){
                   <div className="text-sm text-muted-foreground">
                     {Array.isArray(answers) ? answers.join(', ') : answers}
                   </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Resultados Detalhados por Questão */}
+      {results.length > 0 && (
+        <Card className="card-modern">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
+                <BarChart3 size={20} className="text-info" />
+              </div>
+              Análise Detalhada por Questão
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {results.map((result, index) => (
+                <div key={result.id} className="p-4 bg-muted/30 rounded-xl border border-border/50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-medium text-foreground">
+                      Questão {result.question_id}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {result.score_question || 0} pts
+                      </Badge>
+                      {result.is_correct && (
+                        <Badge variant="secondary" className="text-xs bg-success/20 text-success">
+                          ✓ Correta
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground mb-2">
+                    {result.question_title}
+                  </div>
+                  
+                  <div className="text-sm text-foreground">
+                    <strong>Respostas selecionadas:</strong>
+                  </div>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {Array.isArray(result.selected_answers) 
+                      ? result.selected_answers.join(', ') 
+                      : result.selected_answers}
+                  </div>
+                  
+                  {result.question_category && (
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      Categoria: {result.question_category}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
