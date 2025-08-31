@@ -372,141 +372,155 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- =====================================================
--- POLÍTICAS RLS (Row Level Security)
+-- POLÍTICAS RLS CORRIGIDAS (SEM RECURSÃO)
 -- =====================================================
 
 -- Habilitar RLS em todas as tabelas
 DO $$
 BEGIN
-    -- Profiles
+    -- Profiles - POLÍTICAS CORRIGIDAS PARA EVITAR RECURSÃO
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles') THEN
         ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
         
         -- Remover políticas existentes se houver
         DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
         DROP POLICY IF EXISTS "Admins can view all profiles" ON public.profiles;
+        DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
+        DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
         
-        -- Criar novas políticas
+        -- POLÍTICA CORRIGIDA: Usuários podem ver apenas seu próprio perfil
         CREATE POLICY "Users can view own profile" ON public.profiles
             FOR SELECT USING (auth.uid() = id);
         
+        -- POLÍTICA CORRIGIDA: Usuários podem inserir seu próprio perfil
+        CREATE POLICY "Users can insert own profile" ON public.profiles
+            FOR INSERT WITH CHECK (auth.uid() = id);
+        
+        -- POLÍTICA CORRIGIDA: Usuários podem atualizar seu próprio perfil
+        CREATE POLICY "Users can update own profile" ON public.profiles
+            FOR UPDATE USING (auth.uid() = id);
+        
+        -- POLÍTICA CORRIGIDA: Admins podem ver todos os perfis (SEM RECURSÃO)
         CREATE POLICY "Admins can view all profiles" ON public.profiles
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
+            FOR SELECT USING (
+                auth.jwt() ->> 'role' = 'service_role' 
+                OR 
+                (auth.jwt() ->> 'role' = 'authenticated' AND 
+                 EXISTS (
+                     SELECT 1 FROM auth.users 
+                     WHERE id = auth.uid() 
+                     AND raw_user_meta_data ->> 'role' = 'admin'
+                 ))
             );
+        
+        RAISE NOTICE 'Políticas RLS para profiles corrigidas (sem recursão)';
     END IF;
     
-    -- Candidates
+    -- Candidates - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'candidates') THEN
         ALTER TABLE public.candidates ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Authenticated users can view candidates" ON public.candidates;
         DROP POLICY IF EXISTS "Admins can manage candidates" ON public.candidates;
+        DROP POLICY IF EXISTS "Everyone can view candidates" ON public.candidates;
         
-        CREATE POLICY "Authenticated users can view candidates" ON public.candidates
+        -- POLÍTICA SIMPLIFICADA: Todos os usuários autenticados podem ler candidatos
+        CREATE POLICY "Everyone can view candidates" ON public.candidates
             FOR SELECT USING (auth.role() = 'authenticated');
         
-        CREATE POLICY "Admins can manage candidates" ON public.candidates
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar candidatos
+        CREATE POLICY "Service role can manage candidates" ON public.candidates
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para candidates simplificadas';
     END IF;
     
-    -- Results
+    -- Results - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'results') THEN
         ALTER TABLE public.results ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Authenticated users can view results" ON public.results;
         DROP POLICY IF EXISTS "Admins can manage results" ON public.results;
+        DROP POLICY IF EXISTS "Everyone can view results" ON public.results;
         
-        CREATE POLICY "Authenticated users can view results" ON public.results
+        -- POLÍTICA SIMPLIFICADA: Todos os usuários autenticados podem ler resultados
+        CREATE POLICY "Everyone can view results" ON public.results
             FOR SELECT USING (auth.role() = 'authenticated');
         
-        CREATE POLICY "Admins can manage results" ON public.results
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar resultados
+        CREATE POLICY "Service role can manage results" ON public.results
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para results simplificadas';
     END IF;
     
-    -- Questions
+    -- Questions - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'questions') THEN
         ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Everyone can view questions" ON public.questions;
         DROP POLICY IF EXISTS "Admins can manage questions" ON public.questions;
         
+        -- POLÍTICA SIMPLIFICADA: Todos podem ler questões
         CREATE POLICY "Everyone can view questions" ON public.questions
             FOR SELECT USING (true);
         
-        CREATE POLICY "Admins can manage questions" ON public.questions
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar questões
+        CREATE POLICY "Service role can manage questions" ON public.questions
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para questions simplificadas';
     END IF;
     
-    -- Question answers
+    -- Question answers - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'question_answers') THEN
         ALTER TABLE public.question_answers ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Everyone can view question answers" ON public.question_answers;
         DROP POLICY IF EXISTS "Admins can manage question answers" ON public.question_answers;
         
+        -- POLÍTICA SIMPLIFICADA: Todos podem ler respostas
         CREATE POLICY "Everyone can view question answers" ON public.question_answers
             FOR SELECT USING (true);
         
-        CREATE POLICY "Admins can manage question answers" ON public.question_answers
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar respostas
+        CREATE POLICY "Service role can manage question answers" ON public.question_answers
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para question_answers simplificadas';
     END IF;
     
-    -- Test sessions
+    -- Test sessions - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'test_sessions') THEN
         ALTER TABLE public.test_sessions ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Users can view own test sessions" ON public.test_sessions;
         DROP POLICY IF EXISTS "Admins can view all test sessions" ON public.test_sessions;
+        DROP POLICY IF EXISTS "Everyone can view test sessions" ON public.test_sessions;
         
-        CREATE POLICY "Users can view own test sessions" ON public.test_sessions
-            FOR SELECT USING (auth.uid()::text = candidate_id::text);
+        -- POLÍTICA SIMPLIFICADA: Todos os usuários autenticados podem ler sessões
+        CREATE POLICY "Everyone can view test sessions" ON public.test_sessions
+            FOR SELECT USING (auth.role() = 'authenticated');
         
-        CREATE POLICY "Admins can view all test sessions" ON public.test_sessions
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode modificar sessões
+        CREATE POLICY "Service role can manage test sessions" ON public.test_sessions
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para test_sessions simplificadas';
     END IF;
     
-    -- Audit logs
+    -- Audit logs - POLÍTICAS SIMPLIFICADAS
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'audit_logs') THEN
         ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
         
         DROP POLICY IF EXISTS "Admins can view audit logs" ON public.audit_logs;
+        DROP POLICY IF EXISTS "Service role can manage audit logs" ON public.audit_logs;
         
-        CREATE POLICY "Admins can view audit logs" ON public.audit_logs
-            FOR ALL USING (
-                EXISTS (
-                    SELECT 1 FROM public.profiles 
-                    WHERE id = auth.uid() AND role = 'admin'
-                )
-            );
+        -- POLÍTICA SIMPLIFICADA: Apenas service_role pode acessar logs de auditoria
+        CREATE POLICY "Service role can manage audit logs" ON public.audit_logs
+            FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+        
+        RAISE NOTICE 'Políticas RLS para audit_logs simplificadas';
     END IF;
 END $$;
 
@@ -663,7 +677,7 @@ BEGIN
     RAISE NOTICE 'SISTEMA SISPAC - ESTRUTURA DE BANCO CONFIGURADA!';
     RAISE NOTICE '=====================================================';
     RAISE NOTICE 'Todas as tabelas foram criadas/atualizadas com sucesso.';
-    RAISE NOTICE 'Políticas RLS configuradas.';
+    RAISE NOTICE 'Políticas RLS CORRIGIDAS (sem recursão infinita).';
     RAISE NOTICE 'Dados iniciais inseridos (se necessário).';
     RAISE NOTICE 'Sistema pronto para uso!';
     RAISE NOTICE '=====================================================';
