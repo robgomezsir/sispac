@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from '../components/ui'
-import { TrendingUp, Minus } from 'lucide-react'
+import { TrendingUp, Minus, TrendingDown, Award } from 'lucide-react'
 
 // Função para obter badge de status
 export const getStatusBadge = (status) => {
@@ -17,6 +17,9 @@ export const getStatusBadge = (status) => {
       case 'DENTRO DA EXPECTATIVA':
         console.log('✅ [getStatusBadge] Retornando badge Bom')
         return <Badge className="badge-warning">Bom</Badge>
+      case 'ABAIXO DA EXPECTATIVA':
+        console.log('✅ [getStatusBadge] Retornando badge Regular')
+        return <Badge className="badge-modern">Regular</Badge>
       default:
         console.log('✅ [getStatusBadge] Retornando badge Regular para status:', status)
         return <Badge className="badge-modern">Regular</Badge>
@@ -34,11 +37,13 @@ export const getStatusIcon = (status) => {
   try {
     switch (status) {
       case 'SUPEROU A EXPECTATIVA':
-        return <TrendingUp size={18} className="text-success" />
+        return <Award size={18} className="text-success" />
       case 'ACIMA DA EXPECTATIVA':
         return <TrendingUp size={18} className="text-info" />
       case 'DENTRO DA EXPECTATIVA':
         return <Minus size={18} className="text-warning" />
+      case 'ABAIXO DA EXPECTATIVA':
+        return <TrendingDown size={18} className="text-muted-foreground" />
       default:
         return <Minus size={18} className="text-muted-foreground" />
     }
@@ -60,6 +65,8 @@ export const getStatusColor = (status) => {
         return 'text-info'
       case 'DENTRO DA EXPECTATIVA':
         return 'text-warning'
+      case 'ABAIXO DA EXPECTATIVA':
+        return 'text-muted-foreground'
       default:
         return 'text-muted-foreground'
     }

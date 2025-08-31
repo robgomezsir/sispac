@@ -82,6 +82,7 @@ export function AdvancedFilters({
                 <option value="SUPEROU A EXPECTATIVA">Superou a Expectativa</option>
                 <option value="ACIMA DA EXPECTATIVA">Acima da Expectativa</option>
                 <option value="DENTRO DA EXPECTATIVA">Dentro da Expectativa</option>
+                <option value="ABAIXO DA EXPECTATIVA">Abaixo da Expectativa</option>
               </select>
             </div>
 

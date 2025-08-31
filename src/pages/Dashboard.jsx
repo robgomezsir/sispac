@@ -175,8 +175,9 @@ export default function Dashboard(){
     const superou = filtered.filter(r => r.status === 'SUPEROU A EXPECTATIVA').length
     const acima = filtered.filter(r => r.status === 'ACIMA DA EXPECTATIVA').length
     const dentro = filtered.filter(r => r.status === 'DENTRO DA EXPECTATIVA').length
+    const abaixo = filtered.filter(r => r.status === 'ABAIXO DA EXPECTATIVA').length
     
-    return { total, superou, acima, dentro }
+    return { total, superou, acima, dentro, abaixo }
   }, [filtered])
 
   // Função de carregamento otimizada
@@ -415,6 +416,21 @@ export default function Dashboard(){
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
                   <CheckCircle size={28} className="text-warning" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Abaixo da Expectativa</p>
+                  <p className="text-4xl font-bold text-muted-foreground">{stats.abaixo}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Precisa de desenvolvimento</p>
+                </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 rounded-2xl flex items-center justify-center border border-muted-foreground/20 group-hover:scale-110 transition-transform duration-300">
+                  <TrendingDown size={28} className="text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
