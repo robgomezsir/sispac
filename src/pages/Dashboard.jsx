@@ -1142,9 +1142,33 @@ function CandidateDetails({ id }){
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-64">
-              {JSON.stringify(details, null, 2)}
-            </pre>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium mb-2">📊 Status dos Dados:</h4>
+                <div className="text-sm space-y-1">
+                  <div>• Candidato ID: {details.id}</div>
+                  <div>• Respostas antigas (candidates.answers): {Object.keys(details.answers || {}).length} questões</div>
+                  <div>• Resultados detalhados (results): {results.length} registros</div>
+                  <div>• Tem dados detalhados: {results.length > 0 ? '✅ SIM' : '❌ NÃO'}</div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-2">🔍 Dados do Candidato:</h4>
+                <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-32">
+                  {JSON.stringify(details, null, 2)}
+                </pre>
+              </div>
+              
+              {results.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-2">📋 Resultados Detalhados:</h4>
+                  <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-32">
+                    {JSON.stringify(results, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       )}
