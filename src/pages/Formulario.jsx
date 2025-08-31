@@ -194,8 +194,8 @@ export default function Formulario(){
         answers,
         score: totalScore,
         status,
-        question_scores: questionScores,
-        feedback: feedbackText
+        question_scores: questionScores
+        // Removido 'feedback' pois a coluna não existe na tabela
       }
 
       // Tentar primeiro com cliente normal, depois com admin se falhar
@@ -233,20 +233,19 @@ export default function Formulario(){
         throw new Error(`Erro ao salvar dados: ${insertError?.message || 'Falha na inserção'}`)
       }
 
-      // opcional: salvar detalhamento textual simples
-      const details = buildDetails(answers, totalScore, status)
-      
-      try {
-        await supabase
-          .from('results')
-          .insert({
-            candidate_id: inserted.id,
-            details
-          })
-      } catch (err) {
-        console.error('❌ [Formulario] Erro ao inserir resultados:', err)
-        // Não falhar se apenas os resultados não puderem ser salvos
-      }
+      // Inserção na tabela results removida - focar apenas na inserção principal
+      // const details = buildDetails(answers, totalScore, status)
+      // try {
+      //   await supabase
+      //     .from('results')
+      //     .insert({
+      //       candidate_id: inserted.id,
+      //       details
+      //     })
+      // } catch (err) {
+      //   console.error('❌ [Formulario] Erro ao inserir resultados:', err)
+      //   // Não falhar se apenas os resultados não puderem ser salvos
+      // }
 
       setSent(true)
       alert('Respostas enviadas com sucesso!')
