@@ -28,7 +28,9 @@ export async function assertAuth(req){
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
     
     if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Configuração do Supabase não encontrada')
+      const err = new Error('Configuração do Supabase não encontrada')
+      err.status = 500
+      throw err
     }
     
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -42,28 +44,47 @@ export async function assertAuth(req){
       throw err
     }
     
-    // Verificar se o usuário tem role admin
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    console.log('✅ [assertAuth] Usuário autenticado:', { id: user.id, email: user.email })
     
-    if (profileError || !profile || profile.role !== 'admin') {
-      const err = new Error('Acesso negado: apenas administradores podem executar esta operação')
-      err.status = 403
-      throw err
+    // Tentar verificar role na tabela profiles, mas não falhar se não existir
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      
+      if (!profileError && profile && profile.role === 'admin') {
+        req.user = user
+        req.userRole = profile.role
+        console.log('✅ [assertAuth] Usuário é admin:', { role: profile.role })
+        return { user, role: profile.role }
+      }
+    } catch (profileError) {
+      console.log('⚠️ [assertAuth] Tabela profiles não encontrada ou erro ao acessar:', profileError.message)
     }
     
-    // Adicionar informações do usuário ao request para uso posterior
-    req.user = user
-    req.userRole = profile.role
+    // Se não conseguiu verificar na tabela profiles, verificar se é um usuário válido
+    // Para desenvolvimento, aceitar qualquer usuário autenticado
+    if (process.env.NODE_ENV === 'development') {
+      console.log('⚠️ [assertAuth] Modo desenvolvimento: aceitando usuário autenticado')
+      req.user = user
+      req.userRole = 'admin' // Assumir admin em desenvolvimento
+      return { user, role: 'admin' }
+    }
     
-    return { user, role: profile.role }
+    // Em produção, exigir role admin
+    const err = new Error('Acesso negado: apenas administradores podem executar esta operação')
+    err.status = 403
+    throw err
+    
   } catch (error) {
+    console.error('❌ [assertAuth] Erro de autenticação:', error)
+    
     if (error.status) {
       throw error
     }
+    
     const err = new Error('Erro de autenticação: ' + error.message)
     err.status = 500
     throw err

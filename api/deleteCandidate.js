@@ -2,13 +2,24 @@ import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
 
 export default async function handler(req, res){
   try{
+    // Validar método HTTP
+    if (req.method !== 'POST') {
+      return res.status(405).json({ 
+        error: 'Método não permitido',
+        message: 'Apenas requisições POST são aceitas'
+      })
+    }
+    
     // Validar autenticação e permissões
     await assertAuth(req)
     
     const { email } = req.body || {}
     
     if(!email || !email.trim()) {
-      return fail(res, { message: 'Email é obrigatório' }, 400)
+      return res.status(400).json({ 
+        error: 'Email é obrigatório',
+        message: 'O campo email é obrigatório para remover um candidato'
+      })
     }
     
     const supabase = getSupabaseAdmin()
@@ -24,14 +35,23 @@ export default async function handler(req, res){
     
     if(searchError) {
       if(searchError.code === 'PGRST116') {
-        return fail(res, { message: 'Candidato não encontrado com este email' }, 404)
+        return res.status(404).json({ 
+          error: 'Candidato não encontrado',
+          message: 'Candidato não encontrado com este email'
+        })
       }
       console.error('❌ [deleteCandidate] Erro ao buscar candidato:', searchError)
-      return fail(res, { message: 'Erro ao buscar candidato: ' + searchError.message }, 500)
+      return res.status(500).json({ 
+        error: 'Erro interno',
+        message: 'Erro ao buscar candidato: ' + searchError.message
+      })
     }
     
     if(!candidate) {
-      return fail(res, { message: 'Candidato não encontrado com este email' }, 404)
+      return res.status(404).json({ 
+        error: 'Candidato não encontrado',
+        message: 'Candidato não encontrado com este email'
+      })
     }
     
     console.log('✅ [deleteCandidate] Candidato encontrado:', { id: candidate.id, name: candidate.name, email: candidate.email })
@@ -44,12 +64,17 @@ export default async function handler(req, res){
     
     if(deleteError) {
       console.error('❌ [deleteCandidate] Erro ao remover candidato:', deleteError)
-      return fail(res, { message: 'Erro ao remover candidato: ' + deleteError.message }, 500)
+      return res.status(500).json({ 
+        error: 'Erro interno',
+        message: 'Erro ao remover candidato: ' + deleteError.message
+      })
     }
     
     console.log('✅ [deleteCandidate] Candidato removido com sucesso:', { id: candidate.id, name: candidate.name, email: candidate.email })
     
-    ok(res, { 
+    // Retornar resposta de sucesso
+    return res.status(200).json({ 
+      success: true,
       message: 'Candidato removido com sucesso',
       candidate: {
         id: candidate.id,
@@ -60,6 +85,12 @@ export default async function handler(req, res){
     
   }catch(e){ 
     console.error('❌ [deleteCandidate] Erro na API:', e)
-    fail(res, e) 
+    
+    // Garantir que sempre retornamos uma resposta válida
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      message: 'Ocorreu um erro inesperado ao processar a requisição',
+      details: process.env.NODE_ENV === 'development' ? e.message : undefined
+    })
   }
 }

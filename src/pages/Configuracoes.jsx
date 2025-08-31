@@ -238,18 +238,93 @@ export default function Configuracoes(){
     setMessage(null)
     
     try {
-      // Usar a API para remoção de candidatos
-      const response = await callApi('deleteCandidate', { email })
-      
-      // A função callApi já define a mensagem, então não precisamos definir novamente
-      // Apenas limpar o campo se foi bem-sucedido
-      if (response && response.success) {
-        setRemoveTestCandidateEmail('')
+      // Validar email
+      if (!email || !email.trim()) {
+        throw new Error('Email é obrigatório')
       }
       
+      // Validar formato do email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email.trim())) {
+        throw new Error('Formato de email inválido')
+      }
+      
+      // Obter token de sessão atual
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        throw new Error('Sessão expirada. Faça login novamente.')
+      }
+      
+      console.log('🔍 [Configurações] Tentando remover candidato:', email.trim())
+      
+      // Chamar a API de remoção
+      const res = await fetch('/api/deleteCandidate', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ email: email.trim().toLowerCase() })
+      })
+      
+      console.log('📡 [Configurações] Resposta da API:', res.status, res.statusText)
+      
+      // Verificar se a resposta tem conteúdo antes de tentar fazer parse JSON
+      const responseText = await res.text()
+      
+      console.log('📄 [Configurações] Conteúdo da resposta:', responseText)
+      
+      if (!responseText) {
+        throw new Error('Resposta vazia da API - verifique se o servidor está funcionando')
+      }
+      
+      let data
+      try {
+        data = JSON.parse(responseText)
+      } catch (parseError) {
+        console.error('❌ [Configurações] Erro ao fazer parse da resposta:', parseError)
+        console.error('❌ [Configurações] Resposta recebida:', responseText)
+        throw new Error('Resposta inválida da API - formato JSON incorreto')
+      }
+      
+      if (!res.ok) {
+        const errorMessage = data.error || data.message || `Erro HTTP ${res.status}`
+        throw new Error(errorMessage)
+      }
+      
+      // Verificar se a resposta indica sucesso
+      if (!data.success && !data.message) {
+        throw new Error('Resposta da API não indica sucesso')
+      }
+      
+      // Sucesso
+      const successMessage = data.message || 'Candidato de teste removido com sucesso!'
+      setMessage(successMessage)
+      setMessageType('success')
+      
+      // Limpar campo após sucesso
+      setRemoveTestCandidateEmail('')
+      
+      console.log('✅ [Configurações] Candidato de teste removido com sucesso:', data)
+      
     } catch (e) {
-      // A função callApi já trata os erros, mas podemos adicionar log adicional
-      console.error('Erro na remoção:', e)
+      console.error('❌ [Configurações] Erro ao remover candidato de teste:', e)
+      
+      let errorMessage = 'Erro ao remover candidato de teste'
+      
+      if (e.name === 'TypeError' && e.message.includes('fetch')) {
+        errorMessage += ': Problema de conexão com o servidor'
+      } else if (e.message.includes('JSON')) {
+        errorMessage += ': Problema na resposta do servidor'
+      } else if (e.message.includes('sessão')) {
+        errorMessage += ': Sessão expirada - faça login novamente'
+      } else {
+        errorMessage += ': ' + e.message
+      }
+      
+      setMessage(errorMessage)
+      setMessageType('error')
     } finally {
       setLoading(false)
     }
