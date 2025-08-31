@@ -92,6 +92,9 @@ export default function Configuracoes(){
         setRoleSelect('rh')
       }
       
+      // Retornar dados para uso externo
+      return { success: true, data, message: data.message }
+      
     } catch (e) {
       setMessage('Erro: ' + e.message)
       setMessageType('error')
@@ -235,22 +238,15 @@ export default function Configuracoes(){
     setMessage(null)
     
     try {
-      const { data, error } = await supabase
-        .from('candidates')
-        .delete()
-        .eq('email', email)
-        .select()
+      // Usar a API para remoção de candidatos
+      const response = await callApi('deleteCandidate', { email })
       
-      if (error) {
-        throw new Error(error.message)
-      }
-      
-      if (data && data.length > 0) {
+      if (response && response.success) {
         setMessage(`Candidato de teste com email "${email}" removido com sucesso!`)
         setMessageType('success')
         setRemoveTestCandidateEmail('')
       } else {
-        setMessage('Nenhum candidato de teste encontrado com este email.')
+        setMessage(response?.message || 'Erro ao remover candidato de teste')
         setMessageType('error')
       }
       

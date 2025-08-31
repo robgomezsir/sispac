@@ -14,9 +14,9 @@ export default async function handler(req, res){
     const supabase = getSupabaseAdmin()
     
     const { data, error } = await supabase
-      .from('results')
+      .from('candidates')
       .select('*')
-      .eq('candidate_id', id)
+      .eq('id', id)
       .single()
     
     if(error) {

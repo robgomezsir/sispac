@@ -36,7 +36,8 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
-  Info
+  Info,
+  Trash2
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -250,6 +251,51 @@ export default function Dashboard(){
       setSortConfig({ key: newFilters.sortBy, direction: 'desc' })
     }
   }, [sortConfig.key])
+
+  // Função para remover candidato
+  const handleDeleteCandidate = useCallback(async (candidate) => {
+    if (!confirm(`Tem certeza que deseja remover o candidato "${candidate.name}" (${candidate.email})? Esta ação não pode ser desfeita.`)) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      
+      // Obter token de sessão atual
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        throw new Error('Sessão expirada. Faça login novamente.')
+      }
+      
+      const res = await fetch('/api/deleteCandidate', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ email: candidate.email })
+      })
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao remover candidato')
+      }
+      
+      // Remover candidato da lista local
+      setRows(prevRows => prevRows.filter(r => r.id !== candidate.id))
+      
+      // Mostrar mensagem de sucesso
+      alert(`Candidato "${candidate.name}" removido com sucesso!`)
+      
+    } catch (error) {
+      console.error('Erro ao remover candidato:', error)
+      alert(`Erro ao remover candidato: ${error.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -584,6 +630,14 @@ export default function Dashboard(){
                           <Download size={18} className="mr-2" />
                           Download
                         </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="btn-destructive px-3" 
+                          onClick={() => handleDeleteCandidate(row)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
                       </div>
                     </CardFooter>
                   </Card>
@@ -685,9 +739,12 @@ export default function Dashboard(){
                                 Exportar
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-muted-foreground">
-                                <FileSpreadsheet size={18} className="mr-2" />
-                                Ver histórico
+                              <DropdownMenuItem 
+                                onClick={() => handleDeleteCandidate(row)}
+                                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                              >
+                                <Trash2 size={18} className="mr-2" />
+                                Remover
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
