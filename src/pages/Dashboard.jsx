@@ -187,21 +187,32 @@ export default function Dashboard(){
     setLoading(true)
     
     try {
-      const { data, error } = await supabase
-        .from('candidates')
-        .select('*')
-        .order('created_at', { ascending: false })
+      // Obter token de sessão atual
+      const { data: { session } } = await supabase.auth.getSession()
       
-      if (error) {
-        console.error("❌ [Dashboard] Erro ao carregar dados:", error)
-        setError(`Erro ao carregar dados: ${error.message}`)
-        setRows([])
-      } else {
-        console.log("✅ [Dashboard] Dados carregados com sucesso:", data?.length || 0, "registros")
-        setRows(data || [])
-        setInitialLoad(true)
-        setError(null) // Limpar erro anterior
+      if (!session?.access_token) {
+        throw new Error('Sessão expirada. Faça login novamente.')
       }
+      
+      // Usar a API que inclui o perfil comportamental
+      const res = await fetch('/api/candidates', {
+        headers: { 
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+      
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Erro ao carregar dados')
+      }
+      
+      const data = await res.json()
+      
+      console.log("✅ [Dashboard] Dados carregados com sucesso:", data?.length || 0, "registros")
+      console.log("🔍 [Dashboard] Primeiro registro:", data?.[0])
+      setRows(data || [])
+      setInitialLoad(true)
+      setError(null) // Limpar erro anterior
     } catch (err) {
       console.error("❌ [Dashboard] Exceção ao carregar dados:", err)
       setError(`Erro inesperado: ${err.message}`)
