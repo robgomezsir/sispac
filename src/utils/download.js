@@ -29,7 +29,15 @@ export function downloadXlsx(filename, data, columns = null) {
           if (row.hasOwnProperty(col)) {
             // Usar nome amigável se disponível, senão usar o nome original
             const friendlyName = columnMapping[col] || col
-            filteredRow[friendlyName] = row[col]
+            let value = row[col]
+            
+            // Formatação especial para perfil comportamental
+            if (col === 'behavioral_profile' && typeof value === 'string') {
+              // Garantir que quebras de linha sejam preservadas no Excel
+              value = value.replace(/\n/g, '\r\n')
+            }
+            
+            filteredRow[friendlyName] = value
           }
         })
         return filteredRow
@@ -39,6 +47,34 @@ export function downloadXlsx(filename, data, columns = null) {
     // Criar workbook e worksheet
     const workbook = XLSX.utils.book_new()
     const worksheet = XLSX.utils.json_to_sheet(exportData)
+
+    // Configurar largura das colunas automaticamente
+    const columnWidths = []
+    const headers = Object.keys(exportData[0] || {})
+    
+    headers.forEach((header, index) => {
+      let maxWidth = header.length
+      
+      // Verificar o conteúdo de cada linha para determinar a largura máxima
+      exportData.forEach(row => {
+        const cellValue = String(row[header] || '')
+        const cellLength = cellValue.length
+        if (cellLength > maxWidth) {
+          maxWidth = cellLength
+        }
+      })
+      
+      // Largura especial para coluna de perfil comportamental
+      if (header === 'Análise de Perfil Comportamental') {
+        maxWidth = Math.max(maxWidth, 80) // Largura mínima para perfil
+      } else {
+        maxWidth = Math.min(maxWidth, 50) // Limitar largura de outras colunas
+      }
+      
+      columnWidths[index] = { wch: maxWidth }
+    })
+    
+    worksheet['!cols'] = columnWidths
 
     // Adicionar worksheet ao workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Dados')

@@ -8,15 +8,64 @@ function classify(score) {
   return 'SUPEROU A EXPECTATIVA'
 }
 
-// Função para obter perfil comportamental
+// Função para obter perfil comportamental completo
 function getBehavioralProfile(status) {
   const profiles = {
-    "ABAIXO DA EXPECTATIVA": "Pessoas nessa faixa tendem a demonstrar um alinhamento fraco entre como se veem e como são percebidas; apresentam valores selecionados que indicam boa intenção, mas com inconsistência prática. Há tendência a evitar exposição, agir de forma conservadora e priorizar segurança relacional.",
-    "DENTRO DA EXPECTATIVA": "Indivíduos funcionais e confiáveis: equilibram competências sociais com entrega estável. São vistos como consistentes e responsáveis; têm valores alinhados ao ambiente, mas ainda sem grande diferenciação.",
-    "ACIMA DA EXPECTATIVA": "Profissional maduro emocionalmente, com alto alinhamento de valores e imagem percebida. Demonstra empatia ativa e energia para colaborar.",
-    "SUPEROU A EXPECTATIVA": "Perfil de alto desempenho humano: forte congruência entre valores, imagem e ação. Inspira confiança, responsabilidade e empatia."
+    "ABAIXO DA EXPECTATIVA": {
+      perfil: "Pessoas nessa faixa tendem a demonstrar um alinhamento fraco entre como se veem e como são percebidas; apresentam valores selecionados que indicam boa intenção, mas com inconsistência prática. Há tendência a evitar exposição, agir de forma conservadora e priorizar segurança relacional.",
+      comportamento: "Comportamento reservado, prefere atuar de acordo com instruções claras. Evita riscos e decisões rápidas; pode reagir de forma passiva sob pressão.",
+      competencias: "Competências interpessoais básicas (escuta, simpatia), mas com lacunas em tomada de decisão, proatividade e organização estratégica.",
+      lideranca: "Pouca ou nenhuma propensão a liderança formal. Se assumir cargo de coordenação, tende a gerir tarefas mais do que pessoas.",
+      areas_desenvolvimento: [
+        "Autoconfiança e assertividade",
+        "Iniciativa e resolução autônoma de problemas",
+        "Clareza de prioridades e organização",
+        "Comunicação direta em situações de conflito"
+      ],
+      visao_estrategica: "Foco em tarefas imediatas e segurança operacional. Dificuldade para enxergar oportunidades de melhoria e impacto estratégico.",
+      recomendacoes: "Oferecer mentoring ou coaching focado em confiança, exercícios de tomada de decisão com baixo risco e treinamentos de comunicação assertiva."
+    },
+    "DENTRO DA EXPECTATIVA": {
+      perfil: "Indivíduos funcionais e confiáveis: equilibram competências sociais com entrega estável. São vistos como consistentes e responsáveis; têm valores alinhados ao ambiente, mas ainda sem grande diferenciação.",
+      comportamento: "Proativos em doses moderadas: assumem tarefas, colaboram e mantêm bom relacionamento interpessoal. Tendem a seguir processos e buscar segurança nas decisões.",
+      competencias: "Bons fundamentos em comunicação, trabalho em equipe e cumprimento de prazos. Capacidade técnica razoável; aprendem com treinamentos formais.",
+      lideranca: "Potencial para liderança de primeira linha (supervisão), especialmente em ambientes com processos claros.",
+      areas_desenvolvimento: [
+        "Tomada de decisão em ambientes ambíguos",
+        "Pensamento estratégico de curto prazo",
+        "Autonomia para iniciativas fora do manual"
+      ],
+      visao_estrategica: "Compreensão básica de objetivos organizacionais. Capacidade de alinhar trabalho individual com metas de equipe.",
+      recomendacoes: "Designar projetos com responsabilidade incremental, treinamentos em resolução de problemas e incentivar participação em iniciativas interdepartamentais."
+    },
+    "ACIMA DA EXPECTATIVA": {
+      perfil: "Profissional maduro emocionalmente, com alto alinhamento de valores e imagem percebida. Demonstra empatia ativa e energia para colaborar.",
+      comportamento: "Proatividade clara, busca soluções que beneficiam grupo e organização. Resolve problemas considerando impacto nas pessoas.",
+      competencias: "Fortes competências interpessoais e de execução: comunicação clara, priorização e acompanhamento. Boa relação entre habilidades técnicas e soft skills.",
+      lideranca: "Bom potencial para liderar times com foco em cultura e engajamento. Lidera pelo exemplo e administra conflitos com empatia.",
+      areas_desenvolvimento: [
+        "Delegação eficiente para escalar impacto",
+        "Visão estratégica de médio prazo",
+        "Gestão de stakeholders complexos"
+      ],
+      visao_estrategica: "Compreensão de impactos de médio prazo e capacidade de articular visão para equipes. Alinha ações com objetivos organizacionais.",
+      recomendacoes: "Investir em programas de desenvolvimento de liderança, dar projetos de maior responsabilidade e inserir em comitês interfuncionais."
+    },
+    "SUPEROU A EXPECTATIVA": {
+      perfil: "Perfil de alto desempenho humano: forte congruência entre valores, imagem e ação. Inspira confiança, responsabilidade e empatia.",
+      comportamento: "Atua com autonomia, iniciativa e visão. Resolve problemas complexos com abordagem humana, integrando resultados e cuidado com pessoas.",
+      competencias: "Excelência em competências comportamentais e técnicas; alta adaptabilidade; forte capacidade de ensino e coaching.",
+      lideranca: "Líder natural — influencia por autoridade moral mais que por poder hierárquico. Preparado para papéis estratégicos e de alto impacto.",
+      areas_desenvolvimento: [
+        "Evitar sobrecarga e centralização de decisões",
+        "Estruturar sucessão e multiplicar conhecimento",
+        "Foco em métricas estratégicas e governança"
+      ],
+      visao_estrategica: "Visão estratégica abrangente e capacidade de articular futuro organizacional. Influencia direção estratégica e cultura.",
+      recomendacoes: "Promover para papéis de maior alcance, investir em formação executiva e designar como mentor de talentos-chave."
+    }
   }
-  return profiles[status] || "Perfil não disponível"
+  return profiles[status] || null
 }
 
 export default async function handler(req, res){
@@ -48,13 +97,42 @@ export default async function handler(req, res){
     
     console.log('✅ [candidates] Dados do Supabase obtidos:', data?.length || 0, 'registros')
     
-    // Adicionar perfil comportamental para cada candidato
+    // Adicionar perfil comportamental completo para cada candidato
     const candidatesWithProfile = data?.map(candidate => {
       const status = candidate.status || classify(candidate.score)
+      const profile = getBehavioralProfile(status)
+      
+      // Formatar perfil comportamental como texto estruturado para exportação
+      let behavioralProfileText = "Perfil não disponível"
+      
+      if (profile) {
+        behavioralProfileText = `PERFIL:
+${profile.perfil}
+
+COMPORTAMENTO:
+${profile.comportamento}
+
+COMPETÊNCIAS:
+${profile.competencias}
+
+LIDERANÇA:
+${profile.lideranca}
+
+ÁREAS DE DESENVOLVIMENTO:
+${profile.areas_desenvolvimento.map(area => `• ${area}`).join('\n')}
+
+VISÃO ESTRATÉGICA:
+${profile.visao_estrategica}
+
+RECOMENDAÇÕES:
+${profile.recomendacoes}`
+      }
+      
       return {
         ...candidate,
         status: status,
-        behavioral_profile: getBehavioralProfile(status)
+        behavioral_profile: behavioralProfileText,
+        behavioral_profile_data: profile // Manter dados estruturados para uso interno
       }
     }) || []
     
