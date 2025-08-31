@@ -198,7 +198,7 @@ export default function Configuracoes(){
     }
     
     if (confirm(`Tem certeza que deseja remover o candidato de teste ${removeTestCandidateEmail}?`)) {
-      removeTestCandidateFromDatabase(removeTestCandidateEmail.trim().toLowerCase())
+      removeTestCandidateFromDatabase('email', removeTestCandidateEmail.trim().toLowerCase(), '', '')
     }
   }
 
@@ -233,20 +233,30 @@ export default function Configuracoes(){
     }
   }
 
-  const removeTestCandidateFromDatabase = async (email) => {
+  const removeTestCandidateFromDatabase = async (method, email, id, name) => {
     setLoading(true)
     setMessage(null)
     
     try {
-      // Validar email
-      if (!email || !email.trim()) {
+      // Validar parâmetros baseados no método
+      if (method === 'email' && (!email || !email.trim())) {
         throw new Error('Email é obrigatório')
       }
       
-      // Validar formato do email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(email.trim())) {
-        throw new Error('Formato de email inválido')
+      if (method === 'id' && !id) {
+        throw new Error('ID é obrigatório')
+      }
+      
+      if (method === 'name' && (!name || !name.trim())) {
+        throw new Error('Nome é obrigatório')
+      }
+      
+      // Validar formato do email se for o método selecionado
+      if (method === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(email.trim())) {
+          throw new Error('Formato de email inválido')
+        }
       }
       
       // Obter token de sessão atual
@@ -256,7 +266,17 @@ export default function Configuracoes(){
         throw new Error('Sessão expirada. Faça login novamente.')
       }
       
-      console.log('🔍 [Configurações] Tentando remover candidato:', email.trim())
+      console.log('🔍 [Configurações] Tentando remover candidato por', method, ':', email || id || name)
+      
+      // Preparar dados para a API baseado no método
+      const requestBody = {}
+      if (method === 'email') {
+        requestBody.email = email.trim().toLowerCase()
+      } else if (method === 'id') {
+        requestBody.id = id
+      } else if (method === 'name') {
+        requestBody.name = name.trim()
+      }
       
       // Chamar a API de remoção
       const res = await fetch('/api/deleteCandidate', {
@@ -265,7 +285,7 @@ export default function Configuracoes(){
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify({ email: email.trim().toLowerCase() })
+        body: JSON.stringify(requestBody)
       })
       
       console.log('📡 [Configurações] Resposta da API:', res.status, res.statusText)
@@ -303,8 +323,11 @@ export default function Configuracoes(){
       setMessage(successMessage)
       setMessageType('success')
       
-      // Limpar campo após sucesso
+      // Limpar campos após sucesso
       setRemoveTestCandidateEmail('')
+      setRemoveTestCandidateId('')
+      setRemoveTestCandidateName('')
+      setRemoveMethod('email') // Resetar método de remoção
       
       console.log('✅ [Configurações] Candidato de teste removido com sucesso:', data)
       
