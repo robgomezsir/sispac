@@ -93,6 +93,46 @@ export default function Dashboard(){
     console.log('🔍 [Dashboard] Estado current atualizado:', current)
   }, [current])
 
+  // TESTE INTERNO: Validar se as funções estão funcionando
+  useEffect(() => {
+    console.log('🧪 [Dashboard] TESTE INTERNO: Iniciando validação das funções...')
+    
+    try {
+      // Testar se Badge está disponível
+      console.log('🔍 [Dashboard] TESTE INTERNO: Componente Badge:', typeof Badge)
+      
+      // Testar se as funções estão definidas
+      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusBadge:', typeof getStatusBadge)
+      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusIcon:', typeof getStatusIcon)
+      console.log('🔍 [Dashboard] TESTE INTERNO: getStatusColor:', typeof getStatusColor)
+      
+      // Testar execução das funções
+      if (typeof getStatusBadge === 'function') {
+        const testBadge = getStatusBadge('DENTRO DA EXPECTATIVA')
+        console.log('✅ [Dashboard] TESTE INTERNO: getStatusBadge executada com sucesso:', testBadge)
+      } else {
+        console.error('❌ [Dashboard] TESTE INTERNO: getStatusBadge não é uma função')
+      }
+      
+      if (typeof getStatusIcon === 'function') {
+        const testIcon = getStatusIcon('DENTRO DA EXPECTATIVA')
+        console.log('✅ [Dashboard] TESTE INTERNO: getStatusIcon executada com sucesso:', testIcon)
+      } else {
+        console.error('❌ [Dashboard] TESTE INTERNO: getStatusIcon não é uma função')
+      }
+      
+      if (typeof getStatusColor === 'function') {
+        const testColor = getStatusColor('DENTRO DA EXPECTATIVA')
+        console.log('✅ [Dashboard] TESTE INTERNO: getStatusColor executada com sucesso:', testColor)
+      } else {
+        console.error('❌ [Dashboard] TESTE INTERNO: getStatusColor não é uma função')
+      }
+      
+    } catch (error) {
+      console.error('❌ [Dashboard] TESTE INTERNO: Erro durante validação:', error)
+    }
+  }, [])
+
   const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status'])
   const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' })
@@ -104,6 +144,71 @@ export default function Dashboard(){
     dateTo: '',
     sortBy: 'created_at'
   })
+
+  // FUNÇÕES DE STATUS - DEFINIDAS NO INÍCIO PARA GARANTIR DISPONIBILIDADE
+  const getStatusBadge = (status) => {
+    console.log('🔍 [getStatusBadge] Função chamada com status:', status)
+    
+    try {
+      switch (status) {
+        case 'SUPEROU A EXPECTATIVA':
+          console.log('✅ [getStatusBadge] Retornando badge Excelente')
+          return <Badge className="badge-success">Excelente</Badge>
+        case 'ACIMA DA EXPECTATIVA':
+          console.log('✅ [getStatusBadge] Retornando badge Muito Bom')
+          return <Badge className="badge-info">Muito Bom</Badge>
+        case 'DENTRO DA EXPECTATIVA':
+          console.log('✅ [getStatusBadge] Retornando badge Bom')
+          return <Badge className="badge-warning">Bom</Badge>
+        default:
+          console.log('✅ [getStatusBadge] Retornando badge Regular para status:', status)
+          return <Badge className="badge-modern">Regular</Badge>
+      }
+    } catch (error) {
+      console.error('❌ [getStatusBadge] Erro na função:', error)
+      return <Badge className="badge-modern">Erro</Badge>
+    }
+  }
+
+  const getStatusIcon = (status) => {
+    console.log('🔍 [getStatusIcon] Função chamada com status:', status)
+    
+    try {
+      switch (status) {
+        case 'SUPEROU A EXPECTATIVA':
+          return <TrendingUp size={18} className="text-success" />
+        case 'ACIMA DA EXPECTATIVA':
+          return <TrendingUp size={18} className="text-info" />
+        case 'DENTRO DA EXPECTATIVA':
+          return <Minus size={18} className="text-warning" />
+        default:
+          return <Minus size={18} className="text-muted-foreground" />
+      }
+    } catch (error) {
+      console.error('❌ [getStatusIcon] Erro na função:', error)
+      return <Minus size={18} className="text-muted-foreground" />
+    }
+  }
+
+  const getStatusColor = (status) => {
+    console.log('🔍 [getStatusColor] Função chamada com status:', status)
+    
+    try {
+      switch (status) {
+        case 'SUPEROU A EXPECTATIVA':
+          return 'text-success'
+        case 'ACIMA DA EXPECTATIVA':
+          return 'text-info'
+        case 'DENTRO DA EXPECTATIVA':
+          return 'text-warning'
+        default:
+          return 'text-muted-foreground'
+      }
+    } catch (error) {
+      console.error('❌ [getStatusColor] Erro na função:', error)
+      return 'text-muted-foreground'
+    }
+  }
   
   // Usar hook de debounce personalizado
   const debouncedQuery = useDebounce(q, 300)
@@ -308,48 +413,6 @@ export default function Dashboard(){
       setLoading(false)
     }
   }, [])
-
-  // Função para obter badge de status
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'SUPEROU A EXPECTATIVA':
-        return <Badge className="badge-success">Excelente</Badge>
-      case 'ACIMA DA EXPECTATIVA':
-        return <Badge className="badge-info">Muito Bom</Badge>
-      case 'DENTRO DA EXPECTATIVA':
-        return <Badge className="badge-warning">Bom</Badge>
-      default:
-        return <Badge className="badge-modern">Regular</Badge>
-    }
-  }
-
-  // Função para obter ícone de status
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'SUPEROU A EXPECTATIVA':
-        return <TrendingUp size={18} className="text-success" />
-      case 'ACIMA DA EXPECTATIVA':
-        return <TrendingUp size={18} className="text-info" />
-      case 'DENTRO DA EXPECTATIVA':
-        return <Minus size={18} className="text-warning" />
-      default:
-        return <Minus size={18} className="text-muted-foreground" />
-    }
-  }
-
-  // Função para obter cor de status
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'SUPEROU A EXPECTATIVA':
-        return 'text-success'
-      case 'ACIMA DA EXPECTATIVA':
-        return 'text-info'
-      case 'DENTRO DA EXPECTATIVA':
-        return 'text-warning'
-      default:
-        return 'text-muted-foreground'
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
