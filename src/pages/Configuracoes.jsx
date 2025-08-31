@@ -241,18 +241,15 @@ export default function Configuracoes(){
       // Usar a API para remoção de candidatos
       const response = await callApi('deleteCandidate', { email })
       
+      // A função callApi já define a mensagem, então não precisamos definir novamente
+      // Apenas limpar o campo se foi bem-sucedido
       if (response && response.success) {
-        setMessage(`Candidato de teste com email "${email}" removido com sucesso!`)
-        setMessageType('success')
         setRemoveTestCandidateEmail('')
-      } else {
-        setMessage(response?.message || 'Erro ao remover candidato de teste')
-        setMessageType('error')
       }
       
     } catch (e) {
-      setMessage('Erro ao remover candidato de teste: ' + e.message)
-      setMessageType('error')
+      // A função callApi já trata os erros, mas podemos adicionar log adicional
+      console.error('Erro na remoção:', e)
     } finally {
       setLoading(false)
     }

@@ -287,7 +287,10 @@ export default function Dashboard(){
       setRows(prevRows => prevRows.filter(r => r.id !== candidate.id))
       
       // Mostrar mensagem de sucesso
-      alert(`Candidato "${candidate.name}" removido com sucesso!`)
+      console.log(`Candidato "${candidate.name}" removido com sucesso!`)
+      
+      // Opcional: mostrar uma notificação mais elegante
+      // Você pode implementar um sistema de notificações toast aqui
       
     } catch (error) {
       console.error('Erro ao remover candidato:', error)
