@@ -599,21 +599,14 @@ export default function Configuracoes(){
     try {
       console.log('🔄 [Configurações] Iniciando migração de candidatos para resultados...')
 
-      const response = await fetch('/api/simpleMigrate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const response = await migrateCandidatesToResults()
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Erro na migração')
+      if (!response.success) {
+        throw new Error(response.message || 'Erro na migração')
       }
 
-      console.log('✅ [Configurações] Migração concluída:', result)
-      showMessage(`Migração concluída com sucesso! ${result.migrated} candidatos migrados de ${result.total} total.`, 'success')
+      console.log('✅ [Configurações] Migração concluída:', response)
+      showMessage(`Migração concluída com sucesso! ${response.migrated} candidatos migrados de ${response.total} total.`, 'success')
 
     } catch (error) {
       console.error('❌ [Configurações] Erro na migração:', error)
