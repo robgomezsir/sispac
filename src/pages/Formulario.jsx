@@ -279,7 +279,7 @@ export default function Formulario(){
   // Se já foi enviado, mostrar tela de sucesso
   if (sent) {
     return (
-      <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden">
         {/* Elementos decorativos de fundo */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
@@ -304,67 +304,27 @@ export default function Formulario(){
               </div>
             </div>
 
-            {/* Estatísticas do teste */}
-            <div className="grid md:grid-cols-3 gap-6 animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
-              <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">Questões Respondidas</p>
-                      <p className="text-3xl font-bold text-foreground">{questions.length}</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-300">
-                      <BookOpen size={24} className="text-primary" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">Tempo Total</p>
-                      <p className="text-3xl font-bold text-foreground">{formatTime(timeSpent)}</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
-                      <Timer size={24} className="text-info" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">Status</p>
-                      <p className="text-3xl font-bold text-success">Concluído</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
-                      <Trophy size={24} className="text-success" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Mensagem final */}
-            <Card className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.4s'}}>
+            {/* Mensagem de agradecimento */}
+            <Card className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
               <CardContent className="p-8 text-center">
-                <div className="space-y-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20">
-                    <Brain size={32} className="text-primary" />
+                <div className="space-y-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success">
+                    <CheckCircle size={40} className="text-success" />
                   </div>
-                  <h2 className="text-2xl font-bold text-foreground">Análise em Andamento</h2>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
-                    Nossa equipe está analisando suas respostas e preparando um relatório detalhado 
-                    sobre seu perfil comportamental. Você será notificado quando os resultados estiverem prontos.
-                  </p>
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/70">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft"></div>
-                    <span>Processando resultados...</span>
+                  <div className="space-y-4">
+                    <h2 className="text-2xl font-bold text-foreground">Teste Finalizado com Sucesso!</h2>
+                    <p className="text-muted-foreground text-lg leading-relaxed">
+                      Obrigado por participar da nossa avaliação comportamental. 
+                      Suas respostas foram salvas e serão analisadas pela nossa equipe.
+                    </p>
                   </div>
+                  <Button 
+                    onClick={() => window.location.href = '/'}
+                    className="btn-primary-modern px-8 py-4 group"
+                  >
+                    <ArrowRight size={20} className="mr-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    Sair
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -492,75 +452,6 @@ export default function Formulario(){
                   </Button>
                 </CardFooter>
               </Card>
-            ) : step > questions.length ? (
-              // Tela de revisão
-              <Card className="card-modern">
-                <CardHeader className="text-center space-y-6 pb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-warning/20 to-warning/10 rounded-3xl flex items-center justify-center mx-auto border border-warning/20 shadow-glow-warning">
-                    <CheckCircle size={40} className="text-warning" />
-                  </div>
-                  <div className="space-y-3">
-                    <CardTitle className="text-3xl font-bold">Revisar Respostas</CardTitle>
-                    <CardDescription className="text-lg text-muted-foreground/80">
-                      Confirme suas respostas antes de enviar
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    {questions.map((question, index) => (
-                      <div key={question.id} className="p-4 bg-muted/30 rounded-2xl border border-border/50">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                            <span className="text-sm font-bold text-primary">{index + 1}</span>
-                          </div>
-                          <div className="flex-1 space-y-2">
-                            <h4 className="font-semibold text-foreground">{question.text}</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {(answers[question.id] || []).map((answer, answerIndex) => (
-                                <Badge key={answerIndex} variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-                                  {answer}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-
-                <CardFooter className="flex justify-between pt-8">
-                  <Button 
-                    variant="outline"
-                    onClick={prevStep}
-                    className="btn-secondary-modern px-8 py-4 group"
-                  >
-                    <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
-                    Voltar
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleSubmit}
-                    disabled={sending}
-                    className="btn-primary-modern px-12 py-4 text-lg group"
-                  >
-                    {sending ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-5 h-5 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                        <span>Enviando...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-3">
-                        <Send size={20} className="group-hover:scale-110 transition-transform duration-300" />
-                        <span>Enviar Respostas</span>
-                        <Check size={20} className="group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
             ) : (
               // Questão atual
               <Card className="card-modern">
@@ -646,14 +537,14 @@ export default function Formulario(){
                   </Button>
                   
                   <Button 
-                    onClick={nextStep}
+                    onClick={step === questions.length ? handleSubmit : nextStep}
                     disabled={!canProceed}
                     className="btn-primary-modern px-8 py-4 group"
                   >
                     {step === questions.length ? (
                       <>
-                        <Check size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                        Revisar
+                        <Send size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                        Finalizar
                       </>
                     ) : (
                       <>

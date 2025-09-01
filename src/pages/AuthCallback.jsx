@@ -172,7 +172,7 @@ export default function AuthCallback() {
   // Renderizar formulário de criação de senha
   if (action === "create_password" && inviteData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-pastel relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Elementos decorativos de fundo */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
@@ -279,7 +279,7 @@ export default function AuthCallback() {
 
   // Renderizar tela de loading ou mensagens
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-pastel relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Elementos decorativos de fundo */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
