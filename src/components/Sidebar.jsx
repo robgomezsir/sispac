@@ -14,7 +14,9 @@ import {
   RefreshCw,
   Download,
   FileText,
-  Table
+  Table,
+  Home,
+  Database
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge } from './ui'
@@ -48,20 +50,7 @@ export function Sidebar({
     setIsOpen(false)
   }
 
-  const adminItems = [
-    {
-      to: "/config",
-      label: "Configurações",
-      icon: Settings,
-      isActive: location.pathname === "/config"
-    },
-    {
-      to: "/api",
-      label: "API Panel",
-      icon: BarChart3,
-      isActive: location.pathname === "/api"
-    }
-  ]
+
 
   return (
     <>
@@ -132,6 +121,86 @@ export function Sidebar({
               </div>
             )}
 
+            {/* Links de navegação */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Navegação</h3>
+              <div className="space-y-2">
+                <Link
+                  to="/"
+                  onClick={closeSidebar}
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
+                    location.pathname === "/"
+                      ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                      : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <div className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                    location.pathname === "/"
+                      ? "bg-primary/20 border border-primary/20"
+                      : "bg-muted/50 group-hover:bg-primary/10"
+                  )}>
+                    <Home size={18} className={location.pathname === "/" ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium">Início</div>
+                    <div className="text-xs text-muted-foreground">Página inicial</div>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/form"
+                  onClick={closeSidebar}
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
+                    location.pathname === "/form"
+                      ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                      : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <div className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                    location.pathname === "/form"
+                      ? "bg-primary/20 border border-primary/20"
+                      : "bg-muted/50 group-hover:bg-primary/10"
+                  )}>
+                    <FileText size={18} className={location.pathname === "/form" ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium">Formulário</div>
+                    <div className="text-xs text-muted-foreground">Teste comportamental</div>
+                  </div>
+                </Link>
+
+                {user && (
+                  <Link
+                    to="/dashboard"
+                    onClick={closeSidebar}
+                    className={cn(
+                      "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
+                      location.pathname === "/dashboard"
+                        ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                        : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                      location.pathname === "/dashboard"
+                        ? "bg-primary/20 border border-primary/20"
+                        : "bg-muted/50 group-hover:bg-primary/10"
+                    )}>
+                      <BarChart3 size={18} className={location.pathname === "/dashboard" ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">Dashboard</div>
+                      <div className="text-xs text-muted-foreground">Análise de candidatos</div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </div>
+
             {/* Opções de tema */}
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Aparência</h3>
@@ -178,70 +247,66 @@ export function Sidebar({
               </div>
             )}
 
-            {/* Visualização do Dashboard */}
-            {location.pathname === '/dashboard' && (
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Visualização</h3>
-                <div className="space-y-2">
-                  <Button
-                    variant={viewMode === 'cards' ? 'default' : 'outline'}
-                    onClick={() => {
-                      setViewMode?.('cards')
-                      closeSidebar()
-                    }}
-                    className="w-full justify-start gap-3 h-12 transition-all duration-200"
-                  >
-                    <FileText size={18} />
-                    <span>Cartões</span>
-                  </Button>
-                  
-                  <Button
-                    variant={viewMode === 'table' ? 'default' : 'outline'}
-                    onClick={() => {
-                      setViewMode?.('table')
-                      closeSidebar()
-                    }}
-                    className="w-full justify-start gap-3 h-12 transition-all duration-200"
-                  >
-                    <Table size={18} />
-                    <span>Tabela</span>
-                  </Button>
-                </div>
-              </div>
-            )}
+
 
             {/* Links administrativos */}
             {role === 'admin' && (
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Administração</h3>
                 <div className="space-y-2">
-                  {adminItems.map(({ to, label, icon: Icon, isActive }) => (
-                    <Link
-                      key={to}
-                      to={to}
-                      onClick={closeSidebar}
-                      className={cn(
-                        "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
-                        isActive
-                          ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
-                          : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
-                        isActive
-                          ? "bg-primary/20 border border-primary/20"
-                          : "bg-muted/50 group-hover:bg-primary/10"
-                      )}>
-                        <Icon size={18} className={isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium">{label}</div>
-                        <div className="text-xs text-muted-foreground">Ferramenta administrativa</div>
-                      </div>
-                      <ChevronRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors duration-200" />
-                    </Link>
-                  ))}
+                  <Link
+                    to="/config"
+                    onClick={closeSidebar}
+                    className={cn(
+                      "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
+                      location.pathname === "/config"
+                        ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                        : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                      location.pathname === "/config"
+                        ? "bg-primary/20 border border-primary/20"
+                        : "bg-muted/50 group-hover:bg-primary/10"
+                    )}>
+                      <Settings size={18} className={location.pathname === "/config" ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">Configurações</div>
+                      <div className="text-xs text-muted-foreground">Configurações do sistema</div>
+                    </div>
+                    <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs">
+                      ADMIN
+                    </Badge>
+                  </Link>
+
+                  <Link
+                    to="/api"
+                    onClick={closeSidebar}
+                    className={cn(
+                      "flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 group",
+                      location.pathname === "/api"
+                        ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                        : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                      location.pathname === "/api"
+                        ? "bg-primary/20 border border-primary/20"
+                        : "bg-muted/50 group-hover:bg-primary/10"
+                    )}>
+                      <Database size={18} className={location.pathname === "/api" ? "text-primary" : "text-muted-foreground group-hover:text-primary"} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">API Panel</div>
+                      <div className="text-xs text-muted-foreground">Documentação da API</div>
+                    </div>
+                    <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs">
+                      ADMIN
+                    </Badge>
+                  </Link>
                 </div>
               </div>
             )}

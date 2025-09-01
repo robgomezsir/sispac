@@ -557,8 +557,32 @@ export default function Dashboard(){
                   </div>
                 </div>
 
-                {/* Contador de resultados */}
-                <div className="flex items-center justify-end">
+                {/* Seletor de visualização e contador de resultados */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Label className="text-sm font-medium">Visualização:</Label>
+                    <div className="flex rounded-2xl border border-border/50 overflow-hidden bg-white/50 backdrop-blur-sm">
+                      <Button
+                        variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                        size="lg"
+                        onClick={() => setViewMode('cards')}
+                        className="rounded-r-none px-8 py-4 transition-all duration-300"
+                      >
+                        <FileText size={20} className="mr-2" />
+                        Cartões
+                      </Button>
+                      <Button
+                        variant={viewMode === 'table' ? 'default' : 'ghost'}
+                        size="lg"
+                        onClick={() => setViewMode('table')}
+                        className="rounded-l-none px-8 py-4 transition-all duration-300"
+                      >
+                        <BarChart3 size={20} className="mr-2" />
+                        Tabela
+                      </Button>
+                    </div>
+                  </div>
+                  
                   <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <Users size={16} />
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}

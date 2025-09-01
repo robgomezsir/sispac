@@ -36,44 +36,7 @@ export function Navigation() {
     }
   }, [signOut, navigate])
   
-  const navLinks = useMemo(() => {
-    const links = [
-      { to: "/", label: "Início", icon: Home, isActive: location.pathname === "/" },
-      { to: "/form", label: "Formulário", icon: FileText, isActive: location.pathname === "/form" },
-      ...(user ? [{ 
-        to: "/dashboard", 
-        label: "Dashboard", 
-        icon: BarChart3, 
-        isActive: location.pathname === "/dashboard" 
-      }] : [])
-    ]
-    
-    // Adicionar links admin se aplicável
-    if (role === 'admin') {
-      console.log('🔍 [Navigation] Adicionando links admin para role:', role)
-      links.push(
-        { 
-          to: "/config", 
-          label: "Configurações", 
-          icon: Settings, 
-          isActive: location.pathname === "/config",
-          isAdmin: true 
-        },
-        { 
-          to: "/api", 
-          label: "API Panel", 
-          icon: Database, 
-          isActive: location.pathname === "/api",
-          isAdmin: true 
-        }
-      )
-    } else {
-      console.log('🔍 [Navigation] Role não é admin:', role)
-    }
-    
-    console.log('🔍 [Navigation] Links finais:', links.map(l => ({ to: l.to, label: l.label, isAdmin: l.isAdmin })))
-    return links
-  }, [user, role, location.pathname])
+  // Links de navegação removidos - agora estão no menu lateral
   
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -102,33 +65,7 @@ export function Navigation() {
             </span>
           </Link>
           
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
-            {navLinks.map(({ to, label, icon: Icon, isActive, isAdmin }) => (
-              <Link
-                key={to}
-                to={to}
-                className={cn(
-                  "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative group",
-                  isActive
-                    ? "bg-primary/10 text-primary shadow-md"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:shadow-sm",
-                  isAdmin && "bg-primary/10 text-primary hover:bg-primary/20"
-                )}
-              >
-                <Icon size={16} className="group-hover:scale-110 transition-transform duration-200" />
-                <span>{label}</span>
-                {isAdmin && (
-                  <Badge variant="secondary" className="ml-2 bg-primary/20 text-primary border-primary/30 text-xs">
-                    ADMIN
-                  </Badge>
-                )}
-                {isActive && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-                )}
-              </Link>
-            ))}
-          </div>
+          {/* Desktop Navigation removida - agora está no menu lateral */}
           
           {/* Right side - User menu */}
           <div className="flex items-center space-x-4">
@@ -153,15 +90,7 @@ export function Navigation() {
               </div>
             )}
             
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleMobileMenu}
-              className="md:hidden"
-            >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </Button>
+            {/* Mobile menu button removido - navegação agora está no menu lateral */}
           </div>
         </div>
         
