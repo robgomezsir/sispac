@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { Protected } from './components/Protected.jsx'
 import { AdminOnly } from './components/AdminOnly.jsx'
 import { Navigation } from './components/Navigation.jsx'
+import PWAInstallPrompt from './components/PWAInstallPrompt.jsx'
+import OfflineIndicator from './components/OfflineIndicator.jsx'
 import Home from './pages/Home.jsx'
 import Formulario from './pages/Formulario.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -116,6 +118,8 @@ export default function App(){
           })}
         </Routes>
       </main>
+      <PWAInstallPrompt />
+      <OfflineIndicator />
     </div>
   )
 }
