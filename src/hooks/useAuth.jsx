@@ -181,6 +181,7 @@ function useProvideAuth(){
           }
         } else {
           console.log('🔍 [useAuth] Nenhum usuário encontrado')
+          setAuthError(null) // Limpar erro quando não há usuário (estado normal)
         }
       } catch (err) {
         console.error("❌ [useAuth] Erro na inicialização:", err)

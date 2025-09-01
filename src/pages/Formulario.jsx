@@ -138,7 +138,7 @@ export default function Formulario(){
   const canProceed = useMemo(() => {
     if (step >= questions.length) return true
     
-    const question = questions[step]
+    const question = questions[step - 1]
     if (!question) return false
     
     const questionAnswers = answers[question.id] || []
@@ -375,7 +375,7 @@ export default function Formulario(){
   }
 
   return (
-    <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Elementos decorativos de fundo */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
@@ -591,7 +591,9 @@ export default function Formulario(){
                       {questions[step - 1]?.title}
                     </h3>
                     
-                    <div className="space-y-3">
+                    <div className={`grid gap-3 ${
+                      questions[step - 1]?.id <= 2 ? 'grid-cols-3' : 'grid-cols-2'
+                    }`}>
                       {questions[step - 1]?.answers?.map((answer, index) => {
                         const questionId = questions[step - 1]?.id
                         const currentAnswers = answers[questionId] || []
@@ -601,7 +603,7 @@ export default function Formulario(){
                           <button
                             key={index}
                             onClick={() => toggleAnswer(questionId, answer.text)}
-                            className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:shadow-md ${
+                            className={`p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:shadow-md ${
                               isSelected 
                                 ? 'border-primary bg-primary/10 shadow-glow' 
                                 : 'border-border/50 bg-background hover:border-primary/50 hover:bg-primary/5'

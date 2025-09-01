@@ -83,7 +83,7 @@ export default function Home(){
   if (isLoading) {
     console.log('🔍 [Home] Mostrando tela de carregamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-pastel relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Elementos decorativos de fundo animados */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
@@ -111,7 +111,7 @@ export default function Home(){
   if (user) {
     console.log('🔍 [Home] Usuário logado, mostrando tela de redirecionamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-pastel relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Elementos decorativos de fundo animados */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
@@ -138,7 +138,7 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-pastel relative overflow-hidden p-4">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
       {/* Elementos decorativos de fundo animados */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
