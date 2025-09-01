@@ -538,7 +538,7 @@ export default function Dashboard(){
                           {value: 'email', label: 'Email'},
                           {value: 'score', label: 'Pontuação'},
                           {value: 'status', label: 'Status'},
-                          {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental'},
+                          {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental (Completa)'},
                           {value: 'created_at', label: 'Data de Criação'}
                         ].map(c => (
                           <option key={c.value} value={c.value}>{c.label}</option>

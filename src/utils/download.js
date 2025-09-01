@@ -20,62 +20,64 @@ export function downloadXlsx(filename, data, columns = null) {
       'created_at': 'Data de Criação'
     }
 
-    // Se não foram especificadas colunas, usar todas as colunas disponíveis
-    let exportData = data
-    if (columns && columns.length > 0) {
-      exportData = data.map(row => {
-        const filteredRow = {}
-        columns.forEach(col => {
-          if (row.hasOwnProperty(col)) {
+    // Processar dados para exportação
+    let exportData = data.map(row => {
+      const processedRow = {}
+      
+      // Se não foram especificadas colunas, usar todas as colunas disponíveis
+      const columnsToProcess = columns && columns.length > 0 ? columns : Object.keys(row)
+      
+      columnsToProcess.forEach(col => {
+        if (row.hasOwnProperty(col)) {
+          if (col === 'behavioral_profile' && row[col] && typeof row[col] === 'object') {
+            // Processar perfil comportamental - criar colunas separadas para cada seção
+            const profile = row[col]
+            
+            // Adicionar cada seção como uma coluna separada
+            processedRow['Perfil'] = profile.perfil || ''
+            processedRow['Comportamento'] = profile.comportamento || ''
+            processedRow['Competências'] = profile.competencias || ''
+            processedRow['Liderança'] = profile.lideranca || ''
+            processedRow['Áreas de Desenvolvimento'] = Array.isArray(profile.areas_desenvolvimento) 
+              ? profile.areas_desenvolvimento.join('; ') 
+              : profile.areas_desenvolvimento || ''
+            processedRow['Visão Estratégica'] = profile.visao_estrategica || ''
+            processedRow['Recomendações'] = profile.recomendacoes || ''
+          } else if (col === 'created_at') {
+            // Formatar data
+            processedRow[columnMapping[col] || col] = new Date(row[col]).toLocaleDateString('pt-BR')
+          } else {
             // Usar nome amigável se disponível, senão usar o nome original
             const friendlyName = columnMapping[col] || col
-            let value = row[col]
-            
-            // Formatação especial para perfil comportamental
-            if (col === 'behavioral_profile' && typeof value === 'string') {
-              // Garantir que quebras de linha sejam preservadas no Excel
-              // Usar quebras de linha do Windows para melhor compatibilidade
-              value = value.replace(/\n/g, '\r\n')
-              
-              // Adicionar espaçamento extra para melhor legibilidade
-              value = value.replace(/([A-ZÇÃÂÁÀÉÊÍÓÔÕÚÛ]+:)/g, '\r\n$1')
-            }
-            
-            filteredRow[friendlyName] = value
+            processedRow[friendlyName] = row[col]
           }
-        })
-        return filteredRow
+        }
       })
-    }
+      
+      return processedRow
+    })
 
     // Criar workbook e worksheet
     const workbook = XLSX.utils.book_new()
     const worksheet = XLSX.utils.json_to_sheet(exportData)
 
-    // Configurar largura das colunas automaticamente
+    // Ajustar largura das colunas automaticamente
     const columnWidths = []
     const headers = Object.keys(exportData[0] || {})
     
-    headers.forEach((header, index) => {
+    headers.forEach(header => {
+      // Calcular largura baseada no conteúdo
       let maxWidth = header.length
       
-      // Verificar o conteúdo de cada linha para determinar a largura máxima
       exportData.forEach(row => {
         const cellValue = String(row[header] || '')
-        const cellLength = cellValue.length
-        if (cellLength > maxWidth) {
-          maxWidth = cellLength
-        }
+        maxWidth = Math.max(maxWidth, cellValue.length)
       })
       
-      // Largura especial para coluna de perfil comportamental
-      if (header === 'Análise de Perfil Comportamental') {
-        maxWidth = Math.max(maxWidth, 80) // Largura mínima para perfil
-      } else {
-        maxWidth = Math.min(maxWidth, 50) // Limitar largura de outras colunas
-      }
-      
-      columnWidths[index] = { wch: maxWidth }
+      // Limitar largura máxima e mínima
+      columnWidths.push({
+        wch: Math.min(Math.max(maxWidth + 2, 15), 50)
+      })
     })
     
     worksheet['!cols'] = columnWidths
@@ -87,6 +89,7 @@ export function downloadXlsx(filename, data, columns = null) {
     XLSX.writeFile(workbook, filename)
     
     console.log(`✅ Arquivo ${filename} exportado com sucesso`)
+    console.log(`📊 Colunas exportadas:`, Object.keys(exportData[0] || {}))
   } catch (error) {
     console.error('❌ Erro ao exportar arquivo:', error)
     throw new Error('Falha ao exportar arquivo')

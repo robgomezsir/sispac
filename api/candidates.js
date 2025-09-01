@@ -22,7 +22,7 @@ function getBehavioralProfile(status) {
         "Clareza de prioridades e organização",
         "Comunicação direta em situações de conflito"
       ],
-      visao_estrategica: "Foco em tarefas imediatas e segurança operacional. Dificuldade para enxergar oportunidades de melhoria e impacto estratégico.",
+      visao_estrategica: "Visão limitada a tarefas imediatas, com dificuldade para enxergar impactos de longo prazo e conexões entre diferentes áreas.",
       recomendacoes: "Oferecer mentoring ou coaching focado em confiança, exercícios de tomada de decisão com baixo risco e treinamentos de comunicação assertiva."
     },
     "DENTRO DA EXPECTATIVA": {
@@ -35,7 +35,7 @@ function getBehavioralProfile(status) {
         "Pensamento estratégico de curto prazo",
         "Autonomia para iniciativas fora do manual"
       ],
-      visao_estrategica: "Compreensão básica de objetivos organizacionais. Capacidade de alinhar trabalho individual com metas de equipe.",
+      visao_estrategica: "Visão operacional com capacidade de planejamento de curto prazo, mas com limitações para estratégias de médio e longo prazo.",
       recomendacoes: "Designar projetos com responsabilidade incremental, treinamentos em resolução de problemas e incentivar participação em iniciativas interdepartamentais."
     },
     "ACIMA DA EXPECTATIVA": {
@@ -48,7 +48,7 @@ function getBehavioralProfile(status) {
         "Visão estratégica de médio prazo",
         "Gestão de stakeholders complexos"
       ],
-      visao_estrategica: "Compreensão de impactos de médio prazo e capacidade de articular visão para equipes. Alinha ações com objetivos organizacionais.",
+      visao_estrategica: "Visão estratégica de médio prazo bem desenvolvida, com capacidade de conectar diferentes áreas e antecipar tendências.",
       recomendacoes: "Investir em programas de desenvolvimento de liderança, dar projetos de maior responsabilidade e inserir em comitês interfuncionais."
     },
     "SUPEROU A EXPECTATIVA": {
@@ -61,11 +61,20 @@ function getBehavioralProfile(status) {
         "Estruturar sucessão e multiplicar conhecimento",
         "Foco em métricas estratégicas e governança"
       ],
-      visao_estrategica: "Visão estratégica abrangente e capacidade de articular futuro organizacional. Influencia direção estratégica e cultura.",
+      visao_estrategica: "Visão estratégica de longo prazo excepcional, com capacidade de transformar organizações e influenciar o mercado.",
       recomendacoes: "Promover para papéis de maior alcance, investir em formação executiva e designar como mentor de talentos-chave."
     }
   }
-  return profiles[status] || null
+  
+  return profiles[status] || {
+    perfil: "Perfil não disponível",
+    comportamento: "Dados insuficientes",
+    competencias: "Dados insuficientes",
+    lideranca: "Dados insuficientes",
+    areas_desenvolvimento: ["Dados insuficientes"],
+    visao_estrategica: "Dados insuficientes",
+    recomendacoes: "Dados insuficientes"
+  }
 }
 
 export default async function handler(req, res){
@@ -100,39 +109,12 @@ export default async function handler(req, res){
     // Adicionar perfil comportamental completo para cada candidato
     const candidatesWithProfile = data?.map(candidate => {
       const status = candidate.status || classify(candidate.score)
-      const profile = getBehavioralProfile(status)
-      
-      // Formatar perfil comportamental como texto estruturado para exportação
-      let behavioralProfileText = "Perfil não disponível"
-      
-      if (profile) {
-        behavioralProfileText = `PERFIL:
-${profile.perfil}
-
-COMPORTAMENTO:
-${profile.comportamento}
-
-COMPETÊNCIAS:
-${profile.competencias}
-
-LIDERANÇA:
-${profile.lideranca}
-
-ÁREAS DE DESENVOLVIMENTO:
-${profile.areas_desenvolvimento.map(area => `• ${area}`).join('\n')}
-
-VISÃO ESTRATÉGICA:
-${profile.visao_estrategica}
-
-RECOMENDAÇÕES:
-${profile.recomendacoes}`
-      }
+      const behavioralProfile = getBehavioralProfile(status)
       
       return {
         ...candidate,
         status: status,
-        behavioral_profile: behavioralProfileText,
-        behavioral_profile_data: profile // Manter dados estruturados para uso interno
+        behavioral_profile: behavioralProfile
       }
     }) || []
     
