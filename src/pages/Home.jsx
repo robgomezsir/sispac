@@ -124,13 +124,13 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
+    <div className="h-screen flex items-center justify-center relative overflow-hidden p-4">
       <div className="w-full max-w-4xl relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Lado esquerdo - Informações do sistema */}
-          <div className="text-center lg:text-left space-y-8 animate-slide-in-from-left">
+          <div className="text-center lg:text-left space-y-6 animate-slide-in-from-left">
             {/* Logo e título */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
                 <img 
                   src="/logo192.png" 
@@ -138,23 +138,23 @@ export default function Home(){
                   className="w-12 h-12 object-contain"
                 />
               </div>
-              <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+              <div className="space-y-3">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                   SisPAC
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed">
+                <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
                   Sistema Propósito de Avaliação Comportamental
                 </p>
-                <p className="text-lg text-muted-foreground/80 leading-relaxed">
+                <p className="text-base text-muted-foreground/80 leading-relaxed">
                   Plataforma moderna para avaliação e análise comportamental de candidatos
                 </p>
               </div>
             </div>
 
             {/* Características do sistema */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
                     <Shield size={24} className="text-success" />
                   </div>
@@ -164,7 +164,7 @@ export default function Home(){
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
                     <Zap size={24} className="text-warning" />
                   </div>
@@ -174,7 +174,7 @@ export default function Home(){
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
                     <Heart size={24} className="text-info" />
                   </div>
@@ -187,8 +187,8 @@ export default function Home(){
             </div>
 
             {/* Estatísticas ou benefícios */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center lg:text-left p-4 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
                 <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                   <Star size={20} className="text-warning" />
                   <span className="text-2xl font-bold text-foreground">99%</span>
@@ -196,7 +196,7 @@ export default function Home(){
                 <p className="text-sm text-muted-foreground">Precisão nos resultados</p>
               </div>
               
-              <div className="text-center lg:text-left p-4 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
                 <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                   <Award size={20} className="text-success" />
                   <span className="text-2xl font-bold text-foreground">24/7</span>
@@ -209,21 +209,21 @@ export default function Home(){
           {/* Lado direito - Formulário de login */}
           <div className="animate-slide-in-from-right">
             <Card className="card-modern border-0 shadow-2xl backdrop-blur-sm max-w-md mx-auto">
-              <CardHeader className="text-center space-y-6 pb-8">
+              <CardHeader className="text-center space-y-4 pb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
                   <Lock size={40} className="text-primary" />
                 </div>
-                <div className="space-y-3">
-                  <CardTitle className="text-3xl font-bold">Acesso ao Sistema</CardTitle>
-                  <CardDescription className="text-lg text-muted-foreground/80">
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl font-bold">Acesso ao Sistema</CardTitle>
+                  <CardDescription className="text-base text-muted-foreground/80">
                     Faça login para acessar o painel administrativo
                   </CardDescription>
                 </div>
               </CardHeader>
               
-              <CardContent className="pb-8">
-                <form onSubmit={onSubmit} className="space-y-6">
-                  <div className="space-y-4">
+              <CardContent className="pb-6">
+                <form onSubmit={onSubmit} className="space-y-5">
+                  <div className="space-y-3">
                     <Label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Mail size={16} className="text-primary" />
                       Email
@@ -242,7 +242,7 @@ export default function Home(){
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <Label htmlFor="password" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Lock size={16} className="text-primary" />
                       Senha
@@ -270,7 +270,7 @@ export default function Home(){
                   
                   <Button 
                     type="submit"
-                    className="btn-primary-modern w-full h-14 text-lg font-semibold mt-6 group" 
+                    className="btn-primary-modern w-full h-12 text-base font-semibold mt-4 group" 
                     disabled={loading}
                   >
                     {loading ? (
@@ -341,7 +341,7 @@ export default function Home(){
             </Card>
 
             {/* Footer com informações adicionais */}
-            <div className="text-center mt-8 space-y-2">
+            <div className="text-center mt-6 space-y-1">
               <p className="text-sm text-muted-foreground/80">
                 © 2024 SisPAC - Sistema de Avaliação Comportamental
               </p>
