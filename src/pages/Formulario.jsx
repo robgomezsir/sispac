@@ -139,6 +139,8 @@ export default function Formulario(){
     if (step >= questions.length) return true
     
     const question = questions[step]
+    if (!question) return false
+    
     const questionAnswers = answers[question.id] || []
     
     return questionAnswers.length === question.maxChoices
@@ -571,7 +573,7 @@ export default function Formulario(){
                       <div>
                         <CardTitle className="text-2xl font-bold">Questão {step}</CardTitle>
                         <CardDescription className="text-muted-foreground">
-                          {questions[step - 1].maxChoices > 1 
+                          {questions[step - 1]?.maxChoices > 1 
                             ? `Selecione até ${questions[step - 1].maxChoices} opções` 
                             : 'Selecione uma opção'}
                         </CardDescription>
@@ -586,19 +588,19 @@ export default function Formulario(){
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-xl font-semibold text-foreground leading-relaxed">
-                      {questions[step - 1].text}
+                      {questions[step - 1]?.title}
                     </h3>
                     
                     <div className="space-y-3">
-                      {questions[step - 1].options.map((option, index) => {
-                        const questionId = questions[step - 1].id
+                      {questions[step - 1]?.answers?.map((answer, index) => {
+                        const questionId = questions[step - 1]?.id
                         const currentAnswers = answers[questionId] || []
-                        const isSelected = currentAnswers.includes(option)
+                        const isSelected = currentAnswers.includes(answer.text)
                         
                         return (
                           <button
                             key={index}
-                            onClick={() => toggleAnswer(questionId, option)}
+                            onClick={() => toggleAnswer(questionId, answer.text)}
                             className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:shadow-md ${
                               isSelected 
                                 ? 'border-primary bg-primary/10 shadow-glow' 
@@ -620,7 +622,7 @@ export default function Formulario(){
                               <span className={`font-medium transition-colors duration-300 ${
                                 isSelected ? 'text-primary' : 'text-foreground group-hover:text-primary'
                               }`}>
-                                {option}
+                                {answer.text}
                               </span>
                             </div>
                           </button>
