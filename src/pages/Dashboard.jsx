@@ -43,7 +43,18 @@ import {
   Info,
   Trash2,
   User,
-  Code
+  Code,
+  ArrowRight,
+  FilterX,
+  BarChart4,
+  PieChart,
+  LineChart,
+  TrendingUp2,
+  Users2,
+  Target2,
+  Award2,
+  Clock2,
+  Star2
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -325,28 +336,43 @@ export default function Dashboard(){
 
   return (
     <div className="min-h-screen bg-gradient-pastel relative overflow-hidden">
-      {/* Elementos decorativos de fundo */}
+      {/* Elementos decorativos de fundo aprimorados */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
+        
+        {/* Elementos flutuantes adicionais */}
+        <div className="absolute top-20 right-20 w-16 h-16 bg-gradient-to-br from-info/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-20 left-20 w-20 h-20 bg-gradient-to-br from-warning/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '3s'}}></div>
+        <div className="absolute top-1/3 left-1/4 w-12 h-12 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-xl animate-float" style={{animationDelay: '1.5s'}}></div>
       </div>
 
       <div className="space-y-8 p-6 relative z-10">
-        {/* Header do Dashboard */}
+        {/* Header do Dashboard aprimorado */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-glow">
-                <BarChart3 size={32} className="text-primary" />
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-glow animate-bounce-soft">
+                <BarChart3 size={40} className="text-primary" />
               </div>
-              <div>
+              <div className="space-y-2">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                   Dashboard de Candidatos
                 </h1>
                 <p className="text-xl text-muted-foreground font-medium">
                   Gerencie e visualize os resultados dos testes comportamentais
                 </p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground/70">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft"></div>
+                    <span>Sistema Ativo</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock2 size={14} />
+                    <span>Última atualização: {new Date().toLocaleTimeString('pt-BR')}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -354,15 +380,15 @@ export default function Dashboard(){
           {/* Ações rápidas para admin */}
           {role === 'admin' && (
             <div className="flex flex-wrap gap-3">
-              <Button variant="outline" asChild className="btn-secondary-modern">
+              <Button variant="outline" asChild className="btn-secondary-modern group">
                 <Link to="/config">
-                  <Settings size={18} className="mr-2" />
+                  <Settings size={18} className="mr-2 group-hover:rotate-180 transition-transform duration-500" />
                   Configurações
                 </Link>
               </Button>
-              <Button variant="outline" asChild className="btn-secondary-modern">
+              <Button variant="outline" asChild className="btn-secondary-modern group">
                 <Link to="/api">
-                  <BarChart3 size={18} className="mr-2" />
+                  <BarChart3 size={18} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
                   API Panel
                 </Link>
               </Button>
@@ -370,116 +396,131 @@ export default function Dashboard(){
           )}
         </div>
 
-        {/* Estatísticas rápidas com design moderno */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+        {/* Estatísticas rápidas com design moderno aprimorado */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.1s'}}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Total de Candidatos</p>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total de Candidatos</p>
                   <p className="text-4xl font-bold text-foreground">{stats.total}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Registros no sistema</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+                    <TrendingUp2 size={12} className="text-success" />
+                    <span>Registros no sistema</span>
+                  </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-300">
-                  <Users size={28} className="text-primary" />
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
+                  <Users2 size={32} className="text-primary" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.2s'}}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Superaram Expectativa</p>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Superaram Expectativa</p>
                   <p className="text-4xl font-bold text-success">{stats.superou}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Resultado excelente</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+                    <Star2 size={12} className="text-success" />
+                    <span>Resultado excelente</span>
+                  </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
-                  <Star size={28} className="text-success" />
+                <div className="w-16 h-16 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
+                  <Star size={32} className="text-success" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.3s'}}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Acima da Expectativa</p>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Acima da Expectativa</p>
                   <p className="text-4xl font-bold text-info">{stats.acima}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Muito bom desempenho</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+                    <TrendingUp size={12} className="text-info" />
+                    <span>Muito bom desempenho</span>
+                  </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
-                  <TrendingUp size={28} className="text-info" />
+                <div className="w-16 h-16 bg-gradient-to-br from-info/20 to-info/10 rounded-3xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
+                  <TrendingUp size={32} className="text-info" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.4s'}}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Dentro da Expectativa</p>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Dentro da Expectativa</p>
                   <p className="text-4xl font-bold text-warning">{stats.dentro}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Desempenho adequado</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+                    <Target2 size={12} className="text-warning" />
+                    <span>Desempenho adequado</span>
+                  </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
-                  <CheckCircle size={28} className="text-warning" />
+                <div className="w-16 h-16 bg-gradient-to-br from-warning/20 to-warning/10 rounded-3xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
+                  <CheckCircle size={32} className="text-warning" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.5s'}}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Abaixo da Expectativa</p>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Abaixo da Expectativa</p>
                   <p className="text-4xl font-bold text-muted-foreground">{stats.abaixo}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Precisa de desenvolvimento</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+                    <TrendingDown size={12} className="text-muted-foreground" />
+                    <span>Precisa de desenvolvimento</span>
+                  </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 rounded-2xl flex items-center justify-center border border-muted-foreground/20 group-hover:scale-110 transition-transform duration-300">
-                  <TrendingDown size={28} className="text-muted-foreground" />
+                <div className="w-16 h-16 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 rounded-3xl flex items-center justify-center border border-muted-foreground/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
+                  <TrendingDown size={32} className="text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Abas de Análise */}
+        {/* Abas de Análise aprimoradas */}
         <Tabs defaultValue="candidates" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="candidates" className="text-base py-3">
-              <Users size={18} className="mr-2" />
+          <TabsList className="grid w-full grid-cols-2 mb-8 p-2 bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl">
+            <TabsTrigger value="candidates" className="text-base py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
+              <Users size={20} className="mr-3" />
               Candidatos
             </TabsTrigger>
-            <TabsTrigger value="profiles" className="text-base py-3">
-              <Target size={18} className="mr-2" />
+            <TabsTrigger value="profiles" className="text-base py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
+              <Target size={20} className="mr-3" />
               Análise de Perfis
             </TabsTrigger>
           </TabsList>
 
           {/* Aba: Análise de Perfis */}
-          <TabsContent value="profiles" className="space-y-6">
+          <TabsContent value="profiles" className="space-y-6 animate-slide-in-from-bottom">
             <StatusProfileStats candidates={rows} />
           </TabsContent>
 
           {/* Aba: Candidatos */}
-          <TabsContent value="candidates" className="space-y-6">
+          <TabsContent value="candidates" className="space-y-6 animate-slide-in-from-bottom">
             {/* Filtros Avançados */}
             <AdvancedFilters 
               filters={advancedFilters}
               onFiltersChange={handleAdvancedFiltersChange}
             />
 
-            {/* Controles de busca e exportação */}
+            {/* Controles de busca e exportação aprimorados */}
             <Card className="card-modern">
               <CardHeader className="pb-6">
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-                    <Search size={20} className="text-primary" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                    <Search size={24} className="text-primary" />
                   </div>
                   Controles de Busca e Exportação
                 </CardTitle>
@@ -492,9 +533,9 @@ export default function Dashboard(){
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                   <div className="flex flex-col sm:flex-row gap-4 flex-1">
                     <div className="relative flex-1 max-w-md">
-                      <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                       <Input 
-                        className="input-modern pl-12 h-14 text-base" 
+                        className="input-modern pl-12 h-16 text-base" 
                         placeholder="Buscar candidatos..." 
                         value={q} 
                         onChange={handleSearchChange}
@@ -504,21 +545,21 @@ export default function Dashboard(){
                       variant="outline"
                       onClick={load} 
                       disabled={loading}
-                      className="btn-secondary-modern h-14 px-8"
+                      className="btn-secondary-modern h-16 px-8 group"
                     >
                       {loading ? (
-                        <RefreshCw size={18} className="animate-spin mr-2" />
+                        <RefreshCw size={20} className="animate-spin mr-2" />
                       ) : (
-                        <RefreshCw size={18} className="mr-2" />
+                        <RefreshCw size={20} className="mr-2 group-hover:rotate-180 transition-transform duration-500" />
                       )}
                       Atualizar
                     </Button>
                   </div>
                   
-                  {/* Exibição de erro */}
+                  {/* Exibição de erro aprimorada */}
                   {error && (
-                    <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-xl flex items-center gap-3">
-                      <AlertCircle size={18} />
+                    <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl flex items-center gap-3">
+                      <AlertCircle size={20} />
                       <span className="font-medium">{error}</span>
                     </div>
                   )}
@@ -528,7 +569,7 @@ export default function Dashboard(){
                       <Label className="text-sm font-medium">Colunas para exportar:</Label>
                       <select 
                         multiple 
-                        className="input-modern h-28 min-w-[200px]" 
+                        className="input-modern h-32 min-w-[200px]" 
                         value={columnsToExport}
                         onChange={handleColumnsChange}
                       >
@@ -548,78 +589,105 @@ export default function Dashboard(){
                     <Button 
                       onClick={exportAll}
                       disabled={filtered.length === 0}
-                      className="btn-primary-modern h-14 px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="btn-primary-modern h-16 px-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
                     >
-                      <Download size={18} className="mr-2" />
+                      <Download size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
                       Exportar Todos (XLSX)
                     </Button>
                   </div>
                 </div>
 
-                {/* Seletor de visualização */}
+                {/* Seletor de visualização aprimorado */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Label className="text-sm font-medium">Visualização:</Label>
-                    <div className="flex rounded-xl border border-border/50 overflow-hidden">
+                    <div className="flex rounded-2xl border border-border/50 overflow-hidden bg-white/50 backdrop-blur-sm">
                       <Button
                         variant={viewMode === 'cards' ? 'default' : 'ghost'}
                         size="lg"
                         onClick={() => setViewMode('cards')}
-                        className="rounded-r-none px-6"
+                        className="rounded-r-none px-8 py-4 transition-all duration-300"
                       >
-                        <FileText size={18} className="mr-2" />
+                        <FileText size={20} className="mr-2" />
                         Cartões
                       </Button>
                       <Button
                         variant={viewMode === 'table' ? 'default' : 'ghost'}
                         size="lg"
                         onClick={() => setViewMode('table')}
-                        className="rounded-l-none px-6"
+                        className="rounded-l-none px-8 py-4 transition-all duration-300"
                       >
-                        <BarChart3 size={18} className="mr-2" />
+                        <BarChart3 size={20} className="mr-2" />
                         Tabela
                       </Button>
                     </div>
                   </div>
                   
-                  <div className="text-sm text-muted-foreground font-medium">
+                  <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
+                    <Users2 size={16} />
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
                   </div>
                 </div>
 
                 {/* Conteúdo dos candidatos */}
                 {!initialLoad ? (
-                  <div className="text-center py-16">
-                    <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
-                      <Zap size={32} className="text-muted-foreground" />
+                  <div className="text-center py-20">
+                    <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50 animate-pulse-soft">
+                      <Zap size={48} className="text-muted-foreground" />
                     </div>
-                    <div className="text-muted-foreground text-lg font-medium">Clique em "Atualizar" para carregar os dados</div>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Pronto para começar</h3>
+                    <div className="text-muted-foreground text-lg">Clique em "Atualizar" para carregar os dados</div>
                   </div>
                 ) : loading ? (
-                  <div className="text-center py-16">
-                    <div className="flex items-center justify-center gap-3 text-muted-foreground">
-                      <RefreshCw size={24} className="animate-spin" />
-                      <span className="text-lg font-medium">Carregando candidatos...</span>
+                  <div className="text-center py-20">
+                    <div className="flex items-center justify-center gap-4 text-muted-foreground">
+                      <RefreshCw size={32} className="animate-spin" />
+                      <div className="text-left">
+                        <div className="text-lg font-medium">Carregando candidatos...</div>
+                        <div className="text-sm text-muted-foreground/70">Aguarde enquanto buscamos os dados</div>
+                      </div>
                     </div>
                   </div>
                 ) : filtered.length === 0 ? (
-                  <div className="text-center py-16">
-                    <div className="w-20 h-20 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-border/50">
-                      <Search size={32} className="text-muted-foreground" />
+                  <div className="text-center py-20">
+                    <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50">
+                      <Search size={48} className="text-muted-foreground" />
                     </div>
-                    <div className="text-muted-foreground text-lg font-medium">
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Nenhum resultado encontrado</h3>
+                    <div className="text-muted-foreground text-lg">
                       {q || Object.values(advancedFilters).some(v => v !== '') 
-                        ? 'Nenhum candidato encontrado para esta busca ou filtros aplicados' 
-                        : 'Nenhum candidato cadastrado'}
+                        ? 'Tente ajustar os filtros ou termos de busca' 
+                        : 'Nenhum candidato cadastrado no sistema'}
                     </div>
+                    {(q || Object.values(advancedFilters).some(v => v !== '')) && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setQ('')
+                          setAdvancedFilters({
+                            status: '',
+                            scoreMin: '',
+                            scoreMax: '',
+                            dateFrom: '',
+                            dateTo: '',
+                            sortBy: 'created_at'
+                          })
+                        }}
+                        className="mt-4 btn-secondary-modern"
+                      >
+                        <FilterX size={16} className="mr-2" />
+                        Limpar Filtros
+                      </Button>
+                    )}
                   </div>
                 ) : viewMode === 'cards' ? (
-                  // Visualização em cartões com design moderno
+                  // Visualização em cartões com design moderno aprimorado
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedData.map(row => (
+                    {sortedData.map((row, index) => (
                       <Card 
                         key={row.id} 
-                        className="card-modern group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                        className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-bottom"
+                        style={{animationDelay: `${index * 0.1}s`}}
                       >
                         <CardHeader className="pb-4">
                           <div className="flex items-start justify-between">
@@ -641,13 +709,13 @@ export default function Dashboard(){
                         <CardContent className="space-y-4">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-muted-foreground">Pontuação:</span>
-                            <span className={`text-2xl font-bold ${getStatusColor(row.status)}`}>
+                            <span className={`text-3xl font-bold ${getStatusColor(row.status)}`}>
                               {row.score}
                             </span>
                           </div>
                           
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Date:</span>
+                            <span className="text-sm font-medium text-muted-foreground">Data:</span>
                             <span className="text-sm text-muted-foreground">
                               {new Date(row.created_at).toLocaleDateString('pt-BR')}
                             </span>
@@ -655,23 +723,23 @@ export default function Dashboard(){
                           
                           <Separator />
                           
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-3">
                             <Button 
                               variant="outline" 
                               size="sm"
                               onClick={() => setCurrent(row)}
-                              className="btn-secondary-modern flex-1 mr-2"
+                              className="btn-secondary-modern flex-1 group"
                             >
-                              <Eye size={16} className="mr-2" />
+                              <Eye size={16} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
                               Ver Detalhes
                             </Button>
                             <Button 
                               variant="outline" 
-                              size="2sm" 
+                              size="sm" 
                               onClick={() => handleDeleteCandidate(row)}
-                              className="btn-destructive flex-1"
+                              className="btn-destructive flex-1 group"
                             >
-                              <Trash2 size={16} className="mr-2" />
+                              <Trash2 size={16} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
                               Excluir
                             </Button>
                           </div>
@@ -680,7 +748,7 @@ export default function Dashboard(){
                     ))}
                   </div>
                 ) : (
-                  // Visualização em tabela
+                  // Visualização em tabela aprimorada
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
@@ -695,7 +763,7 @@ export default function Dashboard(){
                       </TableHeader>
                       <TableBody>
                         {sortedData.map(row => (
-                          <TableRow key={row.id}>
+                          <TableRow key={row.id} className="hover:bg-muted/30 transition-all duration-300">
                             <TableCell className="font-medium">{row.name}</TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell className={getStatusColor(row.status)}>
