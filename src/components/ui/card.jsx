@@ -1,11 +1,11 @@
-import * as React from "react"
-import { cn } from "../../lib/utils"
+import React from 'react'
+import { cn } from '../../lib/utils'
 
 const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-2xl border border-border/50 bg-card text-card-foreground shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1",
       className
     )}
     {...props}
@@ -25,10 +25,7 @@ CardHeader.displayName = "CardHeader"
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
-      className
-    )}
+    className={cn("text-xl font-semibold leading-none tracking-tight text-foreground", className)}
     {...props}
   />
 ))
@@ -57,4 +54,52 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+// Card variants
+const CardModern = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-3xl border border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm text-card-foreground shadow-lg hover:shadow-2xl transition-all duration-700 hover:-translate-y-2",
+      className
+    )}
+    {...props}
+  />
+))
+CardModern.displayName = "CardModern"
+
+const CardGlass = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md text-card-foreground shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1",
+      "dark:border-black/20 dark:bg-black/10",
+      className
+    )}
+    {...props}
+  />
+))
+CardGlass.displayName = "CardGlass"
+
+const CardHover = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-2xl border border-border/50 bg-card text-card-foreground shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-[1.02]",
+      className
+    )}
+    {...props}
+  />
+))
+CardHover.displayName = "CardHover"
+
+export { 
+  Card, 
+  CardHeader, 
+  CardFooter, 
+  CardTitle, 
+  CardDescription, 
+  CardContent,
+  CardModern,
+  CardGlass,
+  CardHover
+}

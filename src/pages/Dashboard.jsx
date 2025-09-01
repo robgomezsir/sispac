@@ -54,7 +54,9 @@ import {
 import { cn } from '../lib/utils'
 import { 
   Button, 
+  ButtonModern,
   Card, 
+  CardModern,
   CardHeader, 
   CardTitle, 
   CardDescription, 
@@ -69,11 +71,14 @@ import {
   TabsTrigger,
   TabsContent,
   Table,
+  TableModern,
   TableHeader,
   TableBody,
   TableHead,
   TableRow,
+  TableRowHover,
   TableCell,
+  TableCellModern,
   TableCaption,
   Select,
   SelectContent,
@@ -85,7 +90,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuCheckboxItem
+  DropdownMenuCheckboxItem,
+  Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
+  ModalFooter,
+  ModalClose
 } from '../components/ui'
 
 export default function Dashboard(){

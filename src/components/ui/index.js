@@ -1,5 +1,22 @@
-export { Button, buttonVariants } from './button'
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
+export { 
+  Button, 
+  ButtonModern, 
+  ButtonGlass, 
+  ButtonGlow, 
+  ButtonIcon,
+  buttonVariants 
+} from './button'
+export { 
+  Card, 
+  CardHeader, 
+  CardFooter, 
+  CardTitle, 
+  CardDescription, 
+  CardContent,
+  CardModern,
+  CardGlass,
+  CardHover
+} from './card'
 export { Input } from './input'
 export { Label } from './label'
 export { Badge, badgeVariants } from './badge'
@@ -15,7 +32,10 @@ export {
   TableHead, 
   TableRow, 
   TableCell, 
-  TableCaption 
+  TableCaption,
+  TableModern,
+  TableRowHover,
+  TableCellModern
 } from './table'
 export { 
   Select, 
@@ -40,3 +60,11 @@ export {
   DropdownMenuSubTrigger, 
   DropdownMenuSubContent 
 } from './dropdown-menu'
+export { 
+  Modal, 
+  ModalHeader, 
+  ModalTitle, 
+  ModalContent, 
+  ModalFooter, 
+  ModalClose 
+} from './modal'
