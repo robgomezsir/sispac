@@ -10,10 +10,25 @@ export function usePWA() {
   useEffect(() => {
     // Verificar se já está instalado
     const checkIfInstalled = () => {
+      // Verificar display mode standalone
       if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true)
         return true
       }
+      
+      // Verificar se está em modo PWA (navigator.standalone para iOS)
+      if (navigator.standalone === true) {
+        setIsInstalled(true)
+        return true
+      }
+      
+      // Verificar se a URL contém parâmetros de instalação
+      if (window.location.search.includes('source=pwa') || 
+          window.location.search.includes('utm_source=pwa')) {
+        setIsInstalled(true)
+        return true
+      }
+      
       return false
     }
 

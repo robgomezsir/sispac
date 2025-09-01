@@ -1,7 +1,7 @@
 // Service Worker para SisPAC PWA
-const CACHE_NAME = 'sispac-v1.0.0';
-const STATIC_CACHE = 'sispac-static-v1.0.0';
-const DYNAMIC_CACHE = 'sispac-dynamic-v1.0.0';
+const CACHE_VERSION = '1.0.1';
+const STATIC_CACHE = `sispac-static-v${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `sispac-dynamic-v${CACHE_VERSION}`;
 
 // Arquivos para cache estático
 const STATIC_FILES = [

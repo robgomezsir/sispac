@@ -59,6 +59,9 @@ export default function PWAInstallPrompt() {
               ⚠️ Você está offline, mas pode usar funcionalidades básicas
             </span>
           )}
+          <span className="block mt-1 text-blue-600 dark:text-blue-400 text-xs">
+            ✨ Acesso direto, notificações e sincronização automática
+          </span>
         </p>
         
         <div className="flex space-x-2">
