@@ -331,34 +331,34 @@ export default function Formulario(){
     <div className="min-h-screen relative overflow-hidden">
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-6 animate-slide-in-from-top">
-                          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
-                <img 
-                  src="/logo192.png" 
-                  alt="SisPAC Logo" 
-                  className="w-12 h-12 object-contain"
-                />
-              </div>
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+          {/* Header moderno */}
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl border border-primary/20 mb-4">
+              <img 
+                src="/logo192.png" 
+                alt="SisPAC Logo" 
+                className="w-10 h-10 object-contain"
+              />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-foreground">
                 Avaliação Comportamental
               </h1>
-              <p className="text-xl text-muted-foreground font-medium">
+              <p className="text-muted-foreground">
                 Descubra seu perfil comportamental através deste teste especializado
               </p>
             </div>
           </div>
 
-          {/* Barra de progresso */}
+          {/* Barra de progresso moderna */}
           {step > 0 && (
-            <div className="space-y-4 animate-slide-in-from-bottom">
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
                 <span>Progresso do teste</span>
                 <span>{step - 1} de {questions.length}</span>
               </div>
-              <Progress value={progress} className="h-3 bg-muted/30" />
-              <div className="flex items-center justify-between text-xs text-muted-foreground/70">
+              <Progress value={progress} className="h-2 mb-3" />
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Timer size={14} />
                   <span>Tempo: {formatTime(timeSpent)}</span>
