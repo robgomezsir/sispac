@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
-import Modal from '../components/Modal.jsx'
+
 import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
 import StatusProfileStats from '../components/StatusProfileStats.jsx'
 import { Sidebar } from '../components/Sidebar.jsx'
