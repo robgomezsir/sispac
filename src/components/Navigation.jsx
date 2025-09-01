@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.jsx'
-import { ThemeToggle } from './ThemeToggle.jsx'
 import { sispacLogo } from '../assets'
 import { 
   LogOut, 
@@ -131,10 +130,8 @@ export function Navigation() {
             ))}
           </div>
           
-          {/* Right side - Theme toggle and user menu */}
+          {/* Right side - User menu */}
           <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            
             {user && (
               <div className="hidden md:flex items-center space-x-4">
                 <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors duration-200">
@@ -152,15 +149,7 @@ export function Navigation() {
                   </div>
                 </div>
                 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="flex items-center space-x-2 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-200"
-                >
-                  <LogOut size={16} />
-                  <span className="hidden sm:inline">Sair</span>
-                </Button>
+
               </div>
             )}
             
@@ -223,14 +212,7 @@ export function Navigation() {
                     </div>
                   </div>
                   
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start px-4 py-3 h-auto hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-200"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut size={20} className="mr-3" />
-                    <span>Sair</span>
-                  </Button>
+
                 </>
               )}
             </div>

@@ -4,6 +4,7 @@ import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
 import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
 import StatusProfileStats from '../components/StatusProfileStats.jsx'
+import { Sidebar } from '../components/Sidebar.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
@@ -329,20 +330,9 @@ export default function Dashboard(){
   }, [])
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Elementos decorativos de fundo aprimorados */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        
-        {/* Elementos flutuantes adicionais */}
-        <div className="absolute top-20 right-20 w-16 h-16 bg-gradient-to-br from-info/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-20 left-20 w-20 h-20 bg-gradient-to-br from-warning/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '3s'}}></div>
-        <div className="absolute top-1/3 left-1/4 w-12 h-12 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-xl animate-float" style={{animationDelay: '1.5s'}}></div>
-      </div>
-
-      <div className="space-y-8 p-6 relative z-10">
+    <div className="min-h-screen">
+      <Sidebar />
+      <div className="space-y-8 p-6">
         {/* Header do Dashboard aprimorado */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-4">
@@ -375,23 +365,7 @@ export default function Dashboard(){
             </div>
           </div>
           
-          {/* Ações rápidas para admin */}
-          {role === 'admin' && (
-            <div className="flex flex-wrap gap-3">
-              <Button variant="outline" asChild className="btn-secondary-modern group">
-                <Link to="/config">
-                  <Settings size={18} className="mr-2 group-hover:rotate-180 transition-transform duration-500" />
-                  Configurações
-                </Link>
-              </Button>
-              <Button variant="outline" asChild className="btn-secondary-modern group">
-                <Link to="/api">
-                  <BarChart3 size={18} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  API Panel
-                </Link>
-              </Button>
-            </div>
-          )}
+
         </div>
 
         {/* Estatísticas rápidas com design moderno aprimorado */}

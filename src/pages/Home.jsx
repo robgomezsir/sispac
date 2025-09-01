@@ -83,15 +83,8 @@ export default function Home(){
   if (isLoading) {
     console.log('🔍 [Home] Mostrando tela de carregamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Elementos decorativos de fundo animados */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        </div>
-        
-        <div className="text-center relative z-10">
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-primary/20 shadow-glow animate-pulse-soft">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
@@ -111,15 +104,8 @@ export default function Home(){
   if (user) {
     console.log('🔍 [Home] Usuário logado, mostrando tela de redirecionamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Elementos decorativos de fundo animados */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-info/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-success/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        </div>
-        
-        <div className="text-center relative z-10">
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
           <div className="w-24 h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-success/20 shadow-glow-success animate-pulse-soft">
             <CheckCircle size={48} className="text-success animate-bounce-soft" />
           </div>
@@ -138,20 +124,8 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
-      {/* Elementos decorativos de fundo animados */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        
-        {/* Elementos flutuantes adicionais */}
-        <div className="absolute top-20 left-20 w-16 h-16 bg-gradient-to-br from-info/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-20 right-20 w-20 h-20 bg-gradient-to-br from-warning/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '3s'}}></div>
-        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-xl animate-float" style={{animationDelay: '1.5s'}}></div>
-      </div>
-
-      <div className="w-full max-w-4xl relative z-10">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Lado esquerdo - Informações do sistema */}
           <div className="text-center lg:text-left space-y-8 animate-slide-in-from-left">

@@ -88,7 +88,7 @@ export default function App(){
   }, [])
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navigation />
       <main className="container mx-auto px-6 py-6">
         <Routes>

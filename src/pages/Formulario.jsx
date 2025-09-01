@@ -279,15 +279,8 @@ export default function Formulario(){
   // Se já foi enviado, mostrar tela de sucesso
   if (sent) {
     return (
-      <div className="min-h-screen relative overflow-hidden">
-        {/* Elementos decorativos de fundo */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-success/20 to-transparent rounded-full blur-3xl animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-success/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        </div>
-
-        <div className="container mx-auto px-4 py-8 relative z-10">
+      <div className="min-h-screen">
+        <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Header de sucesso */}
             <div className="space-y-6 animate-slide-in-from-top">
@@ -335,19 +328,8 @@ export default function Formulario(){
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Elementos decorativos de fundo */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-        
-        {/* Elementos flutuantes adicionais */}
-        <div className="absolute top-20 right-20 w-16 h-16 bg-gradient-to-br from-info/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-20 left-20 w-20 h-20 bg-gradient-to-br from-warning/20 to-transparent rounded-full blur-2xl animate-float" style={{animationDelay: '3s'}}></div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8 relative z-10">
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="text-center space-y-6 animate-slide-in-from-top">

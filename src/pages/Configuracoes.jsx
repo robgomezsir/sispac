@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { Sidebar } from '../components/Sidebar.jsx'
 import { 
   Settings, 
   Users, 
@@ -822,14 +823,8 @@ export default function Configuracoes(){
 
   if (role !== 'admin') {
     return (
-              <div className="min-h-[50vh] flex items-center justify-center relative overflow-hidden">
-        {/* Elementos decorativos de fundo */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-destructive/20 to-transparent rounded-full blur-3xl animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-warning/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        </div>
-        
-        <div className="text-center relative z-10">
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-center">
           <div className="w-24 h-24 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-destructive/20 shadow-glow">
             <XCircle size={48} className="text-destructive" />
           </div>
@@ -873,15 +868,9 @@ export default function Configuracoes(){
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Elementos decorativos de fundo */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl animate-pulse-soft"></div>
-      </div>
-
-      <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
+    <div className="min-h-screen">
+      <Sidebar />
+      <div className="max-w-6xl mx-auto space-y-8 p-6">
         {/* Header da página */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">
