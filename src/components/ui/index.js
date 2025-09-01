@@ -5,6 +5,7 @@ export { Label } from './label'
 export { Badge, badgeVariants } from './badge'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Separator } from './separator'
+export { Progress } from './progress'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './tooltip'
 export { 
   Table, 

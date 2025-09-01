@@ -48,13 +48,7 @@ import {
   FilterX,
   BarChart4,
   PieChart,
-  LineChart,
-  TrendingUp2,
-  Users2,
-  Target2,
-  Award2,
-  Clock2,
-  Star2
+  LineChart
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -354,7 +348,11 @@ export default function Dashboard(){
           <div className="space-y-4">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-glow animate-bounce-soft">
-                <BarChart3 size={40} className="text-primary" />
+                <img 
+                  src="/logo192.png" 
+                  alt="SisPAC Logo" 
+                  className="w-12 h-12 object-contain"
+                />
               </div>
               <div className="space-y-2">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
@@ -369,7 +367,7 @@ export default function Dashboard(){
                     <span>Sistema Ativo</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock2 size={14} />
+                    <Clock size={14} />
                     <span>Última atualização: {new Date().toLocaleTimeString('pt-BR')}</span>
                   </div>
                 </div>
@@ -405,12 +403,12 @@ export default function Dashboard(){
                   <p className="text-sm font-medium text-muted-foreground">Total de Candidatos</p>
                   <p className="text-4xl font-bold text-foreground">{stats.total}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <TrendingUp2 size={12} className="text-success" />
+                    <TrendingUp size={12} className="text-success" />
                     <span>Registros no sistema</span>
                   </div>
                 </div>
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <Users2 size={32} className="text-primary" />
+                  <Users size={32} className="text-primary" />
                 </div>
               </div>
             </CardContent>
@@ -423,7 +421,7 @@ export default function Dashboard(){
                   <p className="text-sm font-medium text-muted-foreground">Superaram Expectativa</p>
                   <p className="text-4xl font-bold text-success">{stats.superou}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <Star2 size={12} className="text-success" />
+                    <Star size={12} className="text-success" />
                     <span>Resultado excelente</span>
                   </div>
                 </div>
@@ -459,7 +457,7 @@ export default function Dashboard(){
                   <p className="text-sm font-medium text-muted-foreground">Dentro da Expectativa</p>
                   <p className="text-4xl font-bold text-warning">{stats.dentro}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <Target2 size={12} className="text-warning" />
+                    <Target size={12} className="text-warning" />
                     <span>Desempenho adequado</span>
                   </div>
                 </div>
@@ -624,7 +622,7 @@ export default function Dashboard(){
                   </div>
                   
                   <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
-                    <Users2 size={16} />
+                    <Users size={16} />
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
                   </div>
                 </div>

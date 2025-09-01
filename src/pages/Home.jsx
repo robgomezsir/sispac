@@ -158,7 +158,11 @@ export default function Home(){
             {/* Logo e título */}
             <div className="space-y-6">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
-                <Sparkles size={40} className="text-primary" />
+                <img 
+                  src="/logo192.png" 
+                  alt="SisPAC Logo" 
+                  className="w-12 h-12 object-contain"
+                />
               </div>
               <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">

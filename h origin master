@@ -1,5 +1,5 @@
-[33md13d159[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m fix: corrigir estrutura do Dashboard e remover código duplicado
-[33m467b0ab[m feat: implementar análise detalhada de perfis de status com informações comportamentais
-[33m6f39fa5[m[33m ([m[1;31morigin/master[m[33m)[m fix: corrige erro de detalhamento do candidato - busca da tabela correta e melhora interface
-[33me653041[m refactor: otimiza gerenciamento de candidatos de teste e melhora tratamento de erros
-[33m1492d00[m feat: Implementação da funcionalidade de remoção de candidatos
+[33m1e1ec99[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m feat: Repaginação completa com design moderno e animações aprimoradas - Atualização de cores para tons pastéis vibrantes (roxo primário) - Animações suaves e modernas com easing aprimorado - Página de login profissional sem scroll, centralizada - Dashboard com cartões animados e estatísticas visuais - Formulário com progresso visual e timer - Efeitos de glassmorphism e neumorphism - Botões com animações e efeitos hover - Gradientes e sombras modernas - Interface responsiva e intuitiva
+[33m1498a55[m[33m ([m[1;31morigin/master[m[33m)[m feat: melhora PWA com versão atualizada e melhor detecção de instalação
+[33mf81dfc8[m feat: implementa PWA para instalação direta pelo navegador
+[33m3ede0ea[m feat: Melhorar exportação do perfil comportamental com todas as seções
+[33m425f0fe[m feat: melhora formatação do perfil comportamental no Excel com quebras de linha otimizadas

@@ -389,9 +389,13 @@ export default function Formulario(){
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="text-center space-y-6 animate-slide-in-from-top">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
-              <Brain size={40} className="text-primary" />
-            </div>
+                          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
+                <img 
+                  src="/logo192.png" 
+                  alt="SisPAC Logo" 
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                 Avaliação Comportamental
