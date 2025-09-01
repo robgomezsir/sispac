@@ -823,8 +823,8 @@ export default function Configuracoes(){
 
   if (role !== 'admin') {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-[50vh] flex items-center justify-center relative overflow-hidden">
+        <div className="text-center relative z-10">
           <div className="w-24 h-24 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-destructive/20 shadow-glow">
             <XCircle size={48} className="text-destructive" />
           </div>
@@ -868,9 +868,9 @@ export default function Configuracoes(){
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
       <Sidebar />
-      <div className="max-w-6xl mx-auto space-y-8 p-6">
+      <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
         {/* Header da página */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">

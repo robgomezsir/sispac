@@ -38,9 +38,9 @@ export default function ApiPanel(){
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
       <Sidebar />
-      <div className="max-w-6xl mx-auto space-y-8 p-6">
+      <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
         {/* Header da página */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">

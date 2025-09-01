@@ -279,8 +279,8 @@ export default function Formulario(){
   // Se já foi enviado, mostrar tela de sucesso
   if (sent) {
     return (
-      <div className="min-h-screen">
-        <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen relative overflow-hidden">
+        <div className="container mx-auto px-4 py-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Header de sucesso */}
             <div className="space-y-6 animate-slide-in-from-top">
@@ -328,8 +328,8 @@ export default function Formulario(){
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="text-center space-y-6 animate-slide-in-from-top">

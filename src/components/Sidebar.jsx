@@ -10,12 +10,23 @@ import {
   LogOut,
   ChevronRight,
   User,
-  Shield
+  Shield,
+  RefreshCw,
+  Download,
+  FileText,
+  Table
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge } from './ui'
 
-export function Sidebar() {
+export function Sidebar({ 
+  onRefresh, 
+  onExport, 
+  loading, 
+  viewMode, 
+  setViewMode, 
+  filteredLength 
+}) {
   const { user, role, signOut } = useAuth()
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
@@ -59,7 +70,7 @@ export function Sidebar() {
         variant="outline"
         size="icon"
         onClick={toggleSidebar}
-        className="fixed top-4 right-4 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg hover:shadow-xl transition-all duration-300"
+        className="fixed top-4 left-4 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg hover:shadow-xl transition-all duration-300"
       >
         {isOpen ? <X size={20} /> : <Menu size={20} />}
       </Button>
@@ -74,8 +85,8 @@ export function Sidebar() {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed top-0 right-0 h-full w-80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-l border-border/50 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "translate-x-full"
+        "fixed top-0 left-0 h-full w-80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-r border-border/50 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out",
+        isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
           {/* Header do sidebar */}
@@ -128,6 +139,76 @@ export function Sidebar() {
                 <ThemeToggle />
               </div>
             </div>
+
+            {/* Ações do Dashboard */}
+            {location.pathname === '/dashboard' && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Ações</h3>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      onRefresh?.()
+                      closeSidebar()
+                    }}
+                    disabled={loading}
+                    className="w-full justify-start gap-3 h-12 hover:bg-accent/50 transition-all duration-200"
+                  >
+                    {loading ? (
+                      <RefreshCw size={18} className="animate-spin" />
+                    ) : (
+                      <RefreshCw size={18} />
+                    )}
+                    <span>Atualizar Dados</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      onExport?.()
+                      closeSidebar()
+                    }}
+                    disabled={filteredLength === 0}
+                    className="w-full justify-start gap-3 h-12 hover:bg-accent/50 transition-all duration-200"
+                  >
+                    <Download size={18} />
+                    <span>Exportar (XLSX)</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Visualização do Dashboard */}
+            {location.pathname === '/dashboard' && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">Visualização</h3>
+                <div className="space-y-2">
+                  <Button
+                    variant={viewMode === 'cards' ? 'default' : 'outline'}
+                    onClick={() => {
+                      setViewMode?.('cards')
+                      closeSidebar()
+                    }}
+                    className="w-full justify-start gap-3 h-12 transition-all duration-200"
+                  >
+                    <FileText size={18} />
+                    <span>Cartões</span>
+                  </Button>
+                  
+                  <Button
+                    variant={viewMode === 'table' ? 'default' : 'outline'}
+                    onClick={() => {
+                      setViewMode?.('table')
+                      closeSidebar()
+                    }}
+                    className="w-full justify-start gap-3 h-12 transition-all duration-200"
+                  >
+                    <Table size={18} />
+                    <span>Tabela</span>
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Links administrativos */}
             {role === 'admin' && (

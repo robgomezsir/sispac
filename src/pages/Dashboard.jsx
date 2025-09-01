@@ -330,9 +330,16 @@ export default function Dashboard(){
   }, [])
 
   return (
-    <div className="min-h-screen">
-      <Sidebar />
-      <div className="space-y-8 p-6">
+    <div className="min-h-screen relative overflow-hidden">
+      <Sidebar 
+        onRefresh={load}
+        onExport={exportAll}
+        loading={loading}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        filteredLength={filtered.length}
+      />
+      <div className="space-y-8 p-6 relative z-10">
         {/* Header do Dashboard aprimorado */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-4">
@@ -513,19 +520,7 @@ export default function Dashboard(){
                         onChange={handleSearchChange}
                       />
                     </div>
-                    <Button 
-                      variant="outline"
-                      onClick={load} 
-                      disabled={loading}
-                      className="btn-secondary-modern h-16 px-8 group"
-                    >
-                      {loading ? (
-                        <RefreshCw size={20} className="animate-spin mr-2" />
-                      ) : (
-                        <RefreshCw size={20} className="mr-2 group-hover:rotate-180 transition-transform duration-500" />
-                      )}
-                      Atualizar
-                    </Button>
+
                   </div>
                   
                   {/* Exibição de erro aprimorada */}
@@ -558,43 +553,12 @@ export default function Dashboard(){
                         ))}
                       </select>
                     </div>
-                    <Button 
-                      onClick={exportAll}
-                      disabled={filtered.length === 0}
-                      className="btn-primary-modern h-16 px-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
-                    >
-                      <Download size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                      Exportar Todos (XLSX)
-                    </Button>
+
                   </div>
                 </div>
 
-                {/* Seletor de visualização aprimorado */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium">Visualização:</Label>
-                    <div className="flex rounded-2xl border border-border/50 overflow-hidden bg-white/50 backdrop-blur-sm">
-                      <Button
-                        variant={viewMode === 'cards' ? 'default' : 'ghost'}
-                        size="lg"
-                        onClick={() => setViewMode('cards')}
-                        className="rounded-r-none px-8 py-4 transition-all duration-300"
-                      >
-                        <FileText size={20} className="mr-2" />
-                        Cartões
-                      </Button>
-                      <Button
-                        variant={viewMode === 'table' ? 'default' : 'ghost'}
-                        size="lg"
-                        onClick={() => setViewMode('table')}
-                        className="rounded-l-none px-8 py-4 transition-all duration-300"
-                      >
-                        <BarChart3 size={20} className="mr-2" />
-                        Tabela
-                      </Button>
-                    </div>
-                  </div>
-                  
+                {/* Contador de resultados */}
+                <div className="flex items-center justify-end">
                   <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <Users size={16} />
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}

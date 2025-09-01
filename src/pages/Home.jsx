@@ -83,8 +83,8 @@ export default function Home(){
   if (isLoading) {
     console.log('🔍 [Home] Mostrando tela de carregamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="text-center relative z-10">
           <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-primary/20 shadow-glow animate-pulse-soft">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
@@ -104,8 +104,8 @@ export default function Home(){
   if (user) {
     console.log('🔍 [Home] Usuário logado, mostrando tela de redirecionamento...')
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="text-center relative z-10">
           <div className="w-24 h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-success/20 shadow-glow-success animate-pulse-soft">
             <CheckCircle size={48} className="text-success animate-bounce-soft" />
           </div>
@@ -124,8 +124,8 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
+      <div className="w-full max-w-4xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Lado esquerdo - Informações do sistema */}
           <div className="text-center lg:text-left space-y-8 animate-slide-in-from-left">
