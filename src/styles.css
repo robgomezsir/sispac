@@ -4,38 +4,38 @@
 
 @layer base {
   :root {
-    /* Cores base com tons pastéis vibrantes e modernos */
-    --background: 220 33% 98%;
-    --foreground: 222 84% 5%;
+    /* Tema Claro - Inspirado nas referências com tons modernos e profissionais */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 5%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 5%;
+    --popover-foreground: 240 10% 3.9%;
     
-    /* Cores primárias em tons pastéis vibrantes */
-    --primary: 262 83% 58%;
+    /* Cores primárias - Azul moderno e profissional */
+    --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
     
-    /* Cores secundárias em tons pastéis */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 9% 46%;
+    /* Cores secundárias - Cinza suave */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
     
-    /* Cores de destaque em tons pastéis */
-    --accent: 220 14% 96%;
-    --accent-foreground: 220 9% 46%;
+    /* Cores de destaque */
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
     
-    /* Cores de estado em tons pastéis vibrantes */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    /* Cores de estado */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
     
     /* Cores de interface */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 221 83% 53%;
     
-    /* Cores de sucesso, aviso e erro em tons pastéis vibrantes */
+    /* Cores de sucesso, aviso e info */
     --success: 142 76% 36%;
     --success-foreground: 355 7% 97%;
     --warning: 38 92% 50%;
@@ -44,12 +44,12 @@
     --info-foreground: 210 40% 98%;
     
     /* Variáveis de design */
-    --radius: 1.25rem;
-    --sidebar-width: 18rem;
-    --header-height: 4.5rem;
+    --radius: 0.75rem;
+    --sidebar-width: 20rem;
+    --header-height: 4rem;
     --spacing: 0.25rem;
     
-    /* Sombras suaves e modernas */
+    /* Sombras modernas e suaves */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -59,25 +59,26 @@
   }
 
   .dark {
-    --background: 222 84% 4%;
-    --foreground: 210 40% 98%;
-    --card: 222 84% 4%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 84% 4%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 262 83% 58%;
+    /* Tema Escuro - Baseado nas referências com tons escuros modernos */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 32% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 262 83% 58%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 221 83% 53%;
     --success: 142 76% 36%;
     --success-foreground: 355 7% 97%;
     --warning: 38 92% 50%;
@@ -181,39 +182,6 @@
 
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  /* Novas animações modernas */
-  .animate-scale-in {
-    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-scale-out {
-    animation: scaleOut 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-slide-down {
-    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-rotate-in {
-    animation: rotateIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-wiggle {
-    animation: wiggle 0.5s ease-in-out;
-  }
-
-  .animate-heartbeat {
-    animation: heartbeat 1.5s ease-in-out infinite;
-  }
-
-  .animate-gradient {
-    animation: gradient 3s ease infinite;
   }
   
   @keyframes fadeIn {
@@ -360,91 +328,6 @@
     }
     to {
       box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
-    }
-  }
-
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes scaleOut {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes rotateIn {
-    from {
-      opacity: 0;
-      transform: rotate(-10deg) scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: rotate(0deg) scale(1);
-    }
-  }
-
-  @keyframes wiggle {
-    0%, 100% {
-      transform: rotate(0deg);
-    }
-    25% {
-      transform: rotate(5deg);
-    }
-    75% {
-      transform: rotate(-5deg);
-    }
-  }
-
-  @keyframes heartbeat {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-  }
-
-  @keyframes gradient {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
     }
   }
   

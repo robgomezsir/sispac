@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
-
+import Modal from '../components/Modal.jsx'
 import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
 import StatusProfileStats from '../components/StatusProfileStats.jsx'
-import { Sidebar } from '../components/Sidebar.jsx'
+
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { Link } from 'react-router-dom'
@@ -54,9 +54,7 @@ import {
 import { cn } from '../lib/utils'
 import { 
   Button, 
-  ButtonModern,
   Card, 
-  CardModern,
   CardHeader, 
   CardTitle, 
   CardDescription, 
@@ -71,14 +69,11 @@ import {
   TabsTrigger,
   TabsContent,
   Table,
-  TableModern,
   TableHeader,
   TableBody,
   TableHead,
   TableRow,
-  TableRowHover,
   TableCell,
-  TableCellModern,
   TableCaption,
   Select,
   SelectContent,
@@ -90,13 +85,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
-  Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalContent,
-  ModalFooter,
-  ModalClose
+  DropdownMenuCheckboxItem
 } from '../components/ui'
 
 export default function Dashboard(){
@@ -348,139 +337,76 @@ export default function Dashboard(){
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <Sidebar 
-        onRefresh={load}
-        loading={loading}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-      />
       <div className="space-y-8 p-6 relative z-10">
-        {/* Header do Dashboard aprimorado */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="space-y-4">
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-glow animate-bounce-soft">
-                <img 
-                  src="/logo192.png" 
-                  alt="SisPAC Logo" 
-                  className="w-12 h-12 object-contain"
-                />
+        {/* Header moderno inspirado nas referências */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Candidatos</h1>
+            <p className="text-muted-foreground">Gerencie e visualize os resultados dos testes comportamentais</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button 
+              onClick={load}
+              disabled={loading}
+              className="btn-primary-modern"
+            >
+              <RefreshCw size={16} className={cn("mr-2", loading && "animate-spin")} />
+              Atualizar
+            </Button>
+          </div>
+        </div>
+
+        {/* Estatísticas modernas e compactas */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
               </div>
-              <div className="space-y-2">
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                  Dashboard de Candidatos
-                </h1>
-                <p className="text-xl text-muted-foreground font-medium">
-                  Gerencie e visualize os resultados dos testes comportamentais
-                </p>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground/70">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft"></div>
-                    <span>Sistema Ativo</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock size={14} />
-                    <span>Última atualização: {new Date().toLocaleTimeString('pt-BR')}</span>
-                  </div>
-                </div>
-              </div>
+              <Users size={20} className="text-primary" />
             </div>
           </div>
           
-
-        </div>
-
-        {/* Estatísticas rápidas com design moderno aprimorado */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.1s'}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Total de Candidatos</p>
-                  <p className="text-4xl font-bold text-foreground">{stats.total}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <TrendingUp size={12} className="text-success" />
-                    <span>Registros no sistema</span>
-                  </div>
-                </div>
-                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <Users size={32} className="text-primary" />
-                </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Superaram</p>
+                <p className="text-2xl font-bold text-success">{stats.superou}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Star size={20} className="text-success" />
+            </div>
+          </div>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.2s'}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Superaram Expectativa</p>
-                  <p className="text-4xl font-bold text-success">{stats.superou}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <Star size={12} className="text-success" />
-                    <span>Resultado excelente</span>
-                  </div>
-                </div>
-                <div className="w-16 h-16 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <Star size={32} className="text-success" />
-                </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Acima</p>
+                <p className="text-2xl font-bold text-info">{stats.acima}</p>
               </div>
-            </CardContent>
-          </Card>
+              <TrendingUp size={20} className="text-info" />
+            </div>
+          </div>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.3s'}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Acima da Expectativa</p>
-                  <p className="text-4xl font-bold text-info">{stats.acima}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <TrendingUp size={12} className="text-info" />
-                    <span>Muito bom desempenho</span>
-                  </div>
-                </div>
-                <div className="w-16 h-16 bg-gradient-to-br from-info/20 to-info/10 rounded-3xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <TrendingUp size={32} className="text-info" />
-                </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Dentro</p>
+                <p className="text-2xl font-bold text-warning">{stats.dentro}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Target size={20} className="text-warning" />
+            </div>
+          </div>
           
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.4s'}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Dentro da Expectativa</p>
-                  <p className="text-4xl font-bold text-warning">{stats.dentro}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <Target size={12} className="text-warning" />
-                    <span>Desempenho adequado</span>
-                  </div>
-                </div>
-                <div className="w-16 h-16 bg-gradient-to-br from-warning/20 to-warning/10 rounded-3xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <CheckCircle size={32} className="text-warning" />
-                </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Abaixo</p>
+                <p className="text-2xl font-bold text-muted-foreground">{stats.abaixo}</p>
               </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-top" style={{animationDelay: '0.5s'}}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Abaixo da Expectativa</p>
-                  <p className="text-4xl font-bold text-muted-foreground">{stats.abaixo}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <TrendingDown size={12} className="text-muted-foreground" />
-                    <span>Precisa de desenvolvimento</span>
-                  </div>
-                </div>
-                <div className="w-16 h-16 bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 rounded-3xl flex items-center justify-center border border-muted-foreground/20 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-12">
-                  <TrendingDown size={32} className="text-muted-foreground" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <TrendingDown size={20} className="text-muted-foreground" />
+            </div>
+          </div>
         </div>
 
         {/* Abas de Análise aprimoradas */}
@@ -509,266 +435,241 @@ export default function Dashboard(){
               onFiltersChange={handleAdvancedFiltersChange}
             />
 
-            {/* Controles de busca e exportação aprimorados */}
-            <Card className="card-modern">
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
-                    <Search size={24} className="text-primary" />
-                  </div>
-                  Controles de Busca e Exportação
-                </CardTitle>
-                <CardDescription className="text-lg">
-                  Busque candidatos e exporte dados em diferentes formatos
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="space-y-8">
-                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                  <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                    <div className="relative flex-1 max-w-md">
-                      <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                      <Input 
-                        className="input-modern pl-12 h-16 text-base" 
-                        placeholder="Buscar candidatos..." 
-                        value={q} 
-                        onChange={handleSearchChange}
-                      />
-                    </div>
-
+            {/* Controles modernos de busca e filtros */}
+            <div className="bg-card border border-border/50 rounded-xl p-6 mb-6">
+              <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                  <div className="relative flex-1 max-w-md">
+                    <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                    <Input 
+                      className="pl-10 h-10" 
+                      placeholder="Buscar candidatos..." 
+                      value={q} 
+                      onChange={handleSearchChange}
+                    />
                   </div>
                   
-                  {/* Exibição de erro aprimorada */}
-                  {error && (
-                    <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl flex items-center gap-3">
-                      <AlertCircle size={20} />
-                      <span className="font-medium">{error}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button 
-                      onClick={openExportModal}
-                      disabled={filtered.length === 0}
-                      className="btn-primary-modern h-16 px-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  <div className="flex rounded-lg border border-border/50 overflow-hidden">
+                    <Button
+                      variant={viewMode === 'cards' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('cards')}
+                      className="rounded-r-none"
                     >
-                      <Download size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                      Exportar Todos (XLSX)
+                      <FileText size={16} className="mr-2" />
+                      Cartões
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('table')}
+                      className="rounded-l-none"
+                    >
+                      <BarChart3 size={16} className="mr-2" />
+                      Tabela
                     </Button>
                   </div>
                 </div>
-
-                {/* Seletor de visualização e contador de resultados */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium">Visualização:</Label>
-                    <div className="flex rounded-2xl border border-border/50 overflow-hidden bg-white/50 backdrop-blur-sm">
-                      <Button
-                        variant={viewMode === 'cards' ? 'default' : 'ghost'}
-                        size="lg"
-                        onClick={() => setViewMode('cards')}
-                        className="rounded-r-none px-8 py-4 transition-all duration-300"
-                      >
-                        <FileText size={20} className="mr-2" />
-                        Cartões
-                      </Button>
-                      <Button
-                        variant={viewMode === 'table' ? 'default' : 'ghost'}
-                        size="lg"
-                        onClick={() => setViewMode('table')}
-                        className="rounded-l-none px-8 py-4 transition-all duration-300"
-                      >
-                        <BarChart3 size={20} className="mr-2" />
-                        Tabela
-                      </Button>
-                    </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="text-sm text-muted-foreground">
+                    {filtered.length} candidato{filtered.length !== 1 ? 's' : ''}
                   </div>
-                  
-                  <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
-                    <Users size={16} />
-                    {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+                  <Button 
+                    onClick={openExportModal}
+                    disabled={filtered.length === 0}
+                    className="btn-primary-modern"
+                  >
+                    <Download size={16} className="mr-2" />
+                    Exportar
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Exibição de erro */}
+              {error && (
+                <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg flex items-center gap-2">
+                  <AlertCircle size={16} />
+                  <span className="text-sm">{error}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Conteúdo dos candidatos */}
+            {!initialLoad ? (
+              <div className="text-center py-20">
+                <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50 animate-pulse-soft">
+                  <Zap size={48} className="text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">Pronto para começar</h3>
+                <div className="text-muted-foreground text-lg">Clique em "Atualizar" para carregar os dados</div>
+              </div>
+            ) : loading ? (
+              <div className="text-center py-20">
+                <div className="flex items-center justify-center gap-4 text-muted-foreground">
+                  <RefreshCw size={32} className="animate-spin" />
+                  <div className="text-left">
+                    <div className="text-lg font-medium">Carregando candidatos...</div>
+                    <div className="text-sm text-muted-foreground/70">Aguarde enquanto buscamos os dados</div>
                   </div>
                 </div>
-
-                {/* Conteúdo dos candidatos */}
-                {!initialLoad ? (
-                  <div className="text-center py-20">
-                    <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50 animate-pulse-soft">
-                      <Zap size={48} className="text-muted-foreground" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Pronto para começar</h3>
-                    <div className="text-muted-foreground text-lg">Clique em "Atualizar" para carregar os dados</div>
-                  </div>
-                ) : loading ? (
-                  <div className="text-center py-20">
-                    <div className="flex items-center justify-center gap-4 text-muted-foreground">
-                      <RefreshCw size={32} className="animate-spin" />
-                      <div className="text-left">
-                        <div className="text-lg font-medium">Carregando candidatos...</div>
-                        <div className="text-sm text-muted-foreground/70">Aguarde enquanto buscamos os dados</div>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-20">
+                <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50">
+                  <Search size={48} className="text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">Nenhum resultado encontrado</h3>
+                <div className="text-muted-foreground text-lg">
+                  {q || Object.values(advancedFilters).some(v => v !== '') 
+                    ? 'Tente ajustar os filtros ou termos de busca' 
+                    : 'Nenhum candidato cadastrado no sistema'}
+                </div>
+                {(q || Object.values(advancedFilters).some(v => v !== '')) && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setQ('')
+                      setAdvancedFilters({
+                        status: '',
+                        scoreMin: '',
+                        scoreMax: '',
+                        dateFrom: '',
+                        dateTo: '',
+                        sortBy: 'created_at'
+                      })
+                    }}
+                    className="mt-4 btn-secondary-modern"
+                  >
+                    <FilterX size={16} className="mr-2" />
+                    Limpar Filtros
+                  </Button>
+                )}
+              </div>
+            ) : viewMode === 'cards' ? (
+              // Visualização em cartões moderna e compacta
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {sortedData.map((row, index) => (
+                  <div 
+                    key={row.id} 
+                    className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                          {row.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {row.email}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 ml-2">
+                        {getStatusIcon(row.status)}
                       </div>
                     </div>
-                  </div>
-                ) : filtered.length === 0 ? (
-                  <div className="text-center py-20">
-                    <div className="w-24 h-24 bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-border/50">
-                      <Search size={48} className="text-muted-foreground" />
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Pontuação</span>
+                        <span className={`text-lg font-bold ${getStatusColor(row.status)}`}>
+                          {row.score}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Data</span>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">Nenhum resultado encontrado</h3>
-                    <div className="text-muted-foreground text-lg">
-                      {q || Object.values(advancedFilters).some(v => v !== '') 
-                        ? 'Tente ajustar os filtros ou termos de busca' 
-                        : 'Nenhum candidato cadastrado no sistema'}
-                    </div>
-                    {(q || Object.values(advancedFilters).some(v => v !== '')) && (
+                    
+                    <div className="flex items-center gap-2">
                       <Button 
                         variant="outline" 
-                        onClick={() => {
-                          setQ('')
-                          setAdvancedFilters({
-                            status: '',
-                            scoreMin: '',
-                            scoreMax: '',
-                            dateFrom: '',
-                            dateTo: '',
-                            sortBy: 'created_at'
-                          })
-                        }}
-                        className="mt-4 btn-secondary-modern"
+                        size="sm"
+                        onClick={() => setCurrent(row)}
+                        className="flex-1 h-8 text-xs"
                       >
-                        <FilterX size={16} className="mr-2" />
-                        Limpar Filtros
+                        <Eye size={14} className="mr-1" />
+                        Ver
                       </Button>
-                    )}
-                  </div>
-                ) : viewMode === 'cards' ? (
-                  // Visualização em cartões com design moderno aprimorado
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedData.map((row, index) => (
-                      <Card 
-                        key={row.id} 
-                        className="card-modern group hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 animate-slide-in-from-bottom"
-                        style={{animationDelay: `${index * 0.1}s`}}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleDeleteCandidate(row)}
+                        className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive"
                       >
-                        <CardHeader className="pb-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                                {row.name}
-                              </CardTitle>
-                              <CardDescription className="text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
-                                {row.email}
-                              </CardDescription>
-                            </div>
+                        <Trash2 size={14} className="mr-1" />
+                        Excluir
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Visualização em tabela moderna
+              <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b border-border/50">
+                        <TableHead className="font-semibold">Nome</TableHead>
+                        <TableHead className="font-semibold">Email</TableHead>
+                        <TableHead className="font-semibold">Pontuação</TableHead>
+                        <TableHead className="font-semibold">Status</TableHead>
+                        <TableHead className="font-semibold">Data</TableHead>
+                        <TableHead className="font-semibold">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedData.map(row => (
+                        <TableRow key={row.id} className="hover:bg-muted/20 transition-colors duration-200 border-b border-border/30">
+                          <TableCell className="font-medium">{row.name}</TableCell>
+                          <TableCell className="text-muted-foreground">{row.email}</TableCell>
+                          <TableCell>
+                            <span className={`font-bold ${getStatusColor(row.status)}`}>
+                              {row.score}
+                            </span>
+                          </TableCell>
+                          <TableCell>
                             <div className="flex items-center gap-2">
                               {getStatusIcon(row.status)}
                               {getStatusBadge(row.status)}
                             </div>
-                          </div>
-                        </CardHeader>
-                        
-                        <CardContent className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Pontuação:</span>
-                            <span className={`text-3xl font-bold ${getStatusColor(row.status)}`}>
-                              {row.score}
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Data:</span>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                            </span>
-                          </div>
-                          
-                          <Separator />
-                          
-                          <div className="flex items-center justify-between gap-3">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => setCurrent(row)}
-                              className="btn-secondary-modern flex-1 group"
-                            >
-                              <Eye size={16} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                              Ver Detalhes
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => handleDeleteCandidate(row)}
-                              className="btn-destructive flex-1 group"
-                            >
-                              <Trash2 size={16} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
-                              Excluir
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  // Visualização em tabela aprimorada
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nome</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Pontuação</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Data</TableHead>
-                          <TableHead>Ações</TableHead>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setCurrent(row)}
+                                className="h-8 px-3"
+                              >
+                                <Eye size={14} className="mr-1" />
+                                Ver
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleDeleteCandidate(row)}
+                                className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                              >
+                                <Trash2 size={14} className="mr-1" />
+                                Excluir
+                              </Button>
+                            </div>
+                          </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {sortedData.map(row => (
-                          <TableRow key={row.id} className="hover:bg-muted/30 transition-all duration-300">
-                            <TableCell className="font-medium">{row.name}</TableCell>
-                            <TableCell>{row.email}</TableCell>
-                            <TableCell className={getStatusColor(row.status)}>
-                              {row.score}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                {getStatusIcon(row.status)}
-                                {getStatusBadge(row.status)}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setCurrent(row)}
-                                  className="btn-secondary-modern"
-                                >
-                                  <Eye size={16} className="mr-2" />
-                                  Ver
-                                </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => handleDeleteCandidate(row)}
-                                  className="btn-destructive"
-                                >
-                                  <Trash2 size={16} className="mr-2" />
-                                  Excluir
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
           </TabsContent>
         </Tabs>
 
