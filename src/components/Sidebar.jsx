@@ -23,11 +23,9 @@ import { Button, Badge } from './ui'
 
 export function Sidebar({ 
   onRefresh, 
-  onExport, 
   loading, 
   viewMode, 
-  setViewMode, 
-  filteredLength 
+  setViewMode
 }) {
   const { user, role, signOut } = useAuth()
   const location = useLocation()
@@ -231,18 +229,7 @@ export function Sidebar({
                     <span>Atualizar Dados</span>
                   </Button>
                   
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      onExport?.()
-                      closeSidebar()
-                    }}
-                    disabled={filteredLength === 0}
-                    className="w-full justify-start gap-3 h-12 hover:bg-accent/50 transition-all duration-200"
-                  >
-                    <Download size={18} />
-                    <span>Exportar (XLSX)</span>
-                  </Button>
+
                 </div>
               </div>
             )}
