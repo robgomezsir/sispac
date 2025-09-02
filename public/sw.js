@@ -1,5 +1,5 @@
 // Service Worker para SisPAC PWA
-const CACHE_VERSION = '2.0.0';
+const CACHE_VERSION = '3.0.0';
 const STATIC_CACHE = `sispac-static-v${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `sispac-dynamic-v${CACHE_VERSION}`;
 
@@ -73,6 +73,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // Ignorar extensões do Chrome e outros protocolos não suportados
+  if (url.protocol === 'chrome-extension:' || 
+      url.protocol === 'moz-extension:' || 
+      url.protocol === 'safari-extension:' ||
+      url.protocol === 'edge-extension:') {
+    return;
+  }
+  
+  // Ignorar requisições para domínios externos não confiáveis
+  if (url.hostname !== location.hostname && 
+      !url.hostname.includes('supabase.co') &&
+      !url.hostname.includes('vercel.app')) {
+    return;
+  }
+  
   // Estratégia para arquivos estáticos
   if (isStaticFile(url.pathname)) {
     event.respondWith(cacheFirst(request, STATIC_CACHE));
@@ -118,9 +133,19 @@ async function cacheFirst(request, cacheName) {
     
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
-      const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
-      console.log('💾 [SW] Cacheado:', request.url);
+      // Verificar se o recurso pode ser cacheado
+      const url = new URL(request.url);
+      const canCache = url.protocol === 'https:' || url.protocol === 'http:';
+      
+      if (canCache) {
+        try {
+          const cache = await caches.open(cacheName);
+          await cache.put(request, networkResponse.clone());
+          console.log('💾 [SW] Cacheado:', request.url);
+        } catch (cacheError) {
+          console.warn('⚠️ [SW] Não foi possível cachear:', request.url, cacheError);
+        }
+      }
     }
     
     return networkResponse;
