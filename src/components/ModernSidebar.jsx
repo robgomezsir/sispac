@@ -124,11 +124,21 @@ export function ModernSidebar() {
   ]
 
   return (
-    <div className={cn(
-      "fixed left-0 top-0 z-50 h-screen bg-card/95 backdrop-blur-sm border-r-2 border-border/30 transition-all duration-300 ease-in-out",
-      isCollapsed ? "w-16" : "w-80",
-      isMobile && !isCollapsed && "shadow-2xl"
-    )}>
+    <div 
+      className={cn(
+        "fixed left-0 top-0 z-50 h-screen bg-card/95 backdrop-blur-sm border-r-2 border-border/30 transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-16" : "w-80",
+        isMobile && !isCollapsed && "shadow-2xl"
+      )}
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        height: '100vh',
+        zIndex: 50,
+        width: isCollapsed ? '4rem' : '20rem'
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border/50">
         {!isCollapsed && (

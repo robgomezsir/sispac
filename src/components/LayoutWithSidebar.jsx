@@ -7,24 +7,30 @@ export function LayoutWithSidebar({ children }) {
   const { isCollapsed, isMobile, toggleSidebar } = useSidebar()
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Fixed Sidebar */}
+    <>
+      {/* Fixed Sidebar - Always on top */}
       <ModernSidebar />
       
-      {/* Main content area with fixed positioning */}
-      <main className={cn(
-        "fixed top-0 right-0 bottom-0 transition-all duration-300 ease-in-out bg-background",
-        // Desktop: compress content when sidebar is open
-        !isMobile && !isCollapsed && "left-80 border-l border-border/20",
-        !isMobile && isCollapsed && "left-16 border-l border-border/20",
-        // Mobile: full width when sidebar is closed, overlay when open
-        isMobile && !isCollapsed && "left-0",
-        isMobile && isCollapsed && "left-0"
-      )}>
-        <div className="w-full h-full overflow-y-auto px-6 py-6">
+      {/* Main content area */}
+      <div 
+        className={cn(
+          "transition-all duration-300 ease-in-out min-h-screen bg-background",
+          // Desktop: add left margin based on sidebar state
+          !isMobile && !isCollapsed && "ml-80",
+          !isMobile && isCollapsed && "ml-16",
+          // Mobile: no margin, sidebar overlays
+          isMobile && "ml-0"
+        )}
+        style={{
+          // Ensure content never overlaps sidebar
+          minHeight: '100vh',
+          width: isMobile ? '100%' : isCollapsed ? 'calc(100% - 4rem)' : 'calc(100% - 20rem)'
+        }}
+      >
+        <div className="w-full px-6 py-6">
           {children}
         </div>
-      </main>
+      </div>
       
       {/* Mobile overlay when sidebar is open */}
       {isMobile && !isCollapsed && (
@@ -33,6 +39,6 @@ export function LayoutWithSidebar({ children }) {
           onClick={toggleSidebar}
         />
       )}
-    </div>
+    </>
   )
 }

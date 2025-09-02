@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
-import { Sidebar } from '../components/Sidebar.jsx'
+// Sidebar removido - usando LayoutWithSidebar no App.jsx
 import { 
   Settings, 
   Users, 
@@ -869,7 +869,7 @@ export default function Configuracoes(){
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <Sidebar />
+      {/* Sidebar gerenciado pelo LayoutWithSidebar */}
       <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
         {/* Header da página */}
         <div className="text-center space-y-4">

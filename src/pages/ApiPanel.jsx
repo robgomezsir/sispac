@@ -11,7 +11,7 @@ import {
   CheckCircle
 } from 'lucide-react'
 import { useState } from 'react'
-import { Sidebar } from '../components/Sidebar.jsx'
+// Sidebar removido - usando LayoutWithSidebar no App.jsx
 
 export default function ApiPanel(){
   const [copiedEndpoint, setCopiedEndpoint] = useState(null)
@@ -39,7 +39,7 @@ export default function ApiPanel(){
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <Sidebar />
+      {/* Sidebar gerenciado pelo LayoutWithSidebar */}
       <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
         {/* Header da página */}
         <div className="text-center space-y-4">
