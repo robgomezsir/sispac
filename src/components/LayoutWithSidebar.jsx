@@ -1,28 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ModernSidebar } from './ModernSidebar.jsx'
 import { useSidebar } from '../contexts/SidebarContext.jsx'
+import { Menu, X } from 'lucide-react'
+import { Button } from './ui'
 
 export function LayoutWithSidebar({ children }) {
   const { isMobile } = useSidebar()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
 
   return (
     <>
-      {/* Fixed Sidebar - Always visible */}
-      <ModernSidebar />
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border/50 p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
+                <img src="/logo192.png" alt="SisPAC" className="w-5 h-5" />
+              </div>
+              <h1 className="font-semibold text-foreground">SisPAC</h1>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSidebar}
+              className="h-8 w-8 p-0"
+            >
+              {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Sidebar */}
+      <ModernSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
-      {/* Main content area with fixed left margin */}
+      {/* Main content area */}
       <div 
         className="min-h-screen bg-background transition-all duration-300 ease-in-out"
         style={{
-          marginLeft: isMobile ? '0' : '20rem', // 20rem = 320px (w-80)
+          marginLeft: isMobile ? '0' : '20rem',
+          paddingTop: isMobile ? '4rem' : '0', // Espaço para header mobile
           minHeight: '100vh',
           width: isMobile ? '100%' : 'calc(100% - 20rem)'
         }}
       >
-        <div className="w-full px-6 py-6">
+        <div className="w-full px-4 sm:px-6 py-4 sm:py-6">
           {children}
         </div>
       </div>
+
+      {/* Mobile overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </>
   )
 }

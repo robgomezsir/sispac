@@ -23,13 +23,14 @@ import {
   TrendingUp,
   Activity,
   ArrowLeft,
-  Menu
+  Menu,
+  X
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
 import { ThemeDropdown } from './ThemeDropdown.jsx'
 
-export function ModernSidebar() {
+export function ModernSidebar({ isOpen = true, onClose }) {
   const { user, role, signOut } = useAuth()
   const { isMobile } = useSidebar()
   const navigate = useNavigate()
@@ -94,7 +95,11 @@ export function ModernSidebar() {
 
   return (
     <div 
-      className="fixed left-0 top-0 z-50 h-screen w-80 bg-card/95 backdrop-blur-sm border-r-2 border-border/30"
+      className={cn(
+        "fixed left-0 top-0 z-50 h-screen w-80 bg-card/95 backdrop-blur-sm border-r-2 border-border/30 transition-transform duration-300",
+        isMobile && !isOpen && "-translate-x-full",
+        isMobile && isOpen && "translate-x-0"
+      )}
       style={{
         position: 'fixed',
         left: 0,
@@ -119,12 +124,21 @@ export function ModernSidebar() {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <Bell size={16} />
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <Search size={16} />
-          </Button>
+          {!isMobile && (
+            <>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Bell size={16} />
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Search size={16} />
+              </Button>
+            </>
+          )}
+          {isMobile && onClose && (
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onClose}>
+              <X size={16} />
+            </Button>
+          )}
         </div>
       </div>
 

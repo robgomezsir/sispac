@@ -280,18 +280,18 @@ export default function Formulario(){
   if (sent) {
     return (
       <div className="min-h-screen relative overflow-hidden">
-        <div className="container mx-auto px-4 py-8 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
             {/* Header de sucesso */}
-            <div className="space-y-6 animate-slide-in-from-top">
-              <div className="w-24 h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success animate-bounce-soft">
-                <CheckCircle size={48} className="text-success" />
+            <div className="space-y-4 sm:space-y-6 animate-slide-in-from-top">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success animate-bounce-soft">
+                <CheckCircle size={40} className="sm:w-12 sm:h-12 text-success" />
               </div>
-              <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-success to-foreground bg-clip-text text-transparent">
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-success to-foreground bg-clip-text text-transparent">
                   Teste Concluído!
                 </h1>
-                <p className="text-xl text-muted-foreground font-medium">
+                <p className="text-lg sm:text-xl text-muted-foreground font-medium px-4">
                   Obrigado por participar da nossa avaliação comportamental
                 </p>
               </div>
@@ -299,23 +299,23 @@ export default function Formulario(){
 
             {/* Mensagem de agradecimento */}
             <Card className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
-              <CardContent className="p-8 text-center">
-                <div className="space-y-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success">
-                    <CheckCircle size={40} className="text-success" />
+              <CardContent className="p-6 sm:p-8 text-center">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success">
+                    <CheckCircle size={32} className="sm:w-10 sm:h-10 text-success" />
                   </div>
-                  <div className="space-y-4">
-                    <h2 className="text-2xl font-bold text-foreground">Teste Finalizado com Sucesso!</h2>
-                    <p className="text-muted-foreground text-lg leading-relaxed">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">Teste Finalizado com Sucesso!</h2>
+                    <p className="text-muted-foreground text-base sm:text-lg leading-relaxed px-4">
                       Obrigado por participar da nossa avaliação comportamental. 
                       Suas respostas foram salvas e serão analisadas pela nossa equipe.
                     </p>
                   </div>
                   <Button 
                     onClick={() => window.location.href = '/'}
-                    className="btn-primary-modern px-8 py-4 group"
+                    className="btn-primary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto"
                   >
-                    <ArrowRight size={20} className="mr-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowRight size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:translate-x-1 transition-transform duration-300" />
                     Sair
                   </Button>
                 </div>
@@ -329,42 +329,42 @@ export default function Formulario(){
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="container mx-auto px-4 py-8 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+        <div className="max-w-4xl mx-auto space-y-4 sm:space-y-8">
           {/* Header moderno */}
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl border border-primary/20 mb-4">
+          <div className="text-center space-y-2 sm:space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl border border-primary/20 mb-2 sm:mb-4">
               <img 
                 src="/logo192.png" 
                 alt="SisPAC Logo" 
-                className="w-10 h-10 object-contain"
+                className="w-6 h-6 sm:w-10 sm:h-10 object-contain"
               />
             </div>
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-foreground">
+            <div className="space-y-1 sm:space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
                 Avaliação Comportamental
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground px-4">
                 Descubra seu perfil comportamental através deste teste especializado
               </p>
             </div>
           </div>
 
-                            {/* Barra de progresso moderna */}
-                  {step > 0 && (
-                    <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          {/* Barra de progresso moderna */}
+          {step > 0 && (
+            <div className="bg-card border border-border/50 rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground mb-2">
                 <span>Progresso do teste</span>
                 <span>{step - 1} de {questions.length}</span>
               </div>
               <Progress value={progress} className="h-2 mb-3" />
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Timer size={14} />
+                  <Timer size={12} className="sm:w-3.5 sm:h-3.5" />
                   <span>Tempo: {formatTime(timeSpent)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Target size={14} />
+                  <Target size={12} className="sm:w-3.5 sm:h-3.5" />
                   <span>{Math.round(progress)}% concluído</span>
                 </div>
               </div>
@@ -376,20 +376,20 @@ export default function Formulario(){
             {step === 0 ? (
               // Tela inicial
               <Card className="card-modern">
-                <CardHeader className="text-center space-y-6 pb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
-                    <GraduationCap size={40} className="text-primary" />
+                <CardHeader className="text-center space-y-4 sm:space-y-6 pb-6 sm:pb-8">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
+                    <GraduationCap size={32} className="sm:w-10 sm:h-10 text-primary" />
                   </div>
-                  <div className="space-y-3">
-                    <CardTitle className="text-3xl font-bold">Bem-vindo ao Teste</CardTitle>
-                    <CardDescription className="text-lg text-muted-foreground/80">
+                  <div className="space-y-2 sm:space-y-3">
+                    <CardTitle className="text-2xl sm:text-3xl font-bold">Bem-vindo ao Teste</CardTitle>
+                    <CardDescription className="text-base sm:text-lg text-muted-foreground/80 px-4">
                       Antes de começar, precisamos de algumas informações básicas
                     </CardDescription>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
+                <CardContent className="space-y-4 sm:space-y-6">
+                  <div className="space-y-3 sm:space-y-4">
                     <Label htmlFor="nome" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <User size={16} className="text-primary" />
                       Nome Completo
@@ -401,11 +401,11 @@ export default function Formulario(){
                       onChange={e => setNome(e.target.value)} 
                       required
                       placeholder="Digite seu nome completo"
-                      className="input-modern h-14 text-base"
+                      className="input-modern h-12 sm:h-14 text-base"
                     />
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <Label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Mail size={16} className="text-primary" />
                       Email
@@ -417,55 +417,55 @@ export default function Formulario(){
                       onChange={e => setEmail(e.target.value)} 
                       required
                       placeholder="seu@email.com"
-                      className="input-modern h-14 text-base"
+                      className="input-modern h-12 sm:h-14 text-base"
                     />
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex justify-center pt-8">
+                <CardFooter className="flex justify-center pt-6 sm:pt-8">
                   <Button 
                     onClick={() => setStep(1)}
                     disabled={!nome.trim() || !email.trim()}
-                    className="btn-primary-modern px-12 py-4 text-lg group"
+                    className="btn-primary-modern px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg group w-full sm:w-auto"
                   >
-                    <Play size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                    <Play size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                     Começar Teste
-                    <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowRight size={18} className="sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                   </Button>
                 </CardFooter>
               </Card>
             ) : (
               // Questão atual
               <Card className="card-modern">
-                <CardHeader className="pb-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
-                        <span className="text-lg font-bold text-primary">{step}</span>
+                <CardHeader className="pb-4 sm:pb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                        <span className="text-base sm:text-lg font-bold text-primary">{step}</span>
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-bold">Questão {step}</CardTitle>
-                        <CardDescription className="text-muted-foreground">
+                        <CardTitle className="text-xl sm:text-2xl font-bold">Questão {step}</CardTitle>
+                        <CardDescription className="text-sm sm:text-base text-muted-foreground">
                           {questions[step - 1]?.maxChoices > 1 
                             ? `Selecione até ${questions[step - 1].maxChoices} opções` 
                             : 'Selecione uma opção'}
                         </CardDescription>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">
+                    <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30 self-start sm:self-auto">
                       {Math.round((step / questions.length) * 100)}%
                     </Badge>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-foreground leading-relaxed">
+                <CardContent className="space-y-4 sm:space-y-6">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h3 className="text-lg sm:text-xl font-semibold text-foreground leading-relaxed">
                       {questions[step - 1]?.title}
                     </h3>
                     
-                    <div className={`grid gap-3 ${
-                      questions[step - 1]?.id <= 2 ? 'grid-cols-3' : 'grid-cols-2'
+                    <div className={`grid gap-2 sm:gap-3 ${
+                      questions[step - 1]?.id <= 2 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'
                     }`}>
                       {questions[step - 1]?.answers?.map((answer, index) => {
                         const questionId = questions[step - 1]?.id
@@ -476,25 +476,25 @@ export default function Formulario(){
                           <button
                             key={index}
                             onClick={() => toggleAnswer(questionId, answer.text)}
-                            className={`p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:shadow-md ${
+                            className={`p-3 sm:p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:shadow-md ${
                               isSelected 
                                 ? 'border-primary bg-primary/10 shadow-glow' 
                                 : 'border-border/50 bg-background hover:border-primary/50 hover:bg-primary/5'
                             }`}
                           >
-                            <div className="flex items-center gap-4">
-                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                            <div className="flex items-center gap-3 sm:gap-4">
+                              <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
                                 isSelected 
                                   ? 'border-primary bg-primary' 
                                   : 'border-border/50 group-hover:border-primary/50'
                               }`}>
                                 {isSelected ? (
-                                  <Check size={16} className="text-primary-foreground" />
+                                  <Check size={14} className="sm:w-4 sm:h-4 text-primary-foreground" />
                                 ) : (
-                                  <Circle size={16} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                                  <Circle size={14} className="sm:w-4 sm:h-4 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                                 )}
                               </div>
-                              <span className={`font-medium transition-colors duration-300 ${
+                              <span className={`font-medium text-sm sm:text-base transition-colors duration-300 ${
                                 isSelected ? 'text-primary' : 'text-foreground group-hover:text-primary'
                               }`}>
                                 {answer.text}
@@ -507,31 +507,31 @@ export default function Formulario(){
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex justify-between pt-8">
+                <CardFooter className="flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between pt-6 sm:pt-8">
                   <Button 
                     variant="outline"
                     onClick={prevStep}
                     disabled={!canGoBack}
-                    className="btn-secondary-modern px-8 py-4 group"
+                    className="btn-secondary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-2 sm:order-1"
                   >
-                    <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+                    <ArrowLeft size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
                     Anterior
                   </Button>
                   
                   <Button 
                     onClick={step === questions.length ? handleSubmit : nextStep}
                     disabled={!canProceed}
-                    className="btn-primary-modern px-8 py-4 group"
+                    className="btn-primary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-1 sm:order-2"
                   >
                     {step === questions.length ? (
                       <>
-                        <Send size={20} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                        <Send size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                         Finalizar
                       </>
                     ) : (
                       <>
                         Próxima
-                        <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                        <ArrowRight size={18} className="sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                       </>
                     )}
                   </Button>
