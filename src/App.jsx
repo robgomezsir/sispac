@@ -2,7 +2,8 @@ import React, { useMemo } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Protected } from './components/Protected.jsx'
 import { AdminOnly } from './components/AdminOnly.jsx'
-import { ModernSidebar } from './components/ModernSidebar.jsx'
+import { LayoutWithSidebar } from './components/LayoutWithSidebar.jsx'
+import { SidebarProvider } from './contexts/SidebarContext.jsx'
 import PWAInstallPrompt from './components/PWAInstallPrompt.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import Home from './pages/Home.jsx'
@@ -88,37 +89,34 @@ export default function App(){
   }, [])
   
   return (
-    <div className="min-h-screen bg-background">
-      <Routes>
-        {routes.map(({ path, element }) => {
-          // Não mostrar sidebar na página Home
-          if (path === "/") {
+    <SidebarProvider>
+      <div className="min-h-screen bg-background">
+        <Routes>
+          {routes.map(({ path, element }) => {
+            // Não mostrar sidebar na página Home
+            if (path === "/") {
+              return (
+                <Route key={path} path={path} element={element} />
+              )
+            }
+            
+            // Para outras páginas, mostrar com sidebar
             return (
-              <Route key={path} path={path} element={element} />
+              <Route 
+                key={path} 
+                path={path} 
+                element={
+                  <LayoutWithSidebar>
+                    {element}
+                  </LayoutWithSidebar>
+                } 
+              />
             )
-          }
-          
-          // Para outras páginas, mostrar com sidebar
-          return (
-            <Route 
-              key={path} 
-              path={path} 
-              element={
-                <div className="flex">
-                  <ModernSidebar />
-                  <main className="flex-1 ml-80 transition-all duration-300">
-                    <div className="container mx-auto px-6 py-6">
-                      {element}
-                    </div>
-                  </main>
-                </div>
-              } 
-            />
-          )
-        })}
-      </Routes>
-      <PWAInstallPrompt />
-      <OfflineIndicator />
-    </div>
+          })}
+        </Routes>
+        <PWAInstallPrompt />
+        <OfflineIndicator />
+      </div>
+    </SidebarProvider>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.jsx'
+import { useSidebar } from '../contexts/SidebarContext.jsx'
 import { sispacLogo } from '../assets'
 import { 
   LogOut, 
@@ -26,13 +27,13 @@ import {
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
-import { ThemeToggle } from './ThemeToggle.jsx'
+import { ThemeDropdown } from './ThemeDropdown.jsx'
 
 export function ModernSidebar() {
   const { user, role, signOut } = useAuth()
+  const { isCollapsed, isMobile, toggleSidebar } = useSidebar()
   const navigate = useNavigate()
   const location = useLocation()
-  const [isCollapsed, setIsCollapsed] = useState(false)
   const [expandedItems, setExpandedItems] = useState(new Set())
   
   const handleSignOut = useCallback(async () => {
@@ -125,7 +126,8 @@ export function ModernSidebar() {
   return (
     <div className={cn(
       "fixed left-0 top-0 z-50 h-full bg-card/95 backdrop-blur-sm border-r border-border/50 transition-all duration-300 ease-in-out",
-      isCollapsed ? "w-16" : "w-80"
+      isCollapsed ? "w-16" : "w-80",
+      isMobile && !isCollapsed && "shadow-2xl"
     )}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border/50">
@@ -152,7 +154,7 @@ export function ModernSidebar() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleSidebar}
           className="h-8 w-8 hover:bg-accent/50 transition-all duration-200 hover:scale-110"
         >
           {isCollapsed ? <Menu size={16} /> : <X size={16} />}
@@ -256,17 +258,17 @@ export function ModernSidebar() {
 
       {/* Footer Actions */}
       <div className="p-4 border-t border-border/50 space-y-3">
-        {/* Theme Toggle */}
+        {/* Theme Dropdown */}
         {!isCollapsed && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Tema</span>
-            <ThemeToggle />
+            <ThemeDropdown />
           </div>
         )}
         
         {isCollapsed && (
           <div className="flex justify-center">
-            <ThemeToggle />
+            <ThemeDropdown />
           </div>
         )}
         
