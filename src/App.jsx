@@ -88,38 +88,35 @@ export default function App(){
   }, [])
   
   return (
-    <div className="min-h-screen bg-background flex">
-      <ModernSidebar />
-      <main className="flex-1 ml-80 transition-all duration-300">
-        <div className="container mx-auto px-6 py-6">
-          <Routes>
-            {routes.map(({ path, element }) => {
-              console.log(`🔍 [App] Renderizando rota: ${path}`, { 
-                elementType: element?.type?.name,
-                isAdminRoute: path === '/config' || path === '/api',
-                hasChildren: !!element?.props?.children,
-                childType: element?.props?.children?.type?.name,
-                elementProps: element?.props,
-                elementKey: element?.key,
-                elementToString: element?.toString(),
-                elementDisplayName: element?.type?.displayName,
-                elementConstructor: element?.type?.constructor?.name,
-                elementRender: element?.type?.render,
-                elementMemo: element?.type?.$$typeof,
-                elementIsMemo: element?.type?.$$typeof === Symbol.for('react.memo'),
-                elementTypeOf: typeof element,
-                elementKeys: Object.keys(element || {}),
-                elementPropsKeys: Object.keys(element?.props || {}),
-                elementChildrenType: typeof element?.props?.children,
-                elementChildrenKeys: Object.keys(element?.props?.children || {})
-              })
-              return (
-                <Route key={path} path={path} element={element} />
-              )
-            })}
-          </Routes>
-        </div>
-      </main>
+    <div className="min-h-screen bg-background">
+      <Routes>
+        {routes.map(({ path, element }) => {
+          // Não mostrar sidebar na página Home
+          if (path === "/") {
+            return (
+              <Route key={path} path={path} element={element} />
+            )
+          }
+          
+          // Para outras páginas, mostrar com sidebar
+          return (
+            <Route 
+              key={path} 
+              path={path} 
+              element={
+                <div className="flex">
+                  <ModernSidebar />
+                  <main className="flex-1 ml-80 transition-all duration-300">
+                    <div className="container mx-auto px-6 py-6">
+                      {element}
+                    </div>
+                  </main>
+                </div>
+              } 
+            />
+          )
+        })}
+      </Routes>
       <PWAInstallPrompt />
       <OfflineIndicator />
     </div>

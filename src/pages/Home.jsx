@@ -154,7 +154,7 @@ export default function Home(){
             {/* Características do sistema */}
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 border border-success/20 hover:from-success/20 hover:to-success/10 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
                     <Shield size={24} className="text-success" />
                   </div>
@@ -164,7 +164,7 @@ export default function Home(){
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-warning/10 to-warning/5 border border-warning/20 hover:from-warning/20 hover:to-warning/10 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
                     <Zap size={24} className="text-warning" />
                   </div>
@@ -174,7 +174,7 @@ export default function Home(){
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300 group">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-info/10 to-info/5 border border-info/20 hover:from-info/20 hover:to-info/10 transition-all duration-300 group">
                   <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
                     <Heart size={24} className="text-info" />
                   </div>
@@ -188,7 +188,7 @@ export default function Home(){
 
             {/* Estatísticas ou benefícios */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="text-center lg:text-left p-3 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-gradient-to-br from-warning/10 to-warning/5 border border-warning/20">
                 <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                   <Star size={20} className="text-warning" />
                   <span className="text-2xl font-bold text-foreground">99%</span>
@@ -196,7 +196,7 @@ export default function Home(){
                 <p className="text-sm text-muted-foreground">Precisão nos resultados</p>
               </div>
               
-              <div className="text-center lg:text-left p-3 rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20">
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 border border-success/20">
                 <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                   <Award size={20} className="text-success" />
                   <span className="text-2xl font-bold text-foreground">24/7</span>
@@ -289,39 +289,7 @@ export default function Home(){
                 </form>
               </CardContent>
 
-              {/* Exibir erros de autenticação com design moderno */}
-              {authError && (
-                <div className="px-6 pb-6">
-                  <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl text-sm backdrop-blur-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
-                        <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <span className="flex-1 font-medium">{authError}</span>
-                      <button
-                        onClick={clearError}
-                        className="text-destructive/70 hover:text-destructive transition-colors duration-200 p-1 rounded-lg hover:bg-destructive/10"
-                        title="Fechar"
-                      >
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                    {retryConnection && (
-                      <button
-                        onClick={retryConnection}
-                        disabled={isLoading}
-                        className="mt-3 text-xs text-destructive/80 hover:text-destructive underline transition-colors duration-200 font-medium"
-                      >
-                        Tentar novamente
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+
 
               {/* Exibir erros de formulário com design moderno */}
               {err && (
