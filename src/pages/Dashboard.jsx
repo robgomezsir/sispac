@@ -411,21 +411,15 @@ export default function Dashboard(){
 
         {/* Abas de Análise aprimoradas */}
         <Tabs defaultValue="candidates" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 p-2 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl">
+          <TabsList className="grid w-full grid-cols-1 mb-8 p-2 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl">
             <TabsTrigger value="candidates" className="text-base py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
               <Users size={20} className="mr-3" />
               Candidatos
             </TabsTrigger>
-            <TabsTrigger value="profiles" className="text-base py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
-              <Target size={20} className="mr-3" />
-              Análise de Perfis
-            </TabsTrigger>
+
           </TabsList>
 
-          {/* Aba: Análise de Perfis */}
-          <TabsContent value="profiles" className="space-y-6 animate-slide-in-from-bottom">
-            <StatusProfileStats candidates={rows} />
-          </TabsContent>
+
 
           {/* Aba: Candidatos */}
           <TabsContent value="candidates" className="space-y-6 animate-slide-in-from-bottom">
