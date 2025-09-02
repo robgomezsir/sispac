@@ -684,6 +684,86 @@ export default function Dashboard(){
             <CandidateDetails id={current.id} onClose={() => setCurrent(null)} />
           </Modal>
         )}
+
+        {/* Modal de Exportação */}
+        {showExportModal && (
+          <Modal 
+            open={showExportModal}
+            onClose={() => setShowExportModal(false)}
+            title="Exportar Dados"
+            size="md"
+          >
+            <div className="w-full max-w-md mx-auto">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                  <Download size={32} className="text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Exportar Dados</h2>
+                <p className="text-muted-foreground">
+                  Selecione as colunas que deseja incluir na exportação
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-foreground mb-3 block">
+                    Colunas para exportar:
+                  </Label>
+                  <div className="space-y-2 max-h-64 overflow-y-auto border border-border/50 rounded-xl p-4">
+                    {[
+                      {value: 'id', label: 'ID'},
+                      {value: 'name', label: 'Nome'},
+                      {value: 'email', label: 'Email'},
+                      {value: 'score', label: 'Pontuação'},
+                      {value: 'status', label: 'Status'},
+                      {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental (Completa)'},
+                      {value: 'created_at', label: 'Data de Criação'}
+                    ].map(column => (
+                      <label key={column.value} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={columnsToExport.includes(column.value)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setColumnsToExport(prev => [...prev, column.value])
+                            } else {
+                              setColumnsToExport(prev => prev.filter(col => col !== column.value))
+                            }
+                          }}
+                          className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
+                        />
+                        <span className="text-sm font-medium text-foreground">{column.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                  <div className="text-sm text-muted-foreground">
+                    {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} será{filtered.length !== 1 ? 'ão' : ''} exportado{filtered.length !== 1 ? 's' : ''}
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowExportModal(false)}
+                      className="px-6"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      onClick={exportAll}
+                      disabled={columnsToExport.length === 0}
+                      className="btn-primary-modern px-6"
+                    >
+                      <Download size={16} className="mr-2" />
+                      Exportar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
     </div>
   )
@@ -1059,80 +1139,7 @@ function CandidateDetails({ id }){
         </Card>
       )}
 
-      {/* Modal de Exportação */}
-      {showExportModal && (
-        <Modal onClose={() => setShowExportModal(false)}>
-          <div className="w-full max-w-md mx-auto">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                <Download size={32} className="text-primary" />
-              </div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Exportar Dados</h2>
-              <p className="text-muted-foreground">
-                Selecione as colunas que deseja incluir na exportação
-              </p>
-            </div>
 
-            <div className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium text-foreground mb-3 block">
-                  Colunas para exportar:
-                </Label>
-                <div className="space-y-2 max-h-64 overflow-y-auto border border-border/50 rounded-xl p-4">
-                  {[
-                    {value: 'id', label: 'ID'},
-                    {value: 'name', label: 'Nome'},
-                    {value: 'email', label: 'Email'},
-                    {value: 'score', label: 'Pontuação'},
-                    {value: 'status', label: 'Status'},
-                    {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental (Completa)'},
-                    {value: 'created_at', label: 'Data de Criação'}
-                  ].map(column => (
-                    <label key={column.value} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={columnsToExport.includes(column.value)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setColumnsToExport(prev => [...prev, column.value])
-                          } else {
-                            setColumnsToExport(prev => prev.filter(col => col !== column.value))
-                          }
-                        }}
-                        className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
-                      />
-                      <span className="text-sm font-medium text-foreground">{column.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="text-sm text-muted-foreground">
-                  {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} será{filtered.length !== 1 ? 'ão' : ''} exportado{filtered.length !== 1 ? 's' : ''}
-                </div>
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowExportModal(false)}
-                    className="px-6"
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    onClick={exportAll}
-                    disabled={columnsToExport.length === 0}
-                    className="btn-primary-modern px-6"
-                  >
-                    <Download size={16} className="mr-2" />
-                    Exportar
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   )
 }
