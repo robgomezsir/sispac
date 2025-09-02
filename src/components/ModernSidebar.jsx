@@ -15,8 +15,6 @@ import {
   ChevronRight,
   Users,
   Shield,
-  Menu,
-  X,
   Bell,
   Search,
   Plus,
@@ -31,7 +29,7 @@ import { ThemeDropdown } from './ThemeDropdown.jsx'
 
 export function ModernSidebar() {
   const { user, role, signOut } = useAuth()
-  const { isCollapsed, isMobile, toggleSidebar } = useSidebar()
+  const { isMobile } = useSidebar()
   const navigate = useNavigate()
   const location = useLocation()
   const [expandedItems, setExpandedItems] = useState(new Set())
@@ -63,249 +61,186 @@ export function ModernSidebar() {
 
   const navigationItems = [
     {
-      id: 'home',
-      label: 'Home',
-      icon: Home,
-      path: '/',
-      badge: null
-    },
-    {
-      id: 'dashboard',
       label: 'Dashboard',
-      icon: BarChart3,
+      icon: Home,
       path: '/dashboard',
       badge: null
     },
     {
-      id: 'candidates',
-      label: 'Candidatos',
-      icon: Users,
-      path: '/dashboard',
+      label: 'Formulário',
+      icon: FileText,
+      path: '/formulario',
+      badge: null
+    },
+    {
+      label: 'Configurações',
+      icon: Settings,
+      path: '/configuracoes',
       badge: null,
-      children: [
-        {
-          id: 'all-candidates',
-          label: 'Todos os Candidatos',
-          path: '/dashboard'
-        },
-        {
-          id: 'new-candidate',
-          label: 'Novo Candidato',
-          path: '/form'
-        }
-      ]
+      adminOnly: true
     },
     {
-      id: 'analytics',
-      label: 'Analytics',
+      label: 'API Panel',
+      icon: Database,
+      path: '/api-panel',
+      badge: null,
+      adminOnly: true
+    }
+  ]
+
+  const statsItems = [
+    {
+      label: 'Total de Candidatos',
+      value: '1,247',
+      icon: Users,
+      trend: '+12%',
+      trendUp: true
+    },
+    {
+      label: 'Avaliações Hoje',
+      value: '89',
+      icon: Activity,
+      trend: '+5%',
+      trendUp: true
+    },
+    {
+      label: 'Taxa de Sucesso',
+      value: '94%',
       icon: TrendingUp,
-      path: '/dashboard',
-      badge: null
-    },
-    {
-      id: 'admin',
-      label: 'Administração',
-      icon: Shield,
-      path: '/config',
-      badge: role === 'admin' ? 'ADMIN' : null,
-      children: role === 'admin' ? [
-        {
-          id: 'settings',
-          label: 'Configurações',
-          path: '/config'
-        },
-        {
-          id: 'api-panel',
-          label: 'Painel API',
-          path: '/api'
-        }
-      ] : null
+      trend: '+2%',
+      trendUp: true
     }
   ]
 
   return (
     <div 
-      className={cn(
-        "fixed left-0 top-0 z-50 h-screen bg-card/95 backdrop-blur-sm border-r-2 border-border/30 transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-16" : "w-80",
-        isMobile && !isCollapsed && "shadow-2xl"
-      )}
+      className="fixed left-0 top-0 z-50 h-screen w-80 bg-card/95 backdrop-blur-sm border-r-2 border-border/30"
       style={{
         position: 'fixed',
         left: 0,
         top: 0,
         height: '100vh',
-        zIndex: 50,
-        width: isCollapsed ? '4rem' : '20rem'
+        width: '20rem',
+        zIndex: 50
       }}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border/50">
-        {!isCollapsed && (
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+        <div className="flex items-center space-x-3">
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+              <img src={sispacLogo} alt="SisPAC" className="w-6 h-6" />
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">SisPAC</h1>
-              <p className="text-xs text-muted-foreground">Sistema de Avaliação</p>
-            </div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
           </div>
-        )}
-        {isCollapsed && (
-          <div className="flex items-center justify-center w-full">
-            <div className="relative">
-              <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
-            </div>
-          </div>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="h-8 w-8 hover:bg-accent/50 transition-all duration-200 hover:scale-110"
-        >
-          {isCollapsed ? <Menu size={16} /> : <X size={16} />}
-        </Button>
-      </div>
-
-      {/* User Info */}
-      {user && !isCollapsed && (
-        <div className="p-4 border-b border-border/50">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center border border-primary/20">
-              <User size={20} className="text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-foreground text-sm truncate">{user.email}</div>
-              {role === 'admin' && (
-                <div className="text-xs text-muted-foreground flex items-center gap-1">
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  Administrador
-                </div>
-              )}
-            </div>
+          <div>
+            <h2 className="font-semibold text-foreground">SisPAC</h2>
+            <p className="text-xs text-muted-foreground">Sistema de Avaliação</p>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-        {navigationItems.map((item) => {
-          const Icon = item.icon
-          const hasChildren = item.children && item.children.length > 0
-          const isExpanded = expandedItems.has(item.id)
-          const isItemActive = isActive(item.path)
-
-          return (
-            <div key={item.id}>
-              <div
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        <div className="space-y-1">
+          {navigationItems.map((item) => {
+            if (item.adminOnly && role !== 'admin') return null
+            
+            const Icon = item.icon
+            const active = isActive(item.path)
+            
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
                 className={cn(
-                  "flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer group transform-gpu",
-                  isItemActive 
-                    ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
-                    : "hover:bg-accent/50 text-muted-foreground hover:text-foreground hover:shadow-md"
+                  "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+                  active 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 )}
-                onClick={() => {
-                  if (hasChildren && !isCollapsed) {
-                    toggleExpanded(item.id)
-                  } else {
-                    navigate(item.path)
-                  }
-                }}
-                title={isCollapsed ? item.label : undefined}
               >
                 <div className="flex items-center space-x-3">
-                  <Icon size={20} className="group-hover:scale-110 transition-transform duration-200" />
-                  {!isCollapsed && (
-                    <>
-                      <span className="font-medium">{item.label}</span>
-                      {item.badge && (
-                        <Badge variant="secondary" className="ml-auto bg-primary/20 text-primary border-primary/30 text-xs">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </>
-                  )}
+                  <Icon size={18} className="flex-shrink-0" />
+                  <span>{item.label}</span>
                 </div>
-                {hasChildren && !isCollapsed && (
-                  <ChevronRight 
-                    size={16} 
-                    className={cn(
-                      "transition-transform duration-200",
-                      isExpanded && "rotate-90"
-                    )}
-                  />
+                {item.badge && (
+                  <Badge variant="secondary" className="text-xs">
+                    {item.badge}
+                  </Badge>
                 )}
-              </div>
+              </Link>
+            )
+          })}
+        </div>
 
-              {/* Submenu */}
-              {hasChildren && isExpanded && !isCollapsed && (
-                <div className="ml-6 mt-2 space-y-1">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.id}
-                      to={child.path}
-                      className={cn(
-                        "flex items-center p-2 rounded-lg text-sm transition-all duration-200 transform-gpu",
-                        isActive(child.path)
-                          ? "bg-primary/5 text-primary font-medium shadow-sm"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent/30 hover:shadow-sm"
-                      )}
-                    >
-                      <div className="w-2 h-2 bg-current rounded-full mr-3 opacity-50" />
-                      {child.label}
-                    </Link>
-                  ))}
+        <Separator className="my-4" />
+
+        {/* Stats Section */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Estatísticas
+          </h3>
+          <div className="space-y-2">
+            {statsItems.map((stat, index) => {
+              const Icon = stat.icon
+              return (
+                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-muted/20 to-muted/10 border border-border/30">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
+                      <Icon size={16} className="text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                      <p className="text-sm font-semibold text-foreground">{stat.value}</p>
+                    </div>
+                  </div>
+                  <div className={cn(
+                    "text-xs font-medium",
+                    stat.trendUp ? "text-green-500" : "text-red-500"
+                  )}>
+                    {stat.trend}
+                  </div>
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </nav>
+              )
+            })}
+          </div>
+        </div>
+      </div>
 
-      {/* Footer Actions */}
-      <div className="p-4 border-t border-border/50 space-y-3">
-        {/* Theme Dropdown */}
-        {!isCollapsed && (
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Tema</span>
-            <ThemeDropdown />
+      {/* Footer */}
+      <div className="border-t border-border/50 p-4 space-y-3">
+        {/* Theme Selector */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Tema</span>
+          <ThemeDropdown />
+        </div>
+
+        {/* User Info */}
+        <div className="flex items-center space-x-3 p-2 rounded-lg bg-gradient-to-r from-muted/20 to-muted/10">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
+            <User size={16} className="text-primary" />
           </div>
-        )}
-        
-        {isCollapsed && (
-          <div className="flex justify-center">
-            <ThemeDropdown />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground truncate">
+              {user?.user_metadata?.full_name || user?.email || 'Usuário'}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
+              {role === 'admin' ? 'Administrador' : 'Usuário'}
+            </p>
           </div>
-        )}
-        
-        {/* Sign Out Button */}
-        {!isCollapsed && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all duration-200"
-            onClick={handleSignOut}
-          >
-            <LogOut size={16} className="mr-2" />
-            Sair
-          </Button>
-        )}
-        
-        {isCollapsed && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-full hover:bg-destructive/10 hover:text-destructive transition-all duration-200"
-            onClick={handleSignOut}
-            title="Sair"
-          >
-            <LogOut size={16} />
-          </Button>
-        )}
+        </div>
+
+        {/* Logout Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSignOut}
+          className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-accent/50"
+        >
+          <LogOut size={16} className="mr-2" />
+          Sair
+        </Button>
       </div>
     </div>
   )
