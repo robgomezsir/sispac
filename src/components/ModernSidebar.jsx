@@ -21,7 +21,9 @@ import {
   Zap,
   Target,
   TrendingUp,
-  Activity
+  Activity,
+  ArrowLeft,
+  Menu
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
@@ -138,6 +140,14 @@ export function ModernSidebar() {
             <p className="text-xs text-muted-foreground">Sistema de Avaliação</p>
           </div>
         </div>
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Bell size={16} />
+          </Button>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Search size={16} />
+          </Button>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -172,6 +182,25 @@ export function ModernSidebar() {
               </Link>
             )
           })}
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Quick Actions */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Ações Rápidas
+          </h3>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="h-10 text-xs">
+              <Plus size={14} className="mr-1" />
+              Novo
+            </Button>
+            <Button variant="outline" size="sm" className="h-10 text-xs">
+              <Zap size={14} className="mr-1" />
+              Relatório
+            </Button>
+          </div>
         </div>
 
         <Separator className="my-4" />

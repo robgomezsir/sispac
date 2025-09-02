@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '../lib/utils'
+import { useSidebar } from '../contexts/SidebarContext.jsx'
 
 export default function Modal({ open, onClose, title, children, size = "default" }){
+  const { isMobile } = useSidebar()
+  
   // Fechar modal com ESC
   useEffect(() => {
     const handleEscape = (e) => {
@@ -48,6 +51,12 @@ export default function Modal({ open, onClose, title, children, size = "default"
   return (
     <div 
       className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+      style={{
+        left: isMobile ? '0' : '20rem', // Respeitar largura da sidebar fixa apenas em desktop
+        right: '0',
+        top: '0',
+        bottom: '0'
+      }}
       onClick={handleBackdropClick}
     >
       <div className={cn(
