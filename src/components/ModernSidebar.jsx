@@ -71,48 +71,26 @@ export function ModernSidebar() {
     {
       label: 'Formulário',
       icon: FileText,
-      path: '/formulario',
+      path: '/form',
       badge: null
     },
     {
       label: 'Configurações',
       icon: Settings,
-      path: '/configuracoes',
+      path: '/config',
       badge: null,
       adminOnly: true
     },
     {
       label: 'API Panel',
       icon: Database,
-      path: '/api-panel',
+      path: '/api',
       badge: null,
       adminOnly: true
     }
   ]
 
-  const statsItems = [
-    {
-      label: 'Total de Candidatos',
-      value: '1,247',
-      icon: Users,
-      trend: '+12%',
-      trendUp: true
-    },
-    {
-      label: 'Avaliações Hoje',
-      value: '89',
-      icon: Activity,
-      trend: '+5%',
-      trendUp: true
-    },
-    {
-      label: 'Taxa de Sucesso',
-      value: '94%',
-      icon: TrendingUp,
-      trend: '+2%',
-      trendUp: true
-    }
-  ]
+
 
   return (
     <div 
@@ -203,38 +181,7 @@ export function ModernSidebar() {
           </div>
         </div>
 
-        <Separator className="my-4" />
 
-        {/* Stats Section */}
-        <div className="space-y-3">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Estatísticas
-          </h3>
-          <div className="space-y-2">
-            {statsItems.map((stat, index) => {
-              const Icon = stat.icon
-              return (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-muted/20 to-muted/10 border border-border/30">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
-                      <Icon size={16} className="text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
-                      <p className="text-sm font-semibold text-foreground">{stat.value}</p>
-                    </div>
-                  </div>
-                  <div className={cn(
-                    "text-xs font-medium",
-                    stat.trendUp ? "text-green-500" : "text-red-500"
-                  )}>
-                    {stat.trend}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
       </div>
 
       {/* Footer */}

@@ -55,7 +55,8 @@ export default function Modal({ open, onClose, title, children, size = "default"
         left: isMobile ? '0' : '20rem', // Respeitar largura da sidebar fixa apenas em desktop
         right: '0',
         top: '0',
-        bottom: '0'
+        bottom: '0',
+        width: isMobile ? '100vw' : 'calc(100vw - 20rem)'
       }}
       onClick={handleBackdropClick}
     >
