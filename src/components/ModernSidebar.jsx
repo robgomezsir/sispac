@@ -125,7 +125,7 @@ export function ModernSidebar() {
 
   return (
     <div className={cn(
-      "fixed left-0 top-0 z-50 h-full bg-card/95 backdrop-blur-sm border-r border-border/50 transition-all duration-300 ease-in-out",
+      "fixed left-0 top-0 z-50 h-screen bg-card/95 backdrop-blur-sm border-r-2 border-border/30 transition-all duration-300 ease-in-out",
       isCollapsed ? "w-16" : "w-80",
       isMobile && !isCollapsed && "shadow-2xl"
     )}>
