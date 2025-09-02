@@ -350,9 +350,9 @@ export default function Formulario(){
             </div>
           </div>
 
-          {/* Barra de progresso moderna */}
-          {step > 0 && (
-            <div className="bg-card border border-border/50 rounded-xl p-4">
+                            {/* Barra de progresso moderna */}
+                  {step > 0 && (
+                    <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
                 <span>Progresso do teste</span>
                 <span>{step - 1} de {questions.length}</span>

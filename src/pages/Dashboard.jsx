@@ -356,55 +356,55 @@ export default function Dashboard(){
           </div>
         </div>
 
-        {/* Estatísticas modernas e compactas */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-              </div>
-              <Users size={20} className="text-primary" />
-            </div>
-          </div>
+                        {/* Estatísticas modernas e compactas */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                  <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total</p>
+                        <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                      </div>
+                      <Users size={20} className="text-primary group-hover:scale-110 transition-transform duration-200" />
+                    </div>
+                  </div>
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Superaram</p>
                 <p className="text-2xl font-bold text-success">{stats.superou}</p>
               </div>
-              <Star size={20} className="text-success" />
+              <Star size={20} className="text-success group-hover:scale-110 transition-transform duration-200" />
             </div>
           </div>
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Acima</p>
                 <p className="text-2xl font-bold text-info">{stats.acima}</p>
               </div>
-              <TrendingUp size={20} className="text-info" />
+              <TrendingUp size={20} className="text-info group-hover:scale-110 transition-transform duration-200" />
             </div>
           </div>
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Dentro</p>
                 <p className="text-2xl font-bold text-warning">{stats.dentro}</p>
               </div>
-              <Target size={20} className="text-warning" />
+              <Target size={20} className="text-warning group-hover:scale-110 transition-transform duration-200" />
             </div>
           </div>
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Abaixo</p>
                 <p className="text-2xl font-bold text-muted-foreground">{stats.abaixo}</p>
               </div>
-              <TrendingDown size={20} className="text-muted-foreground" />
+              <TrendingDown size={20} className="text-muted-foreground group-hover:scale-110 transition-transform duration-200" />
             </div>
           </div>
         </div>
@@ -552,7 +552,7 @@ export default function Dashboard(){
                 {sortedData.map((row, index) => (
                   <div 
                     key={row.id} 
-                    className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                    className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group transform-gpu hover:scale-105"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
@@ -589,7 +589,7 @@ export default function Dashboard(){
                         variant="outline" 
                         size="sm"
                         onClick={() => setCurrent(row)}
-                        className="flex-1 h-8 text-xs"
+                        className="flex-1 h-8 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200"
                       >
                         <Eye size={14} className="mr-1" />
                         Ver
@@ -598,7 +598,7 @@ export default function Dashboard(){
                         variant="outline" 
                         size="sm" 
                         onClick={() => handleDeleteCandidate(row)}
-                        className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                        className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                       >
                         <Trash2 size={14} className="mr-1" />
                         Excluir
@@ -624,7 +624,7 @@ export default function Dashboard(){
                     </TableHeader>
                     <TableBody>
                       {sortedData.map(row => (
-                        <TableRow key={row.id} className="hover:bg-muted/20 transition-colors duration-200 border-b border-border/30">
+                        <TableRow key={row.id} className="hover:bg-muted/20 transition-all duration-200 border-b border-border/30 hover:shadow-sm transform-gpu">
                           <TableCell className="font-medium">{row.name}</TableCell>
                           <TableCell className="text-muted-foreground">{row.email}</TableCell>
                           <TableCell>
@@ -647,7 +647,7 @@ export default function Dashboard(){
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => setCurrent(row)}
-                                className="h-8 px-3"
+                                className="h-8 px-3 hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200"
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
@@ -656,7 +656,7 @@ export default function Dashboard(){
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => handleDeleteCandidate(row)}
-                                className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                                className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                               >
                                 <Trash2 size={14} className="mr-1" />
                                 Excluir

@@ -1,6 +1,7 @@
 import React from 'react'
-import { useTheme } from '../contexts/ThemeContext'
+import { useTheme } from '../contexts/ThemeContext.jsx'
 import { Sun, Moon, Monitor } from 'lucide-react'
+import { Button } from './ui'
 import { cn } from '../lib/utils'
 
 export function ThemeToggle() {
@@ -13,26 +14,25 @@ export function ThemeToggle() {
   ]
 
   return (
-    <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
-      {themes.map(({ value, label, icon: Icon }) => {
-        const isActive = theme === value
-        return (
-          <button
-            key={value}
-            onClick={() => setTheme(value)}
-            className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
-              isActive
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-            )}
-            title={`Tema ${label}`}
-          >
-            <Icon size={16} />
-            <span className="hidden sm:inline">{label}</span>
-          </button>
-        )
-      })}
+    <div className="flex items-center gap-1 bg-muted/30 rounded-xl p-1">
+      {themes.map(({ value, label, icon: Icon }) => (
+        <Button
+          key={value}
+          variant={theme === value ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setTheme(value)}
+          className={cn(
+            "h-8 px-3 transition-all duration-200",
+            theme === value 
+              ? "bg-primary text-primary-foreground shadow-sm" 
+              : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+          )}
+          title={label}
+        >
+          <Icon size={16} className="mr-1" />
+          <span className="hidden sm:inline text-xs">{label}</span>
+        </Button>
+      ))}
     </div>
   )
 }

@@ -208,7 +208,7 @@ export default function Home(){
 
           {/* Lado direito - Formulário de login */}
           <div className="animate-slide-in-from-right">
-            <Card className="card-modern border-0 shadow-2xl backdrop-blur-sm max-w-md mx-auto">
+                                <Card className="card-modern border-0 shadow-2xl backdrop-blur-sm max-w-md mx-auto hover:shadow-3xl transition-all duration-500 hover:-translate-y-2">
               <CardHeader className="text-center space-y-4 pb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
                   <Lock size={40} className="text-primary" />

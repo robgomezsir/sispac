@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Tema Claro - Inspirado nas referências com tons modernos e profissionais */
+    /* Tema Claro - Cores pastéis suaves e modernas */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -12,44 +12,44 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     
-    /* Cores primárias - Azul moderno e profissional */
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    /* Cores primárias - Azul pastel suave */
+    --primary: 210 100% 85%;
+    --primary-foreground: 210 40% 20%;
     
-    /* Cores secundárias - Cinza suave */
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Cores secundárias - Rosa pastel */
+    --secondary: 330 100% 90%;
+    --secondary-foreground: 330 40% 20%;
     
-    /* Cores de destaque */
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    /* Cores de destaque - Verde pastel */
+    --accent: 120 100% 90%;
+    --accent-foreground: 120 40% 20%;
     
     /* Cores de estado */
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 75%;
     --destructive-foreground: 0 0% 98%;
     
     /* Cores de interface */
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 221 83% 53%;
+    --ring: 210 100% 85%;
     
-    /* Cores de sucesso, aviso e info */
-    --success: 142 76% 36%;
-    --success-foreground: 355 7% 97%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-    --info: 199 89% 48%;
-    --info-foreground: 210 40% 98%;
+    /* Cores de sucesso, aviso e info - Tons pastéis */
+    --success: 142 76% 80%;
+    --success-foreground: 142 40% 20%;
+    --warning: 38 92% 80%;
+    --warning-foreground: 38 40% 20%;
+    --info: 199 89% 80%;
+    --info-foreground: 199 40% 20%;
     
     /* Variáveis de design */
-    --radius: 0.75rem;
+    --radius: 1rem;
     --sidebar-width: 20rem;
     --header-height: 4rem;
     --spacing: 0.25rem;
     
-    /* Sombras modernas e suaves */
+    /* Sombras suaves e pastéis */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -59,32 +59,32 @@
   }
 
   .dark {
-    /* Tema Escuro - Baseado nas referências com tons escuros modernos */
+    /* Tema Escuro - Tons pastéis escuros */
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --primary: 210 100% 70%;
+    --primary-foreground: 210 40% 10%;
+    --secondary: 330 100% 70%;
+    --secondary-foreground: 330 40% 10%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --accent: 120 100% 70%;
+    --accent-foreground: 120 40% 10%;
+    --destructive: 0 62.8% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 221 83% 53%;
-    --success: 142 76% 36%;
-    --success-foreground: 355 7% 97%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-    --info: 199 89% 48%;
-    --info-foreground: 210 40% 98%;
+    --ring: 210 100% 70%;
+    --success: 142 76% 70%;
+    --success-foreground: 142 40% 10%;
+    --warning: 38 92% 70%;
+    --warning-foreground: 38 40% 10%;
+    --info: 199 89% 70%;
+    --info-foreground: 199 40% 10%;
   }
 }
 
@@ -499,9 +499,9 @@
     @apply focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-xl py-3 pr-8 pl-3 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-muted/50 transition-colors duration-200;
   }
 
-  /* Componentes de botão personalizados com design moderno */
+  /* Componentes de botão personalizados com design moderno e efeitos táteis */
   .btn-primary-modern {
-    @apply bg-gradient-to-r from-primary via-primary/90 to-primary text-primary-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 border-0 relative overflow-hidden;
+    @apply bg-gradient-to-r from-primary via-primary/90 to-primary text-primary-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border-0 relative overflow-hidden transform-gpu;
   }
 
   .btn-primary-modern::before {
@@ -511,41 +511,86 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease-out;
   }
 
   .btn-primary-modern:hover::before {
     left: 100%;
   }
 
+  .btn-primary-modern:hover {
+    @apply shadow-2xl;
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  .btn-primary-modern:active {
+    transform: translateY(0) scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+
   .btn-secondary-modern {
-    @apply bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground px-8 py-4 rounded-2xl font-semibold shadow-md hover:shadow-lg transition-all duration-500 hover:scale-105 active:scale-95 border border-border/50;
+    @apply bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground px-8 py-4 rounded-2xl font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 border border-border/50 transform-gpu;
+  }
+
+  .btn-secondary-modern:hover {
+    @apply shadow-xl;
+    transform: translateY(-1px) scale(1.05);
   }
 
   .btn-success-modern {
-    @apply bg-gradient-to-r from-success via-success/90 to-success text-success-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 border-0;
+    @apply bg-gradient-to-r from-success via-success/90 to-success text-success-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border-0 transform-gpu;
+  }
+
+  .btn-success-modern:hover {
+    @apply shadow-2xl;
+    transform: translateY(-2px) scale(1.05);
   }
 
   .btn-warning-modern {
-    @apply bg-gradient-to-r from-warning via-warning/90 to-warning text-warning-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 border-0;
+    @apply bg-gradient-to-r from-warning via-warning/90 to-warning text-warning-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border-0 transform-gpu;
+  }
+
+  .btn-warning-modern:hover {
+    @apply shadow-2xl;
+    transform: translateY(-2px) scale(1.05);
   }
 
   .btn-info-modern {
-    @apply bg-gradient-to-r from-info via-info/90 to-info text-info-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 border-0;
+    @apply bg-gradient-to-r from-info via-info/90 to-info text-info-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border-0 transform-gpu;
+  }
+
+  .btn-info-modern:hover {
+    @apply shadow-2xl;
+    transform: translateY(-2px) scale(1.05);
   }
 
   .btn-destructive {
-    @apply bg-gradient-to-r from-destructive via-destructive/90 to-destructive text-destructive-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 border-0;
+    @apply bg-gradient-to-r from-destructive via-destructive/90 to-destructive text-destructive-foreground px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border-0 transform-gpu;
+  }
+
+  .btn-destructive:hover {
+    @apply shadow-2xl;
+    transform: translateY(-2px) scale(1.05);
   }
 
   /* Cards com design moderno e animações */
   .card-modern {
-    @apply bg-gradient-to-br from-card to-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-700 hover:-translate-y-2;
+    @apply bg-gradient-to-br from-card to-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 transform-gpu;
+  }
+
+  .card-modern:hover {
+    @apply shadow-2xl;
+    transform: translateY(-4px) scale(1.02);
   }
 
   .card-hover {
-    @apply hover:shadow-2xl hover:-translate-y-3 transition-all duration-700;
+    @apply hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 transform-gpu;
+  }
+
+  .card-hover:hover {
+    @apply shadow-2xl;
+    transform: translateY(-6px) scale(1.03);
   }
 
   /* Inputs com design moderno */

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
+import { ThemeToggle } from './ThemeToggle.jsx'
 
 export function ModernSidebar() {
   const { user, role, signOut } = useAuth()
@@ -123,7 +124,7 @@ export function ModernSidebar() {
 
   return (
     <div className={cn(
-      "fixed left-0 top-0 z-50 h-full bg-card border-r border-border/50 transition-all duration-300 ease-in-out",
+      "fixed left-0 top-0 z-50 h-full bg-card/95 backdrop-blur-sm border-r border-border/50 transition-all duration-300 ease-in-out",
       isCollapsed ? "w-16" : "w-80"
     )}>
       {/* Header */}
@@ -140,11 +141,19 @@ export function ModernSidebar() {
             </div>
           </div>
         )}
+        {isCollapsed && (
+          <div className="flex items-center justify-center w-full">
+            <div className="relative">
+              <img src={sispacLogo} alt="SisPAC Logo" className="w-8 h-8" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+            </div>
+          </div>
+        )}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="h-8 w-8 hover:bg-accent/50"
+          className="h-8 w-8 hover:bg-accent/50 transition-all duration-200 hover:scale-110"
         >
           {isCollapsed ? <Menu size={16} /> : <X size={16} />}
         </Button>
@@ -182,18 +191,19 @@ export function ModernSidebar() {
             <div key={item.id}>
               <div
                 className={cn(
-                  "flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer group",
+                  "flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer group transform-gpu",
                   isItemActive 
-                    ? "bg-primary/10 text-primary border border-primary/20" 
-                    : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                    ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
+                    : "hover:bg-accent/50 text-muted-foreground hover:text-foreground hover:shadow-md"
                 )}
                 onClick={() => {
-                  if (hasChildren) {
+                  if (hasChildren && !isCollapsed) {
                     toggleExpanded(item.id)
                   } else {
                     navigate(item.path)
                   }
                 }}
+                title={isCollapsed ? item.label : undefined}
               >
                 <div className="flex items-center space-x-3">
                   <Icon size={20} className="group-hover:scale-110 transition-transform duration-200" />
@@ -227,10 +237,10 @@ export function ModernSidebar() {
                       key={child.id}
                       to={child.path}
                       className={cn(
-                        "flex items-center p-2 rounded-lg text-sm transition-all duration-200",
+                        "flex items-center p-2 rounded-lg text-sm transition-all duration-200 transform-gpu",
                         isActive(child.path)
-                          ? "bg-primary/5 text-primary font-medium"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                          ? "bg-primary/5 text-primary font-medium shadow-sm"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent/30 hover:shadow-sm"
                       )}
                     >
                       <div className="w-2 h-2 bg-current rounded-full mr-3 opacity-50" />
@@ -245,12 +255,27 @@ export function ModernSidebar() {
       </nav>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-border/50 space-y-2">
+      <div className="p-4 border-t border-border/50 space-y-3">
+        {/* Theme Toggle */}
+        {!isCollapsed && (
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Tema</span>
+            <ThemeToggle />
+          </div>
+        )}
+        
+        {isCollapsed && (
+          <div className="flex justify-center">
+            <ThemeToggle />
+          </div>
+        )}
+        
+        {/* Sign Out Button */}
         {!isCollapsed && (
           <Button
             variant="outline"
             size="sm"
-            className="w-full justify-start"
+            className="w-full justify-start hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all duration-200"
             onClick={handleSignOut}
           >
             <LogOut size={16} className="mr-2" />
@@ -262,7 +287,7 @@ export function ModernSidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="w-full"
+            className="w-full hover:bg-destructive/10 hover:text-destructive transition-all duration-200"
             onClick={handleSignOut}
             title="Sair"
           >
