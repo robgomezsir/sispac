@@ -411,7 +411,7 @@ export default function Dashboard(){
 
         {/* Abas de Análise aprimoradas */}
         <Tabs defaultValue="candidates" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 p-2 bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl">
+          <TabsList className="grid w-full grid-cols-2 mb-8 p-2 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl">
             <TabsTrigger value="candidates" className="text-base py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300">
               <Users size={20} className="mr-3" />
               Candidatos
@@ -624,7 +624,7 @@ export default function Dashboard(){
                     </TableHeader>
                     <TableBody>
                       {sortedData.map(row => (
-                        <TableRow key={row.id} className="hover:bg-muted/20 transition-all duration-200 border-b border-border/30 hover:shadow-sm transform-gpu">
+                        <TableRow key={row.id} className="hover:bg-primary/5 transition-all duration-200 border-b border-border/30 hover:shadow-sm transform-gpu">
                           <TableCell className="font-medium">{row.name}</TableCell>
                           <TableCell className="text-muted-foreground">{row.email}</TableCell>
                           <TableCell>
@@ -944,7 +944,7 @@ function CandidateDetails({ id }){
               <div className="text-6xl font-bold text-success mb-2">{details.score}</div>
               <div className="text-muted-foreground">pontos de 100</div>
                              {finalStatusProfile && (
-                 <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/50">
+                 <div className="mt-4 p-3 bg-gradient-to-r from-success/10 to-success/5 rounded-xl border border-success/20">
                    <div className="text-sm font-medium text-foreground mb-1">Faixa de Pontuação</div>
                    <div className="text-sm text-muted-foreground">{finalStatusProfile.faixa}</div>
                  </div>
@@ -1026,7 +1026,7 @@ function CandidateDetails({ id }){
           <CardContent>
             <div className="space-y-4">
               {Object.entries(details.answers).map(([questionId, answers]) => (
-                <div key={questionId} className="p-4 bg-muted/30 rounded-xl border border-border/50">
+                <div key={questionId} className="p-4 bg-gradient-to-r from-info/10 to-info/5 rounded-xl border border-info/20">
                   <div className="font-medium text-foreground mb-2">
                     Questão {questionId.replace('question_', '')}
                   </div>
@@ -1054,7 +1054,7 @@ function CandidateDetails({ id }){
           <CardContent>
             <div className="space-y-4">
               {results.map((result, index) => (
-                <div key={result.id} className="p-4 bg-muted/30 rounded-xl border border-border/50">
+                <div key={result.id} className="p-4 bg-gradient-to-r from-warning/10 to-warning/5 rounded-xl border border-warning/20">
                   <div className="flex items-center justify-between mb-3">
                     <div className="font-medium text-foreground">
                       Questão {result.question_id}
@@ -1121,7 +1121,7 @@ function CandidateDetails({ id }){
               
               <div>
                 <h4 className="font-medium mb-2">🔍 Dados do Candidato:</h4>
-                <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-32">
+                <pre className="whitespace-pre-wrap text-xs bg-gradient-to-r from-muted/20 to-muted/10 p-4 rounded-xl border border-border/30 overflow-auto max-h-32">
                   {JSON.stringify(details, null, 2)}
                 </pre>
               </div>
@@ -1129,7 +1129,7 @@ function CandidateDetails({ id }){
               {results.length > 0 && (
                 <div>
                   <h4 className="font-medium mb-2">📋 Resultados Detalhados:</h4>
-                  <pre className="whitespace-pre-wrap text-xs bg-muted/30 p-4 rounded-xl border border-border/50 overflow-auto max-h-32">
+                  <pre className="whitespace-pre-wrap text-xs bg-gradient-to-r from-muted/20 to-muted/10 p-4 rounded-xl border border-border/30 overflow-auto max-h-32">
                     {JSON.stringify(results, null, 2)}
                   </pre>
                 </div>

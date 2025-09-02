@@ -7,19 +7,19 @@ export function LayoutWithSidebar({ children }) {
   const { isCollapsed, isMobile } = useSidebar()
 
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen bg-background">
       <ModernSidebar />
       
       {/* Main content area */}
       <main className={cn(
-        "flex-1 transition-all duration-300 ease-in-out",
+        "transition-all duration-300 ease-in-out min-h-screen",
         // Desktop: compress content when sidebar is open
         !isMobile && !isCollapsed && "ml-80",
         !isMobile && isCollapsed && "ml-16",
         // Mobile: overlay when sidebar is open
         isMobile && "ml-0"
       )}>
-        <div className="container mx-auto px-6 py-6">
+        <div className="w-full px-6 py-6">
           {children}
         </div>
       </main>
