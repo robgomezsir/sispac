@@ -262,42 +262,36 @@ export default function FormularioNew(){
         console.log('✅ [FormularioNew] Candidato atualizado com sucesso via API:', data)
         
       } else {
-        // Fluxo antigo: inserir novo candidato (compatibilidade)
-        console.log('🔄 [FormularioNew] Fluxo antigo: inserindo novo candidato...')
+        // Fluxo antigo: usar API específica para inserir candidato (compatibilidade)
+        console.log('🔄 [FormularioNew] Fluxo antigo: usando API insertCandidate...')
         
-        const { data: existing, error: e1 } = await supabase
-          .from('candidates')
-          .select('id')
-          .eq('email', email.toLowerCase())
-          .eq('name', nome.trim())
-          .limit(1)
-        if(e1) throw e1
-        if(existing && existing.length){
-          alert('Você já respondeu o teste. Obrigado!')
-          setSent(true)
-          return
-        }
-
-        const candidatePayload = {
-          name: nome.trim(),
-          email: email.toLowerCase(),
-          answers,
-          score: totalScore,
-          status
-        }
-
-        const { data: inserted, error: insertError } = await supabase
-          .from('candidates')
-          .insert(candidatePayload)
-          .select()
-          .single()
+        const response = await fetch('/api/insertCandidate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: nome.trim(),
+            email: email.toLowerCase(),
+            answers,
+            score: totalScore,
+            status
+          })
+        })
         
-        if(insertError || !inserted) {
-          console.error('❌ [FormularioNew] Erro ao inserir candidato:', insertError)
-          throw new Error(insertError?.message || 'Erro ao salvar respostas')
+        const data = await response.json()
+        
+        if (!response.ok) {
+          if (response.status === 409) {
+            alert('Você já respondeu o teste. Obrigado!')
+            setSent(true)
+            return
+          }
+          console.error('❌ [FormularioNew] Erro na API insertCandidate:', data)
+          throw new Error(data.message || 'Erro ao inserir candidato')
         }
-
-        console.log('✅ [FormularioNew] Novo candidato inserido com sucesso:', inserted.id)
+        
+        console.log('✅ [FormularioNew] Novo candidato inserido com sucesso via API:', data)
       }
 
       console.log("✅ [FormularioNew] Respostas enviadas com sucesso!")

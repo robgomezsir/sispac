@@ -1,8 +1,17 @@
-import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
+import { getSupabaseAdmin, ok, fail } from './_utils.js'
 
 export default async function handler(req, res){
   try{
     console.log('🔄 [updateCandidateByToken] Iniciando atualização de candidato via token')
+    
+    // Configurar headers CORS
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end()
+    }
     
     // Validar método HTTP
     if (req.method !== 'POST') {
