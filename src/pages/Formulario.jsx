@@ -245,38 +245,54 @@ export default function Formulario(){
       console.log('🔍 [Formulario] Debug - candidateData:', candidateData)
       console.log('🔍 [Formulario] Debug - token:', searchParams.get('token'))
       
-      if (candidateData && candidateData.id) {
-        console.log('🔄 [Formulario] Atualizando candidato existente:', candidateData.id)
+      // Verificar se há token válido (mesmo sem candidateData)
+      const hasValidToken = searchParams.get('token') && searchParams.get('token').startsWith('sispac_')
+      
+      if ((candidateData && candidateData.id) || hasValidToken) {
+        // Se há token válido, sempre procurar o candidato pelo token primeiro
+        let candidateToUpdate = candidateData
         
-        const updatePayload = {
-          answers,
-          score: totalScore,
-          status,
-          updated_at: new Date().toISOString()
-        }
-
-        // Tentar atualizar com cliente normal primeiro
-        let updateError
-        try {
-          const result = await supabase
+        if (hasValidToken && (!candidateData || !candidateData.id)) {
+          console.log('🔍 [Formulario] Token válido encontrado, buscando candidato pelo token...')
+          const token = searchParams.get('token')
+          
+          const { data: tokenCandidate, error: tokenError } = await supabase
             .from('candidates')
-            .update(updatePayload)
-            .eq('id', candidateData.id)
-            .select()
+            .select('id, name, email, status')
+            .eq('access_token', token)
             .single()
-          inserted = result.data
-          updateError = result.error
-        } catch (err) {
-          updateError = err
+          
+          if (tokenError) {
+            console.error('❌ [Formulario] Erro ao buscar candidato pelo token:', tokenError)
+            throw new Error('Erro ao validar token. Tente novamente.')
+          }
+          
+          if (!tokenCandidate) {
+            throw new Error('Token inválido ou candidato não encontrado.')
+          }
+          
+          candidateToUpdate = tokenCandidate
+          console.log('✅ [Formulario] Candidato encontrado pelo token:', candidateToUpdate)
         }
+        
+        if (candidateToUpdate && candidateToUpdate.id) {
+          console.log('🔄 [Formulario] Atualizando candidato existente:', candidateToUpdate.id)
+          
+          const updatePayload = {
+            name: nome.trim(),
+            answers,
+            score: totalScore,
+            status,
+            updated_at: new Date().toISOString()
+          }
 
-        // Se falhou com cliente normal, tentar com admin
-        if (updateError && supabaseAdmin !== supabase) {
+          // Tentar atualizar com cliente normal primeiro
+          let updateError
           try {
-            const result = await supabaseAdmin
+            const result = await supabase
               .from('candidates')
               .update(updatePayload)
-              .eq('id', candidateData.id)
+              .eq('id', candidateToUpdate.id)
               .select()
               .single()
             inserted = result.data
@@ -284,15 +300,33 @@ export default function Formulario(){
           } catch (err) {
             updateError = err
           }
-        }
 
-        if (updateError || !inserted) {
-          console.error('❌ [Formulario] Erro ao atualizar candidato:', updateError)
-          throw new Error(updateError?.message || 'Erro ao salvar respostas')
-        }
+          // Se falhou com cliente normal, tentar com admin
+          if (updateError && supabaseAdmin !== supabase) {
+            try {
+              const result = await supabaseAdmin
+                .from('candidates')
+                .update(updatePayload)
+                .eq('id', candidateToUpdate.id)
+                .select()
+                .single()
+              inserted = result.data
+              updateError = result.error
+            } catch (err) {
+              updateError = err
+            }
+          }
 
-        candidateId = candidateData.id
-        console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
+          if (updateError || !inserted) {
+            console.error('❌ [Formulario] Erro ao atualizar candidato:', updateError)
+            throw new Error(updateError?.message || 'Erro ao salvar respostas')
+          }
+
+          candidateId = candidateToUpdate.id
+          console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
+        } else {
+          throw new Error('Candidato não encontrado para atualização.')
+        }
 
       } else {
         // Fluxo antigo: verificar se já respondeu e inserir novo candidato
