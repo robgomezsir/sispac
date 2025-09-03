@@ -14,20 +14,32 @@ WHERE conrelid = 'public.profiles'::regclass;
 
 -- 2. REMOVER TODAS AS CONSTRAINTS PROBLEMÁTICAS
 -- =====================================================
--- Remover foreign key constraint
+-- Remover constraints da tabela profiles
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
-
--- Remover check constraint de role
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
+
+-- Remover constraints da tabela candidates
+ALTER TABLE public.candidates DROP CONSTRAINT IF EXISTS candidates_status_check;
+ALTER TABLE public.candidates DROP CONSTRAINT IF EXISTS candidates_score_check;
+ALTER TABLE public.candidates DROP CONSTRAINT IF EXISTS candidates_priority_check;
 
 -- 3. VERIFICAR SE AS CONSTRAINTS FORAM REMOVIDAS
 -- =====================================================
+-- Verificar constraints da tabela profiles
 SELECT 
     conname as constraint_name,
     contype as constraint_type,
     pg_get_constraintdef(oid) as constraint_definition
 FROM pg_constraint 
 WHERE conrelid = 'public.profiles'::regclass;
+
+-- Verificar constraints da tabela candidates
+SELECT 
+    conname as constraint_name,
+    contype as constraint_type,
+    pg_get_constraintdef(oid) as constraint_definition
+FROM pg_constraint 
+WHERE conrelid = 'public.candidates'::regclass;
 
 -- 4. VERIFICAR ESTRUTURA DA TABELA PROFILES
 -- =====================================================
@@ -115,10 +127,16 @@ BEGIN
     RAISE NOTICE '=====================================================';
     RAISE NOTICE 'TODAS AS CONSTRAINTS CORRIGIDAS COM SUCESSO!';
     RAISE NOTICE '=====================================================';
-    RAISE NOTICE 'Foreign key constraint profiles_id_fkey: REMOVIDA';
-    RAISE NOTICE 'Check constraint profiles_role_check: REMOVIDA';
-    RAISE NOTICE 'Tabela profiles: FUNCIONANDO';
-    RAISE NOTICE 'Tabela candidates: FUNCIONANDO';
-    RAISE NOTICE 'Sistema pronto para uso!';
+    RAISE NOTICE 'TABELA PROFILES:';
+    RAISE NOTICE '- Foreign key constraint profiles_id_fkey: REMOVIDA';
+    RAISE NOTICE '- Check constraint profiles_role_check: REMOVIDA';
+    RAISE NOTICE 'TABELA CANDIDATES:';
+    RAISE NOTICE '- Check constraint candidates_status_check: REMOVIDA';
+    RAISE NOTICE '- Check constraint candidates_score_check: REMOVIDA';
+    RAISE NOTICE '- Check constraint candidates_priority_check: REMOVIDA';
+    RAISE NOTICE 'RESULTADO:';
+    RAISE NOTICE '- Tabela profiles: FUNCIONANDO';
+    RAISE NOTICE '- Tabela candidates: FUNCIONANDO';
+    RAISE NOTICE '- Sistema pronto para uso!';
     RAISE NOTICE '=====================================================';
 END $$;
