@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { computeScore, classify } from '../utils/scoring'
 import { questions } from '../data/questions'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseAdmin } from '../lib/supabase'
 import { 
   CheckCircle, 
   ChevronLeft, 
@@ -52,7 +52,7 @@ import {
   Separator
 } from '../components/ui'
 
-export default function FormularioNew(){
+export default function Formulario(){
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
@@ -75,12 +75,12 @@ export default function FormularioNew(){
       
       if (!token) {
         // Se não há token, permitir acesso direto (compatibilidade com fluxo antigo)
-        console.log('🔍 [FormularioNew] Nenhum token fornecido, permitindo acesso direto')
+        console.log('🔍 [Formulario] Nenhum token fornecido, permitindo acesso direto')
         setTokenValid(true)
         return
       }
       
-      console.log('🔍 [FormularioNew] Validando token:', token.substring(0, 8) + '...')
+      console.log('🔍 [Formulario] Validando token:', token.substring(0, 8) + '...')
       setTokenValidating(true)
       setTokenError(null)
       
@@ -96,7 +96,7 @@ export default function FormularioNew(){
         const data = await response.json()
         
         if (response.ok && data.valid) {
-          console.log('✅ [FormularioNew] Token válido:', data.candidate)
+          console.log('✅ [Formulario] Token válido:', data.candidate)
           setTokenValid(true)
           setCandidateData(data.candidate)
           
@@ -108,12 +108,12 @@ export default function FormularioNew(){
             setEmail(data.candidate.email)
           }
         } else {
-          console.log('❌ [FormularioNew] Token inválido:', data.message)
+          console.log('❌ [Formulario] Token inválido:', data.message)
           setTokenError(data.message || 'Token inválido')
           setTokenValid(false)
         }
       } catch (error) {
-        console.error('❌ [FormularioNew] Erro ao validar token:', error)
+        console.error('❌ [Formulario] Erro ao validar token:', error)
         setTokenError('Erro ao validar token. Tente novamente.')
         setTokenValid(false)
       } finally {
@@ -161,6 +161,15 @@ export default function FormularioNew(){
       return () => clearInterval(interval)
     }
   }, [sent, step])
+
+  // Função para scroll manual para o topo (fallback)
+  const scrollToTop = useCallback(() => {
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      window.scrollTo(0, 0)
+    }
+  }, [])
 
   // Função para alternar resposta
   const toggleAnswer = useCallback((questionId, answer) => {
@@ -219,7 +228,7 @@ export default function FormularioNew(){
     }
   }, [canGoBack, step])
 
-  // NOVA FUNÇÃO SIMPLIFICADA PARA ENVIAR RESPOSTAS
+  // Função para enviar respostas
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
@@ -228,42 +237,156 @@ export default function FormularioNew(){
     try {
       const { totalScore, questionScores } = computeScore(answers, questions)
       const status = classify(totalScore)
+
+      let candidateId = null
+      let inserted = null
+
+      // Se há token na URL, sempre tentar atualizar registro existente primeiro
       const token = searchParams.get('token')
-
-      console.log('🔄 [FormularioNew] Iniciando envio de respostas...')
-      console.log('🔄 [FormularioNew] Token presente:', !!token)
-      console.log('🔄 [FormularioNew] Score calculado:', totalScore)
-      console.log('🔄 [FormularioNew] Status:', status)
-
+      
       if (token) {
-        // NOVA ABORDAGEM: Usar API específica para atualizar candidato via token
-        console.log('🔄 [FormularioNew] Usando API updateCandidateByToken...')
+        // Buscar candidato pelo token
+        console.log('🔄 [Formulario] Buscando candidato pelo token...')
         
-        const response = await fetch('/api/updateCandidateByToken', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token,
-            answers,
-            score: totalScore,
-            status
-          })
-        })
+        const { data: existingCandidate, error: tokenError } = await supabase
+          .from('candidates')
+          .select('id, name, email, status')
+          .eq('access_token', token)
+          .single()
         
-        const data = await response.json()
-        
-        if (!response.ok) {
-          console.error('❌ [FormularioNew] Erro na API updateCandidateByToken:', data)
-          throw new Error(data.message || 'Erro ao atualizar candidato')
+        if (tokenError) {
+          console.error('❌ [Formulario] Erro ao buscar candidato pelo token:', tokenError)
+          throw new Error('Token inválido ou candidato não encontrado')
         }
         
-        console.log('✅ [FormularioNew] Candidato atualizado com sucesso via API:', data)
+        if (existingCandidate && existingCandidate.status !== 'PENDENTE_TESTE') {
+          alert('Este teste já foi completado. Obrigado!')
+          setSent(true)
+          return
+        }
         
+        // Atualizar o candidato existente
+        console.log('🔄 [Formulario] Atualizando candidato encontrado pelo token:', existingCandidate.id)
+        
+        const updatePayload = {
+          answers,
+          score: totalScore,
+          status,
+          updated_at: new Date().toISOString()
+        }
+
+        // Tentar atualizar com cliente normal primeiro
+        let updateError
+        try {
+          const result = await supabase
+            .from('candidates')
+            .update(updatePayload)
+            .eq('id', existingCandidate.id)
+            .select()
+            .single()
+          inserted = result.data
+          updateError = result.error
+        } catch (err) {
+          updateError = err
+        }
+
+        // Se falhou com cliente normal, tentar com admin
+        if (updateError && supabaseAdmin !== supabase) {
+          try {
+            const result = await supabaseAdmin
+              .from('candidates')
+              .update(updatePayload)
+              .eq('id', existingCandidate.id)
+              .select()
+              .single()
+            inserted = result.data
+            updateError = result.error
+          } catch (err) {
+            updateError = err
+          }
+        }
+
+        if (updateError || !inserted) {
+          console.error('❌ [Formulario] Erro ao atualizar candidato:', updateError)
+          throw new Error(updateError?.message || 'Erro ao salvar respostas')
+        }
+
+        candidateId = existingCandidate.id
+        console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
+
+      } else if (token) {
+        // Se há token mas não há candidateData, buscar candidato pelo token
+        console.log('🔄 [Formulario] Buscando candidato pelo token...')
+        
+        const { data: existingCandidate, error: tokenError } = await supabase
+          .from('candidates')
+          .select('id, name, email, status')
+          .eq('access_token', token)
+          .single()
+        
+        if (tokenError) {
+          console.error('❌ [Formulario] Erro ao buscar candidato pelo token:', tokenError)
+          throw new Error('Token inválido ou candidato não encontrado')
+        }
+        
+        if (existingCandidate && existingCandidate.status !== 'PENDENTE_TESTE') {
+          alert('Este teste já foi completado. Obrigado!')
+          setSent(true)
+          return
+        }
+        
+        // Atualizar o candidato existente
+        console.log('🔄 [Formulario] Atualizando candidato encontrado pelo token:', existingCandidate.id)
+        
+        const updatePayload = {
+          answers,
+          score: totalScore,
+          status,
+          updated_at: new Date().toISOString()
+        }
+
+        // Tentar atualizar com cliente normal primeiro
+        let updateError
+        try {
+          const result = await supabase
+            .from('candidates')
+            .update(updatePayload)
+            .eq('id', existingCandidate.id)
+            .select()
+            .single()
+          inserted = result.data
+          updateError = result.error
+        } catch (err) {
+          updateError = err
+        }
+
+        // Se falhou com cliente normal, tentar com admin
+        if (updateError && supabaseAdmin !== supabase) {
+          try {
+            const result = await supabaseAdmin
+              .from('candidates')
+              .update(updatePayload)
+              .eq('id', existingCandidate.id)
+              .select()
+              .single()
+            inserted = result.data
+            updateError = result.error
+          } catch (err) {
+            updateError = err
+          }
+        }
+
+        if (updateError || !inserted) {
+          console.error('❌ [Formulario] Erro ao atualizar candidato pelo token:', updateError)
+          throw new Error(updateError?.message || 'Erro ao salvar respostas')
+        }
+
+        candidateId = existingCandidate.id
+        console.log('✅ [Formulario] Candidato atualizado via token com sucesso:', candidateId)
+
       } else {
-        // Fluxo antigo: inserir novo candidato (compatibilidade)
-        console.log('🔄 [FormularioNew] Fluxo antigo: inserindo novo candidato...')
+        // Fluxo antigo: verificar se já respondeu e inserir novo candidato
+        console.log('🔄 [Formulario] Verificando se candidato já existe...')
         
         const { data: existing, error: e1 } = await supabase
           .from('candidates')
@@ -286,25 +409,70 @@ export default function FormularioNew(){
           status
         }
 
-        const { data: inserted, error: insertError } = await supabase
-          .from('candidates')
-          .insert(candidatePayload)
-          .select()
-          .single()
+        // Tentar primeiro com cliente normal, depois com admin se falhar
+        let insertError
+        
+        try {
+          const result = await supabase
+            .from('candidates')
+            .insert(candidatePayload)
+            .select()
+            .single()
+          inserted = result.data
+          insertError = result.error
+        } catch (err) {
+          insertError = err
+        }
+
+        // Se falhou com cliente normal, tentar com admin
+        if (insertError && supabaseAdmin !== supabase) {
+          try {
+            const result = await supabaseAdmin
+              .from('candidates')
+              .insert(candidatePayload)
+              .select()
+              .single()
+            inserted = result.data
+            insertError = result.error
+          } catch (err) {
+            insertError = err
+          }
+        }
         
         if(insertError || !inserted) {
-          console.error('❌ [FormularioNew] Erro ao inserir candidato:', insertError)
+          console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
           throw new Error(insertError?.message || 'Erro ao salvar respostas')
         }
 
-        console.log('✅ [FormularioNew] Novo candidato inserido com sucesso:', inserted.id)
+        candidateId = inserted.id
+        console.log('✅ [Formulario] Novo candidato inserido com sucesso:', candidateId)
       }
 
-      console.log("✅ [FormularioNew] Respostas enviadas com sucesso!")
+      // Inserir resultados detalhados se possível
+      try {
+        const resultsPayload = questionScores.map(qs => ({
+          candidate_id: candidateId,
+          question_id: qs.questionId,
+          question_title: qs.questionTitle,
+          question_category: qs.questionCategory,
+          selected_answers: qs.selectedAnswers,
+          score_question: qs.score,
+          is_correct: qs.isCorrect
+        }))
+
+        await supabaseAdmin
+          .from('results')
+          .insert(resultsPayload)
+      } catch (err) {
+        console.warn('⚠️ [Formulario] Erro ao salvar resultados detalhados:', err)
+        // Não falhar se não conseguir salvar resultados detalhados
+      }
+
+      console.log("✅ [Formulario] Respostas enviadas com sucesso!")
       setSent(true)
       
     } catch (err) {
-      console.error("❌ [FormularioNew] Erro ao enviar respostas:", err)
+      console.error("❌ [Formulario] Erro ao enviar respostas:", err)
       setError(err.message || 'Erro ao enviar respostas')
     } finally {
       setSending(false)
