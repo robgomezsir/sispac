@@ -1,144 +1,160 @@
-import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
+import { createClient } from '@supabase/supabase-js'
 
-export default async function handler(req, res){
-  try{
-    // Verificar se é POST
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Método não permitido' })
-    }
-    
-    // Validar autenticação e permissões
-    try {
-      await assertAuth(req)
-    } catch (authError) {
-      console.error('❌ [addUser] Erro de autenticação:', authError.message)
-      return res.status(401).json({ error: 'Token de autorização inválido' })
-    }
+export default async function handler(req, res) {
+  // Configurar headers CORS
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
+  
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Método não permitido' })
+  }
+  
+  try {
+    console.log('🔍 [addUserSimple] Iniciando criação de usuário')
+    console.log('🔍 [addUserSimple] Body recebido:', req.body)
     
     const { name, email, role } = req.body || {}
     
     // Validação dos campos obrigatórios
-    if(!name || !name.trim()) {
-      return fail(res, { message: 'Nome é obrigatório' }, 400)
+    if (!name || !name.trim()) {
+      console.error('❌ [addUserSimple] Nome não fornecido')
+      return res.status(400).json({ error: 'Nome é obrigatório' })
     }
     
-    if(!email || !email.trim()) {
-      return fail(res, { message: 'Email é obrigatório' }, 400)
+    if (!email || !email.trim()) {
+      console.error('❌ [addUserSimple] Email não fornecido')
+      return res.status(400).json({ error: 'Email é obrigatório' })
     }
     
     // Validação básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if(!emailRegex.test(email.trim())) {
-      return fail(res, { message: 'Email inválido' }, 400)
-    }
-    
-    // Validação de role
-    const validRoles = ['rh', 'admin']
-    if(role && !validRoles.includes(role)) {
-      return fail(res, { message: 'Role inválido. Use "rh" ou "admin"' }, 400)
-    }
-    
-    const supabase = getSupabaseAdmin()
-    
-    // Verificar se o usuário já existe na tabela profiles
-    const { data: existingProfile, error: checkError } = await supabase
-      .from('profiles')
-      .select('id, email')
-      .eq('email', email.trim().toLowerCase())
-      .maybeSingle()
-    
-    if(checkError) {
-      console.error('❌ Erro ao verificar perfil existente:', checkError)
-      return fail(res, { message: 'Erro ao verificar perfil existente' }, 500)
-    }
-    
-    if(existingProfile) {
-      return fail(res, { message: 'Usuário com este email já existe' }, 409)
-    }
-    
-    // Criar usuário auth (senha aleatória de 6 dígitos)
-    const password = Math.floor(100000 + Math.random() * 900000).toString()
-    
-    const { data, error } = await supabase.auth.admin.createUser({
-      email: email.trim().toLowerCase(), 
-      password, 
-      email_confirm: true, 
-      user_metadata: { 
-        name: name.trim(), 
-        role: role || 'rh',
-        created_by: req.user.email,
-        created_at: new Date().toISOString()
-      }
-    })
-    
-    if(error) {
-      console.error('❌ Erro ao criar usuário:', error)
-      return fail(res, { message: 'Erro ao criar usuário: ' + error.message }, 500)
+    if (!emailRegex.test(email.trim())) {
+      console.error('❌ [addUserSimple] Email inválido:', email)
+      return res.status(400).json({ error: 'Email inválido' })
     }
     
     // Validar e normalizar role
     const validRoles = ['admin', 'rh', 'user']
     const normalizedRole = validRoles.includes(role) ? role : 'rh'
     
-    console.log('🔍 [addUser] Role recebido:', role, 'Role normalizado:', normalizedRole)
+    console.log('🔍 [addUserSimple] Role recebido:', role, 'Role normalizado:', normalizedRole)
     
-    // Criar perfil na tabela profiles com ID independente
+    // Configurar Supabase com service_role
+    const supabaseUrl = process.env.SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE
+    
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('❌ [addUserSimple] Configuração do Supabase não encontrada')
+      return res.status(500).json({ error: 'Configuração do servidor não encontrada' })
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    
+    // Verificar se o usuário já existe na tabela profiles
+    console.log('🔍 [addUserSimple] Verificando se usuário já existe...')
+    const { data: existingProfile, error: checkError } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle()
+    
+    if (checkError) {
+      console.error('❌ [addUserSimple] Erro ao verificar usuário existente:', checkError)
+      return res.status(500).json({ error: 'Erro ao verificar usuário existente' })
+    }
+    
+    if (existingProfile) {
+      console.error('❌ [addUserSimple] Usuário já existe:', existingProfile.email)
+      return res.status(409).json({ error: 'Usuário com este email já existe' })
+    }
+    
+    // Gerar senha temporária
+    const password = Math.floor(100000 + Math.random() * 900000).toString()
+    
+    console.log('🔍 [addUserSimple] Criando usuário no auth...')
+    
+    // Criar usuário no Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email: email.trim().toLowerCase(),
+      password: password,
+      email_confirm: true,
+      user_metadata: {
+        name: name.trim(),
+        role: normalizedRole,
+        created_at: new Date().toISOString()
+      }
+    })
+    
+    if (authError) {
+      console.error('❌ [addUserSimple] Erro ao criar usuário auth:', authError)
+      return res.status(500).json({ error: 'Erro ao criar usuário: ' + authError.message })
+    }
+    
+    console.log('✅ [addUserSimple] Usuário auth criado:', authData.user.id)
+    
+    // Criar perfil na tabela profiles
     const profileData = {
-      id: data.user.id, // Usar o ID do usuário criado no auth
-      email: data.user.email,
+      id: authData.user.id,
+      email: authData.user.email,
       role: normalizedRole,
       full_name: name.trim(),
       is_active: true,
       created_at: new Date().toISOString()
     }
     
-    console.log('🔍 [addUser] ID do usuário auth:', data.user.id)
-    console.log('🔍 [addUser] Email do usuário auth:', data.user.email)
-    
-    console.log('📝 [addUser] Dados do perfil a serem inseridos:', profileData)
+    console.log('🔍 [addUserSimple] Dados do perfil a serem inseridos:', profileData)
     
     const { data: profileResult, error: profileError } = await supabase
       .from('profiles')
       .insert(profileData)
       .select()
     
-    if(profileError) {
-      console.error('⚠️ Erro ao criar perfil:', profileError)
-      console.error('⚠️ Detalhes do erro:', {
-        code: profileError.code,
-        message: profileError.message,
-        details: profileError.details,
-        hint: profileError.hint
-      })
+    if (profileError) {
+      console.error('❌ [addUserSimple] Erro ao criar perfil:', profileError)
       
       // Tentar deletar o usuário criado se o perfil falhar
       try {
-        await supabase.auth.admin.deleteUser(data.user.id)
-        console.log('✅ Usuário auth removido após falha no perfil')
+        await supabase.auth.admin.deleteUser(authData.user.id)
+        console.log('✅ [addUserSimple] Usuário auth removido após falha no perfil')
       } catch (deleteError) {
-        console.error('❌ Erro ao deletar usuário após falha no perfil:', deleteError)
+        console.error('❌ [addUserSimple] Erro ao deletar usuário após falha no perfil:', deleteError)
       }
-      return fail(res, { 
-        message: 'Erro ao criar perfil: ' + profileError.message,
+      
+      return res.status(500).json({ 
+        error: 'Erro ao criar perfil: ' + profileError.message,
         details: profileError.details,
         code: profileError.code
-      }, 500)
+      })
     }
     
-    console.log('✅ Perfil criado com sucesso:', profileResult)
+    console.log('✅ [addUserSimple] Perfil criado com sucesso:', profileResult)
     
-    console.log('✅ Usuário criado com sucesso:', { email: data.user.email, role: role || 'rh' })
-    
-    ok(res, { 
+    const response = {
+      success: true,
       message: `Usuário ${name.trim()} criado com sucesso! Senha temporária: ${password}`,
-      userId: data.user.id,
-      email: data.user.email,
-      role: role || 'rh',
+      user: {
+        id: authData.user.id,
+        email: authData.user.email,
+        role: normalizedRole,
+        full_name: name.trim()
+      },
       profileCreated: true
-    })
+    }
     
-  }catch(e){ 
-    console.error('❌ Erro na API addUser:', e)
-    fail(res, e) 
+    console.log('✅ [addUserSimple] Resposta final:', response)
+    
+    return res.status(200).json(response)
+    
+  } catch (error) {
+    console.error('❌ [addUserSimple] Erro geral:', error)
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor: ' + error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    })
   }
 }
