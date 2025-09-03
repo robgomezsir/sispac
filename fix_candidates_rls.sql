@@ -31,24 +31,89 @@ DROP POLICY IF EXISTS "Users can delete candidates" ON public.candidates;
 -- 3. CRIAR POLÍTICAS RLS CORRETAS PARA A TABELA CANDIDATES
 -- =====================================================
 -- Política para service_role (bypassa RLS)
-CREATE POLICY "Service role can manage candidates" ON public.candidates
-    FOR ALL USING (auth.role() = 'service_role');
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = 'public' 
+        AND tablename = 'candidates' 
+        AND policyname = 'Service role can manage candidates'
+    ) THEN
+        CREATE POLICY "Service role can manage candidates" ON public.candidates
+            FOR ALL USING (auth.role() = 'service_role');
+        RAISE NOTICE 'Política "Service role can manage candidates" criada';
+    ELSE
+        RAISE NOTICE 'Política "Service role can manage candidates" já existe';
+    END IF;
+END $$;
 
 -- Política para usuários autenticados visualizarem
-CREATE POLICY "Authenticated users can view candidates" ON public.candidates
-    FOR SELECT USING (auth.role() = 'authenticated');
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = 'public' 
+        AND tablename = 'candidates' 
+        AND policyname = 'Authenticated users can view candidates'
+    ) THEN
+        CREATE POLICY "Authenticated users can view candidates" ON public.candidates
+            FOR SELECT USING (auth.role() = 'authenticated');
+        RAISE NOTICE 'Política "Authenticated users can view candidates" criada';
+    ELSE
+        RAISE NOTICE 'Política "Authenticated users can view candidates" já existe';
+    END IF;
+END $$;
 
 -- Política para usuários autenticados inserirem
-CREATE POLICY "Authenticated users can insert candidates" ON public.candidates
-    FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = 'public' 
+        AND tablename = 'candidates' 
+        AND policyname = 'Authenticated users can insert candidates'
+    ) THEN
+        CREATE POLICY "Authenticated users can insert candidates" ON public.candidates
+            FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+        RAISE NOTICE 'Política "Authenticated users can insert candidates" criada';
+    ELSE
+        RAISE NOTICE 'Política "Authenticated users can insert candidates" já existe';
+    END IF;
+END $$;
 
 -- Política para usuários autenticados atualizarem
-CREATE POLICY "Authenticated users can update candidates" ON public.candidates
-    FOR UPDATE USING (auth.role() = 'authenticated');
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = 'public' 
+        AND tablename = 'candidates' 
+        AND policyname = 'Authenticated users can update candidates'
+    ) THEN
+        CREATE POLICY "Authenticated users can update candidates" ON public.candidates
+            FOR UPDATE USING (auth.role() = 'authenticated');
+        RAISE NOTICE 'Política "Authenticated users can update candidates" criada';
+    ELSE
+        RAISE NOTICE 'Política "Authenticated users can update candidates" já existe';
+    END IF;
+END $$;
 
 -- Política para usuários autenticados deletarem
-CREATE POLICY "Authenticated users can delete candidates" ON public.candidates
-    FOR DELETE USING (auth.role() = 'authenticated');
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = 'public' 
+        AND tablename = 'candidates' 
+        AND policyname = 'Authenticated users can delete candidates'
+    ) THEN
+        CREATE POLICY "Authenticated users can delete candidates" ON public.candidates
+            FOR DELETE USING (auth.role() = 'authenticated');
+        RAISE NOTICE 'Política "Authenticated users can delete candidates" criada';
+    ELSE
+        RAISE NOTICE 'Política "Authenticated users can delete candidates" já existe';
+    END IF;
+END $$;
 
 -- 4. VERIFICAR SE AS POLÍTICAS FORAM CRIADAS CORRETAMENTE
 -- =====================================================
