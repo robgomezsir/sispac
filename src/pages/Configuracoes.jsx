@@ -223,52 +223,36 @@ export default function Configuracoes(){
     setLoading(true)
     
     try {
-      // Verificar se o candidato já existe
-      const { data: existingCandidate, error: checkError } = await supabase
-        .from('candidates')
-        .select('id')
-        .eq('email', testCandidateEmail.trim().toLowerCase())
-        .single()
+      console.log('🔍 [Configurações] Iniciando criação de candidato:', { 
+        name: testCandidateName.trim(), 
+        email: testCandidateEmail.trim().toLowerCase() 
+      })
       
-      if (existingCandidate) {
-        showMessage('Candidato com este email já existe.', 'error')
-        return
+      // Usar a API do backend que tem service_role
+      const response = await fetch('/api/addCandidate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          name: testCandidateName.trim(),
+          email: testCandidateEmail.trim().toLowerCase()
+        })
+      })
+      
+      const result = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(result.message || 'Erro ao criar candidato')
       }
       
-      // Gerar token de acesso
-      const tempId = Date.now().toString() // ID temporário para gerar token
-      const accessToken = generateAccessToken(tempId, testCandidateEmail.trim().toLowerCase())
+      // Definir link gerado
+      setGeneratedLink(result.accessLink)
       
-      // Criar dados do candidato de teste (apenas nome e email)
-      const testCandidateData = {
-        name: testCandidateName.trim(),
-        email: testCandidateEmail.trim().toLowerCase(),
-        score: 0, // Score inicial será 0 até completar o teste
-        status: 'PENDENTE_TESTE', // Status inicial
-        answers: {}, // Respostas vazias até completar o teste
-        access_token: accessToken,
-        token_created_at: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      }
-      
-      // Inserir no banco
-      const { data: insertedCandidate, error: insertError } = await supabase
-        .from('candidates')
-        .insert([testCandidateData])
-        .select()
-      
-      if (insertError) {
-        throw new Error(`Erro ao inserir candidato: ${insertError.message}`)
-      }
-      
-      // Criar link de acesso
-      const accessLink = createAccessLink(accessToken)
-      setGeneratedLink(accessLink)
-      
-      console.log('✅ [Configurações] Candidato criado com link:', accessLink)
-      
+      console.log('✅ [Configurações] Candidato criado com sucesso:', result)
       showMessage(
-        `Candidato "${testCandidateName.trim()}" adicionado com sucesso! Link de acesso gerado.`, 
+        result.message || `Candidato "${testCandidateName.trim()}" adicionado com sucesso! Link de acesso gerado.`, 
         'success'
       )
       
@@ -298,130 +282,29 @@ export default function Configuracoes(){
     setLoading(true)
     
     try {
-      console.log('🔍 [Configurações] Iniciando processo de remoção para:', removeTestCandidateEmail.trim().toLowerCase())
+      console.log('🔍 [Configurações] Iniciando remoção de candidato:', removeTestCandidateEmail.trim().toLowerCase())
       
-      // Verificar se o usuário tem sessão ativa
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      if (sessionError || !session) {
-        throw new Error('Sessão não encontrada. Faça login novamente.')
-      }
-      console.log('✅ [Configurações] Sessão válida encontrada')
+      // Usar a API do backend que tem service_role
+      const response = await fetch('/api/deleteCandidate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          email: removeTestCandidateEmail.trim().toLowerCase()
+        })
+      })
       
-      // Buscar candidato
-      console.log('🔍 [Configurações] Buscando candidato no banco...')
-      const { data: candidate, error: searchError } = await supabase
-        .from('candidates')
-        .select('id, name, email')
-        .eq('email', removeTestCandidateEmail.trim().toLowerCase())
-        .maybeSingle()
+      const result = await response.json()
       
-      if (searchError) {
-        console.error('❌ [Configurações] Erro na busca:', searchError)
-        throw new Error(`Erro na busca: ${searchError.message}`)
+      if (!response.ok) {
+        throw new Error(result.message || 'Erro ao remover candidato')
       }
       
-      if (!candidate) {
-        showMessage('Candidato não encontrado.', 'error')
-        return
-      }
-      
-      console.log('✅ [Configurações] Candidato encontrado:', candidate)
-      
-      // Pular verificação de role para evitar problemas de RLS
-      console.log('⚠️ [Configurações] Pulando verificação de role para evitar problemas de RLS')
-      
-      // Remover candidato usando operação direta
-      console.log('🗑️ [Configurações] Tentando remover candidato ID:', candidate.id)
-      
-      // Primeiro, verificar se o candidato ainda existe
-      const { data: verifyBefore, error: verifyBeforeError } = await supabase
-        .from('candidates')
-        .select('id')
-        .eq('id', candidate.id)
-        .maybeSingle()
-      
-      if (verifyBeforeError) {
-        console.log('⚠️ [Configurações] Erro ao verificar candidato antes da remoção:', verifyBeforeError.message)
-      }
-      
-      if (!verifyBefore) {
-        showMessage('Candidato já foi removido ou não existe mais.', 'info')
-        setRemoveTestCandidateEmail('')
-        return
-      }
-      
-      // Tentar remover usando operação direta
-      const { error: deleteError } = await supabase
-        .from('candidates')
-        .delete()
-        .eq('id', candidate.id)
-      
-      if (deleteError) {
-        console.error('❌ [Configurações] Erro na remoção:', deleteError)
-        
-        // Se falhar, tentar abordagem alternativa
-        console.log('🔄 [Configurações] Tentando abordagem alternativa...')
-        
-        // Tentar atualizar o status para "REMOVIDO" em vez de deletar
-        const { error: updateError } = await supabase
-          .from('candidates')
-          .update({ 
-            status: 'REMOVIDO',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', candidate.id)
-        
-        if (updateError) {
-          throw new Error(`Não foi possível remover nem marcar como removido: ${deleteError.message}`)
-        } else {
-          console.log('✅ [Configurações] Candidato marcado como removido (soft delete)')
-          showMessage(`Candidato "${candidate.name}" marcado como removido!`, 'success')
-          setRemoveTestCandidateEmail('')
-          return
-        }
-      }
-      
-      console.log('✅ [Configurações] Candidato removido com sucesso')
-      
-      // Tentar remover da tabela results se existir
-      try {
-        console.log('🔍 [Configurações] Tentando remover da tabela results...')
-        const { error: resultsError } = await supabase
-          .from('results')
-          .delete()
-          .eq('candidate_id', candidate.id)
-        
-        if (resultsError) {
-          console.log('⚠️ [Configurações] Erro ao acessar tabela results:', resultsError.message)
-        } else {
-          console.log('✅ [Configurações] Registros removidos da tabela results')
-        }
-      } catch (resultsError) {
-        console.log('⚠️ [Configurações] Tabela results não existe ou erro ao acessar:', resultsError.message)
-      }
-      
-      // Verificar se realmente foi removido
-      console.log('🔍 [Configurações] Verificando se candidato foi realmente removido...')
-      const { data: verifyCandidate, error: verifyError } = await supabase
-        .from('candidates')
-        .select('id')
-        .eq('id', candidate.id)
-        .maybeSingle()
-      
-      if (verifyError) {
-        console.log('⚠️ [Configurações] Erro na verificação pós-remoção:', verifyError.message)
-      }
-      
-      if (!verifyCandidate) {
-        console.log('✅ [Configurações] Confirmação: Candidato foi removido com sucesso')
-        showMessage(`Candidato de teste "${candidate.name}" removido com sucesso!`, 'success')
-      } else {
-        console.log('⚠️ [Configurações] ATENÇÃO: Candidato ainda existe no banco após tentativa de remoção!')
-        showMessage(`Candidato "${candidate.name}" não foi removido. Verifique as permissões do banco.`, 'error')
-      }
-      
+      console.log('✅ [Configurações] Candidato removido com sucesso:', result)
+      showMessage(result.message || `Candidato removido com sucesso!`, 'success')
       setRemoveTestCandidateEmail('')
-      console.log('🎉 [Configurações] Processo de remoção concluído')
       
     } catch (error) {
       console.error('❌ [Configurações] Erro ao remover candidato de teste:', error)

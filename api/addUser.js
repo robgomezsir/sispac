@@ -67,27 +67,46 @@ export default async function handler(req, res){
     }
     
     // Criar perfil na tabela profiles
-    const { error: profileError } = await supabase
+    const profileData = {
+      id: data.user.id,
+      email: data.user.email,
+      role: role || 'rh',
+      full_name: name.trim(),
+      is_active: true,
+      created_at: new Date().toISOString()
+    }
+    
+    console.log('📝 [addUser] Dados do perfil a serem inseridos:', profileData)
+    
+    const { data: profileResult, error: profileError } = await supabase
       .from('profiles')
-      .insert({
-        id: data.user.id,
-        email: data.user.email,
-        role: role || 'rh',
-        full_name: name.trim(),
-        is_active: true,
-        created_at: new Date().toISOString()
-      })
+      .insert(profileData)
+      .select()
     
     if(profileError) {
       console.error('⚠️ Erro ao criar perfil:', profileError)
+      console.error('⚠️ Detalhes do erro:', {
+        code: profileError.code,
+        message: profileError.message,
+        details: profileError.details,
+        hint: profileError.hint
+      })
+      
       // Tentar deletar o usuário criado se o perfil falhar
       try {
         await supabase.auth.admin.deleteUser(data.user.id)
+        console.log('✅ Usuário auth removido após falha no perfil')
       } catch (deleteError) {
         console.error('❌ Erro ao deletar usuário após falha no perfil:', deleteError)
       }
-      return fail(res, { message: 'Usuário criado mas erro ao criar perfil. Usuário removido.' }, 500)
+      return fail(res, { 
+        message: 'Erro ao criar perfil: ' + profileError.message,
+        details: profileError.details,
+        code: profileError.code
+      }, 500)
     }
+    
+    console.log('✅ Perfil criado com sucesso:', profileResult)
     
     console.log('✅ Usuário criado com sucesso:', { email: data.user.email, role: role || 'rh' })
     
