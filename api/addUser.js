@@ -66,11 +66,17 @@ export default async function handler(req, res){
       return fail(res, { message: 'Erro ao criar usuário: ' + error.message }, 500)
     }
     
+    // Validar e normalizar role
+    const validRoles = ['admin', 'rh', 'user']
+    const normalizedRole = validRoles.includes(role) ? role : 'rh'
+    
+    console.log('🔍 [addUser] Role recebido:', role, 'Role normalizado:', normalizedRole)
+    
     // Criar perfil na tabela profiles
     const profileData = {
       id: data.user.id,
       email: data.user.email,
-      role: role || 'rh',
+      role: normalizedRole,
       full_name: name.trim(),
       is_active: true,
       created_at: new Date().toISOString()
