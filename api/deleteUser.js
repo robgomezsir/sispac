@@ -13,27 +13,29 @@ export default async function handler(req, res){
     
     const supabase = getSupabaseAdmin()
     
-    // Buscar usuário
-    const { data: list, error } = await supabase.auth.admin.listUsers()
+    // Buscar usuário na tabela profiles
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('id, email, full_name')
+      .eq('email', email.trim().toLowerCase())
+      .single()
     
     if(error) {
-      console.error('❌ Erro ao listar usuários:', error)
-      return fail(res, { message: 'Erro ao buscar usuários' }, 500)
+      console.error('❌ Erro ao buscar perfil:', error)
+      return fail(res, { message: 'Usuário não encontrado' }, 404)
     }
     
-    const user = list.users.find(u => u.email?.toLowerCase() === email.trim().toLowerCase())
-    
-    if(!user) {
+    if(!profile) {
       return fail(res, { message: 'Usuário não encontrado' }, 404)
     }
     
     // Verificar se não está tentando deletar a si mesmo
-    if(user.id === req.user.id) {
+    if(profile.id === req.user.id) {
       return fail(res, { message: 'Não é possível deletar sua própria conta' }, 400)
     }
     
     // Verificar se não está tentando deletar o usuário admin principal
-    if(user.email === 'robgomez.sir@gmail.com') {
+    if(profile.email === 'robgomez.sir@gmail.com') {
       return fail(res, { message: 'Não é possível deletar o usuário administrador principal' }, 400)
     }
     
@@ -42,7 +44,7 @@ export default async function handler(req, res){
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
-        .eq('id', user.id)
+        .eq('id', profile.id)
       
       if(profileError) {
         console.warn('⚠️ Erro ao deletar perfil:', profileError)
@@ -52,16 +54,16 @@ export default async function handler(req, res){
     }
     
     // Deletar usuário auth
-    const { error: delErr } = await supabase.auth.admin.deleteUser(user.id)
+    const { error: delErr } = await supabase.auth.admin.deleteUser(profile.id)
     
     if(delErr) {
       console.error('❌ Erro ao deletar usuário:', delErr)
       return fail(res, { message: 'Erro ao deletar usuário: ' + delErr.message }, 500)
     }
     
-    console.log('✅ Usuário deletado com sucesso:', { email: user.email })
+    console.log('✅ Usuário deletado com sucesso:', { email: profile.email })
     
-    ok(res, { message: `Usuário ${user.email} removido com sucesso` })
+    ok(res, { message: `Usuário ${profile.email} removido com sucesso` })
     
   }catch(e){ 
     console.error('❌ Erro na API deleteUser:', e)

@@ -30,17 +30,19 @@ export default async function handler(req, res){
     
     const supabase = getSupabaseAdmin()
     
-    // Verificar se o usuário já existe
-    const { data: existingUser, error: checkError } = await supabase.auth.admin.listUsers()
+    // Verificar se o usuário já existe na tabela profiles
+    const { data: existingProfile, error: checkError } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle()
     
     if(checkError) {
-      console.error('❌ Erro ao verificar usuários existentes:', checkError)
-      return fail(res, { message: 'Erro ao verificar usuários existentes' }, 500)
+      console.error('❌ Erro ao verificar perfil existente:', checkError)
+      return fail(res, { message: 'Erro ao verificar perfil existente' }, 500)
     }
     
-    const userExists = existingUser.users.some(user => user.email === email.trim().toLowerCase())
-    
-    if(userExists) {
+    if(existingProfile) {
       return fail(res, { message: 'Usuário com este email já existe' }, 409)
     }
     
@@ -71,10 +73,9 @@ export default async function handler(req, res){
         id: data.user.id,
         email: data.user.email,
         role: role || 'rh',
-        name: name.trim(),
-        password_set: false, // Usuário convidado ainda não definiu senha
-        created_at: new Date().toISOString(),
-        created_by: req.user.id
+        full_name: name.trim(),
+        is_active: true,
+        created_at: new Date().toISOString()
       })
     
     if(profileError) {
