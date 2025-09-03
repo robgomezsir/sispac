@@ -2,8 +2,18 @@ import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
 
 export default async function handler(req, res){
   try{
+    // Verificar se é POST
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Método não permitido' })
+    }
+    
     // Validar autenticação e permissões
-    await assertAuth(req)
+    try {
+      await assertAuth(req)
+    } catch (authError) {
+      console.error('❌ [addUser] Erro de autenticação:', authError.message)
+      return res.status(401).json({ error: 'Token de autorização inválido' })
+    }
     
     const { name, email, role } = req.body || {}
     
