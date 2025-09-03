@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import crypto from 'crypto'
 // Sidebar removido - usando LayoutWithSidebar no App.jsx
 import { 
   Settings, 
@@ -18,7 +19,8 @@ import {
   Plus,
   Minus,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy
 } from 'lucide-react'
 
 export default function Configuracoes(){
@@ -33,8 +35,7 @@ export default function Configuracoes(){
   // Estados para candidatos de teste
   const [testCandidateName, setTestCandidateName] = useState('')
   const [testCandidateEmail, setTestCandidateEmail] = useState('')
-  const [testCandidateScore, setTestCandidateScore] = useState('')
-  const [testCandidateStatus, setTestCandidateStatus] = useState('DENTRO DA EXPECTATIVA')
+  const [generatedLink, setGeneratedLink] = useState('')
   
   // Estados para remoção de candidatos de teste
   const [removeTestCandidateEmail, setRemoveTestCandidateEmail] = useState('')
@@ -68,6 +69,37 @@ export default function Configuracoes(){
     setMessageType(type)
   }
 
+  // Função para gerar token de acesso
+  const generateAccessToken = (candidateId, email) => {
+    try {
+      const timestamp = Date.now()
+      const randomBytes = crypto.randomBytes(16).toString('hex')
+      const payload = `${candidateId}_${email}_${timestamp}_${randomBytes}`
+      const hash = crypto.createHash('sha256').update(payload).digest('hex')
+      return 'sispac_' + hash.substring(0, 32)
+    } catch (error) {
+      console.error('❌ [Configurações] Erro ao gerar token:', error)
+      throw new Error('Erro ao gerar token de acesso')
+    }
+  }
+
+  // Função para criar link de acesso
+  const createAccessLink = (token) => {
+    const baseUrl = window.location.origin
+    return `${baseUrl}/form?token=${token}`
+  }
+
+  // Função para copiar link para área de transferência
+  const copyLinkToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedLink)
+      showMessage('Link copiado para a área de transferência!', 'success')
+    } catch (error) {
+      console.error('❌ [Configurações] Erro ao copiar link:', error)
+      showMessage('Erro ao copiar link. Tente novamente.', 'error')
+    }
+  }
+
   // Função para adicionar usuário
   const handleAddUser = async () => {
     if (!email.trim() || !name.trim()) {
@@ -94,6 +126,12 @@ export default function Configuracoes(){
       
       if (checkError) {
         console.log('⚠️ [Configurações] Erro ao verificar usuário existente:', checkError.message)
+        // Se houver erro de permissão, continuar mesmo assim
+        if (checkError.message.includes('permission denied')) {
+          console.log('⚠️ [Configurações] Permissão negada, continuando sem verificação...')
+        } else {
+          throw new Error(`Erro ao verificar usuário existente: ${checkError.message}`)
+        }
       }
       
       if (existingUser) {
@@ -106,6 +144,7 @@ export default function Configuracoes(){
         email: email.trim().toLowerCase(),
         full_name: name.trim(), // Usar full_name em vez de name
         role: roleSelect,
+        is_active: true,
         created_at: new Date().toISOString()
       }
       
@@ -116,13 +155,13 @@ export default function Configuracoes(){
         .insert([userData])
         .select()
       
-              if (profileError) {
-          console.error('❌ [Configurações] Erro ao criar perfil:', profileError)
-          throw new Error(`Erro ao criar perfil: ${profileError.message}`)
-        }
+      if (profileError) {
+        console.error('❌ [Configurações] Erro ao criar perfil:', profileError)
+        throw new Error(`Erro ao criar perfil: ${profileError.message}`)
+      }
       
-              console.log('✅ [Configurações] Usuário criado com sucesso:', newUser)
-        showMessage(`Usuário "${name.trim()}" criado com sucesso!`, 'success')
+      console.log('✅ [Configurações] Usuário criado com sucesso:', newUser)
+      showMessage(`Usuário "${name.trim()}" criado com sucesso!`, 'success')
       
       // Limpar campos
       setEmail('')
@@ -154,7 +193,7 @@ export default function Configuracoes(){
       // Buscar usuário
       const { data: userProfile, error: searchError } = await supabase
         .from('profiles')
-        .select('id, name')
+        .select('id, full_name')
         .eq('email', email.trim().toLowerCase())
         .single()
       
@@ -173,7 +212,7 @@ export default function Configuracoes(){
         throw new Error(`Erro ao remover perfil: ${deleteError.message}`)
       }
       
-      showMessage(`Usuário "${userProfile.name}" removido com sucesso!`, 'success')
+      showMessage(`Usuário "${userProfile.full_name}" removido com sucesso!`, 'success')
       setEmail('')
       
     } catch (error) {
@@ -186,19 +225,13 @@ export default function Configuracoes(){
 
   // Função para adicionar candidato de teste
   const handleAddTestCandidate = async () => {
-    if (!testCandidateName.trim() || !testCandidateEmail.trim() || !testCandidateScore.trim()) {
+    if (!testCandidateName.trim() || !testCandidateEmail.trim()) {
       showMessage('Por favor, preencha todos os campos obrigatórios.', 'error')
       return
     }
     
     if (!testCandidateEmail.includes('@')) {
       showMessage('Por favor, insira um email válido.', 'error')
-      return
-    }
-    
-    const score = parseInt(testCandidateScore)
-    if (isNaN(score) || score < 0 || score > 100) {
-      showMessage('A pontuação deve ser um número entre 0 e 100.', 'error')
       return
     }
     
@@ -217,38 +250,46 @@ export default function Configuracoes(){
         return
       }
       
-      // Criar dados do candidato de teste
+      // Gerar token de acesso
+      const tempId = Date.now().toString() // ID temporário para gerar token
+      const accessToken = generateAccessToken(tempId, testCandidateEmail.trim().toLowerCase())
+      
+      // Criar dados do candidato de teste (apenas nome e email)
       const testCandidateData = {
         name: testCandidateName.trim(),
         email: testCandidateEmail.trim().toLowerCase(),
-        score: score,
-        status: testCandidateStatus,
-        answers: {
-          question_1: ['opcao_1'],
-          question_2: ['opcao_2'],
-          question_3: ['opcao_1', 'opcao_3'],
-          question_4: ['opcao_2'],
-          question_5: ['opcao_1']
-        },
+        score: 0, // Score inicial será 0 até completar o teste
+        status: 'PENDENTE_TESTE', // Status inicial
+        answers: {}, // Respostas vazias até completar o teste
+        access_token: accessToken,
+        token_created_at: new Date().toISOString(),
         created_at: new Date().toISOString()
       }
       
       // Inserir no banco
-      const { error: insertError } = await supabase
+      const { data: insertedCandidate, error: insertError } = await supabase
         .from('candidates')
         .insert([testCandidateData])
+        .select()
       
       if (insertError) {
         throw new Error(`Erro ao inserir candidato: ${insertError.message}`)
       }
       
-      showMessage(`Candidato de teste "${testCandidateName.trim()}" adicionado com sucesso!`, 'success')
+      // Criar link de acesso
+      const accessLink = createAccessLink(accessToken)
+      setGeneratedLink(accessLink)
+      
+      console.log('✅ [Configurações] Candidato criado com link:', accessLink)
+      
+      showMessage(
+        `Candidato "${testCandidateName.trim()}" adicionado com sucesso! Link de acesso gerado.`, 
+        'success'
+      )
       
       // Limpar campos
       setTestCandidateName('')
       setTestCandidateEmail('')
-      setTestCandidateScore('')
-      setTestCandidateStatus('DENTRO DA EXPECTATIVA')
       
     } catch (error) {
       console.error('Erro ao adicionar candidato de teste:', error)
@@ -1013,9 +1054,10 @@ export default function Configuracoes(){
                 <Plus size={20} className="text-success" />
               </div>
               <h3 className="text-xl font-semibold text-foreground">Adicionar Candidato de Teste</h3>
+              <p className="text-sm text-muted-foreground">Apenas nome e email são necessários. O candidato receberá um link para realizar o teste.</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Nome completo</label>
                 <input
@@ -1036,30 +1078,6 @@ export default function Configuracoes(){
                   className="input-modern w-full h-11"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Pontuação</label>
-                <input
-                  type="number"
-                  placeholder="0-100"
-                  value={testCandidateScore}
-                  onChange={e => setTestCandidateScore(e.target.value)}
-                  min="0"
-                  max="100"
-                  className="input-modern w-full h-11"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Status</label>
-                <select
-                  value={testCandidateStatus}
-                  onChange={e => setTestCandidateStatus(e.target.value)}
-                  className="input-modern w-full h-11"
-                >
-                  <option value="SUPEROU A EXPECTATIVA">Superou a Expectativa</option>
-                  <option value="ACIMA DA EXPECTATIVA">Acima da Expectativa</option>
-                  <option value="DENTRO DA EXPECTATIVA">Dentro da Expectativa</option>
-                </select>
-              </div>
             </div>
             
             <button
@@ -1079,6 +1097,33 @@ export default function Configuracoes(){
                 </div>
               )}
             </button>
+
+            {/* Exibir link gerado */}
+            {generatedLink && (
+              <div className="mt-4 p-4 bg-gradient-to-r from-success/10 to-success/5 border border-success/20 rounded-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-success/20 rounded-lg flex items-center justify-center">
+                    <CheckCircle size={16} className="text-success" />
+                  </div>
+                  <h4 className="font-semibold text-success">Link de Acesso Gerado</h4>
+                </div>
+                <div className="space-y-3">
+                  <div className="p-3 bg-background/50 rounded-lg border border-border/50">
+                    <p className="text-sm text-muted-foreground mb-1">Link para o candidato:</p>
+                    <p className="text-sm font-mono break-all text-foreground">{generatedLink}</p>
+                  </div>
+                  <button
+                    onClick={copyLinkToClipboard}
+                    className="btn-info-modern px-4 py-2 text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Copy size={16} />
+                      <span>Copiar Link</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Remover Candidato de Teste */}
