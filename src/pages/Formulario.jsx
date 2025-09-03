@@ -239,9 +239,9 @@ export default function Formulario(){
       const status = classify(totalScore)
 
       let candidateId = null
-      let updateError = null
+      let inserted = null
 
-      // Se há dados do candidato (vindo do token), atualizar candidato existente
+      // Se há dados do candidato (vindo do token), atualizar registro existente
       if (candidateData && candidateData.id) {
         console.log('🔄 [Formulario] Atualizando candidato existente:', candidateData.id)
         
@@ -249,33 +249,52 @@ export default function Formulario(){
           answers,
           score: totalScore,
           status,
-          completed_at: new Date().toISOString()
+          updated_at: new Date().toISOString()
         }
 
-        // Se há gupy_candidate_id, incluir
-        if (candidateData.gupy_candidate_id) {
-          updatePayload.gupy_candidate_id = candidateData.gupy_candidate_id
-        }
-
+        // Tentar atualizar com cliente normal primeiro
+        let updateError
         try {
-          const result = await supabaseAdmin
+          const result = await supabase
             .from('candidates')
             .update(updatePayload)
             .eq('id', candidateData.id)
             .select()
             .single()
-          
-          if (result.error) {
-            updateError = result.error
-          } else {
-            candidateId = result.data.id
-            console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
-          }
+          inserted = result.data
+          updateError = result.error
         } catch (err) {
           updateError = err
         }
+
+        // Se falhou com cliente normal, tentar com admin
+        if (updateError && supabaseAdmin !== supabase) {
+          try {
+            const result = await supabaseAdmin
+              .from('candidates')
+              .update(updatePayload)
+              .eq('id', candidateData.id)
+              .select()
+              .single()
+            inserted = result.data
+            updateError = result.error
+          } catch (err) {
+            updateError = err
+          }
+        }
+
+        if (updateError || !inserted) {
+          console.error('❌ [Formulario] Erro ao atualizar candidato:', updateError)
+          throw new Error(updateError?.message || 'Erro ao salvar respostas')
+        }
+
+        candidateId = candidateData.id
+        console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
+
       } else {
-        // Fluxo antigo: verificar se já respondeu e criar novo candidato
+        // Fluxo antigo: verificar se já respondeu e inserir novo candidato
+        console.log('🔄 [Formulario] Verificando se candidato já existe...')
+        
         const { data: existing, error: e1 } = await supabase
           .from('candidates')
           .select('id')
@@ -294,42 +313,46 @@ export default function Formulario(){
           email: email.toLowerCase(),
           answers,
           score: totalScore,
-          status,
-          completed_at: new Date().toISOString()
+          status
         }
 
         // Tentar primeiro com cliente normal, depois com admin se falhar
+        let insertError
+        
         try {
           const result = await supabase
             .from('candidates')
             .insert(candidatePayload)
             .select()
             .single()
-          candidateId = result.data?.id
-          updateError = result.error
+          inserted = result.data
+          insertError = result.error
         } catch (err) {
-          updateError = err
+          insertError = err
         }
 
         // Se falhou com cliente normal, tentar com admin
-        if (updateError && supabaseAdmin !== supabase) {
+        if (insertError && supabaseAdmin !== supabase) {
           try {
             const result = await supabaseAdmin
               .from('candidates')
               .insert(candidatePayload)
               .select()
               .single()
-            candidateId = result.data?.id
-            updateError = result.error
+            inserted = result.data
+            insertError = result.error
           } catch (err) {
-            updateError = err
+            insertError = err
           }
         }
-      }
-      
-      if(updateError || !candidateId) {
-        console.error('❌ [Formulario] Erro ao salvar candidato:', updateError)
-        throw new Error(updateError?.message || 'Erro ao salvar respostas')
+        
+        if(insertError || !inserted) {
+          console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
+          throw new Error(insertError?.message || 'Erro ao salvar respostas')
+        }
+
+        candidateId = inserted.id
+        console.log('✅ [Formulario] Novo candidato inserido com sucesso:', candidateId)
       }
 
       // Inserir resultados detalhados se possível

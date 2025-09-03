@@ -96,9 +96,8 @@ export default async function handler(req, res){
     
     const { data, error } = await supabase
       .from('candidates')
-      .select('id,name,email,score,status,created_at,completed_at')
-      .not('score', 'is', null) // Apenas candidatos que completaram o teste (têm score)
-      .not('status', 'eq', 'PENDENTE_TESTE') // Excluir candidatos pendentes
+      .select('id,name,email,score,status,created_at')
+      .neq('status', 'PENDENTE_TESTE') // Excluir candidatos que ainda não completaram o teste
       .order('created_at', { ascending: false })
     
     if(error) {
