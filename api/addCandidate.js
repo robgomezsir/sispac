@@ -68,24 +68,21 @@ export default async function handler(req, res){
     
     console.log('🔍 [addCandidate] Status normalizado:', normalizedStatus)
     
-    // Criar dados do candidato
-    const candidateData = {
+    // Criar dados do candidato pendente (não aparece no Dashboard ainda)
+    const pendingCandidateData = {
       name: name.trim(),
       email: email.trim().toLowerCase(),
-      score: 0,
-      status: normalizedStatus,
-      answers: {},
       access_token: accessToken,
       token_created_at: new Date().toISOString(),
       created_at: new Date().toISOString()
     }
     
-    console.log('📝 [addCandidate] Dados do candidato a serem inseridos:', candidateData)
+    console.log('📝 [addCandidate] Dados do candidato pendente a serem inseridos:', pendingCandidateData)
     
-    // Inserir candidato
+    // Inserir candidato pendente (não aparece no Dashboard)
     const { data: newCandidate, error: insertError } = await supabase
       .from('candidates')
-      .insert([candidateData])
+      .insert([pendingCandidateData])
       .select()
     
     if(insertError) {

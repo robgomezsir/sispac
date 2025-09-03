@@ -235,76 +235,107 @@ export default function Formulario(){
     setSending(true)
     
     try {
-      // Verificar se já respondeu
-      const { data: existing, error: e1 } = await supabase
-        .from('candidates')
-        .select('id')
-        .eq('email', email.toLowerCase())
-        .eq('name', nome.trim())
-        .limit(1)
-      if(e1) throw e1
-      if(existing && existing.length){
-        alert('Você já respondeu o teste. Obrigado!')
-        setSent(true)
-        return
-      }
-
       const { totalScore, questionScores } = computeScore(answers, questions)
       const status = classify(totalScore)
 
-      const candidatePayload = {
-        name: nome.trim(),
-        email: email.toLowerCase(),
-        answers,
-        score: totalScore,
-        status
-      }
+      let candidateId = null
+      let updateError = null
 
-      // Se há dados do candidato (vindo do token), incluir informações adicionais
-      if (candidateData) {
-        candidatePayload.gupy_candidate_id = candidateData.gupy_candidate_id
-        candidatePayload.access_token = searchParams.get('token')
-      }
+      // Se há dados do candidato (vindo do token), atualizar candidato existente
+      if (candidateData && candidateData.id) {
+        console.log('🔄 [Formulario] Atualizando candidato existente:', candidateData.id)
+        
+        const updatePayload = {
+          answers,
+          score: totalScore,
+          status,
+          completed_at: new Date().toISOString()
+        }
 
-      // Tentar primeiro com cliente normal, depois com admin se falhar
-      let inserted, insertError
-      
-      try {
-        const result = await supabase
-          .from('candidates')
-          .insert(candidatePayload)
-          .select()
-          .single()
-        inserted = result.data
-        insertError = result.error
-      } catch (err) {
-        insertError = err
-      }
+        // Se há gupy_candidate_id, incluir
+        if (candidateData.gupy_candidate_id) {
+          updatePayload.gupy_candidate_id = candidateData.gupy_candidate_id
+        }
 
-      // Se falhou com cliente normal, tentar com admin
-      if (insertError && supabaseAdmin !== supabase) {
         try {
           const result = await supabaseAdmin
+            .from('candidates')
+            .update(updatePayload)
+            .eq('id', candidateData.id)
+            .select()
+            .single()
+          
+          if (result.error) {
+            updateError = result.error
+          } else {
+            candidateId = result.data.id
+            console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
+          }
+        } catch (err) {
+          updateError = err
+        }
+      } else {
+        // Fluxo antigo: verificar se já respondeu e criar novo candidato
+        const { data: existing, error: e1 } = await supabase
+          .from('candidates')
+          .select('id')
+          .eq('email', email.toLowerCase())
+          .eq('name', nome.trim())
+          .limit(1)
+        if(e1) throw e1
+        if(existing && existing.length){
+          alert('Você já respondeu o teste. Obrigado!')
+          setSent(true)
+          return
+        }
+
+        const candidatePayload = {
+          name: nome.trim(),
+          email: email.toLowerCase(),
+          answers,
+          score: totalScore,
+          status,
+          completed_at: new Date().toISOString()
+        }
+
+        // Tentar primeiro com cliente normal, depois com admin se falhar
+        try {
+          const result = await supabase
             .from('candidates')
             .insert(candidatePayload)
             .select()
             .single()
-          inserted = result.data
-          insertError = result.error
+          candidateId = result.data?.id
+          updateError = result.error
         } catch (err) {
-          insertError = err
+          updateError = err
+        }
+
+        // Se falhou com cliente normal, tentar com admin
+        if (updateError && supabaseAdmin !== supabase) {
+          try {
+            const result = await supabaseAdmin
+              .from('candidates')
+              .insert(candidatePayload)
+              .select()
+              .single()
+            candidateId = result.data?.id
+            updateError = result.error
+          } catch (err) {
+            updateError = err
+          }
         }
       }
       
-      if(insertError || !inserted) {
-        console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
-        throw new Error(insertError?.message || 'Erro ao salvar respostas')
+      if(updateError || !candidateId) {
+        console.error('❌ [Formulario] Erro ao salvar candidato:', updateError)
+        throw new Error(updateError?.message || 'Erro ao salvar respostas')
       }
 
       // Inserir resultados detalhados se possível
       try {
         const resultsPayload = questionScores.map(qs => ({
-          candidate_id: inserted.id,
+          candidate_id: candidateId,
           question_id: qs.questionId,
           question_title: qs.questionTitle,
           question_category: qs.questionCategory,
