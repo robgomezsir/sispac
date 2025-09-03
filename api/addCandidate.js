@@ -24,10 +24,10 @@ export default async function handler(req, res){
     
     const supabase = getSupabaseAdmin()
     
-    // Verificar se o candidato já existe
+    // Verificar se o candidato já existe e se não está pendente
     const { data: existingCandidate, error: checkError } = await supabase
       .from('candidates')
-      .select('id, email')
+      .select('id, email, status')
       .eq('email', email.trim().toLowerCase())
       .maybeSingle()
     
@@ -36,8 +36,60 @@ export default async function handler(req, res){
       return fail(res, { message: 'Erro ao verificar candidato existente' }, 500)
     }
     
-    if(existingCandidate) {
-      return fail(res, { message: 'Candidato com este email já existe' }, 409)
+    // Se candidato existe e não está pendente, retornar erro
+    if(existingCandidate && existingCandidate.status !== 'PENDENTE_TESTE') {
+      return fail(res, { message: 'Candidato com este email já existe e completou o teste' }, 409)
+    }
+    
+    // Se candidato existe e está pendente, reutilizar o registro existente
+    if(existingCandidate && existingCandidate.status === 'PENDENTE_TESTE') {
+      console.log('🔄 [addCandidate] Candidato pendente encontrado, reutilizando registro:', existingCandidate.id)
+      
+      // Gerar novo token para o candidato existente
+      const timestamp = Date.now()
+      const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+      const payload = `${timestamp}_${email}_${randomString}`
+      
+      // Gerar hash simples
+      let hash = 0
+      for (let i = 0; i < payload.length; i++) {
+        const char = payload.charCodeAt(i)
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash
+      }
+      
+      const accessToken = 'sispac_' + Math.abs(hash).toString(16).padStart(32, '0').substring(0, 32)
+      
+      // Atualizar candidato existente com novo token
+      const { data: updatedCandidate, error: updateError } = await supabase
+        .from('candidates')
+        .update({
+          name: name.trim(),
+          access_token: accessToken,
+          token_created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingCandidate.id)
+        .select()
+        .single()
+      
+      if(updateError) {
+        console.error('❌ Erro ao atualizar candidato existente:', updateError)
+        return fail(res, { message: 'Erro ao atualizar candidato existente' }, 500)
+      }
+      
+      // Criar link de acesso
+      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://sispac.vercel.app'
+      const accessLink = `${baseUrl}/form?token=${accessToken}`
+      
+      console.log('✅ Candidato atualizado com novo token:', { email: updatedCandidate.email, token: accessToken })
+      
+      return ok(res, { 
+        message: `Candidato "${name.trim()}" atualizado com novo link de acesso!`,
+        candidate: updatedCandidate,
+        accessToken: accessToken,
+        accessLink: accessLink
+      })
     }
     
     // Gerar token de acesso simples
