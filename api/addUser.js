@@ -73,6 +73,24 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: 'Usuário com este email já existe' })
     }
     
+    // Verificar se já existe um usuário no Supabase Auth com este email
+    console.log('🔍 [addUserSimple] Verificando se usuário já existe no Auth...')
+    const { data: existingAuthUser, error: authCheckError } = await supabase.auth.admin.listUsers()
+    
+    if (authCheckError) {
+      console.error('❌ [addUserSimple] Erro ao verificar usuários auth:', authCheckError)
+      return res.status(500).json({ error: 'Erro ao verificar usuários existentes' })
+    }
+    
+    const userExistsInAuth = existingAuthUser.users.find(user => 
+      user.email?.toLowerCase() === email.trim().toLowerCase()
+    )
+    
+    if (userExistsInAuth) {
+      console.error('❌ [addUserSimple] Usuário já existe no Auth:', userExistsInAuth.email)
+      return res.status(409).json({ error: 'Usuário com este email já existe no sistema' })
+    }
+    
     // Gerar senha temporária
     const password = Math.floor(100000 + Math.random() * 900000).toString()
     
@@ -97,7 +115,7 @@ export default async function handler(req, res) {
     
     console.log('✅ [addUserSimple] Usuário auth criado:', authData.user.id)
     
-    // Criar perfil na tabela profiles
+    // Criar perfil na tabela profiles usando UPSERT para evitar duplicatas
     const profileData = {
       id: authData.user.id,
       email: authData.user.email,
@@ -109,13 +127,17 @@ export default async function handler(req, res) {
     
     console.log('🔍 [addUserSimple] Dados do perfil a serem inseridos:', profileData)
     
+    // Usar UPSERT para evitar erro de chave duplicada
     const { data: profileResult, error: profileError } = await supabase
       .from('profiles')
-      .insert(profileData)
+      .upsert(profileData, { 
+        onConflict: 'id',
+        ignoreDuplicates: false 
+      })
       .select()
     
     if (profileError) {
-      console.error('❌ [addUserSimple] Erro ao criar perfil:', profileError)
+      console.error('❌ [addUserSimple] Erro ao criar/atualizar perfil:', profileError)
       
       // Tentar deletar o usuário criado se o perfil falhar
       try {
