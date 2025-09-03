@@ -262,86 +262,36 @@ export default function FormularioNew(){
         console.log('✅ [FormularioNew] Candidato atualizado com sucesso via API:', data)
         
       } else {
-        // Fluxo sem token: verificar se existe candidato pendente primeiro
-        console.log('🔄 [FormularioNew] Fluxo sem token: verificando candidato pendente...')
+        // Fluxo sem token: usar API insertCandidate (que já verifica candidatos pendentes)
+        console.log('🔄 [FormularioNew] Fluxo sem token: usando API insertCandidate...')
         
-        // 1. Verificar se existe candidato pendente com mesmo email/nome
-        const checkResponse = await fetch('/api/checkPendingCandidate', {
+        const response = await fetch('/api/insertCandidate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             name: nome.trim(),
-            email: email.toLowerCase()
+            email: email.toLowerCase(),
+            answers,
+            score: totalScore,
+            status
           })
         })
         
-        const checkData = await checkResponse.json()
+        const data = await response.json()
         
-        if (!checkResponse.ok) {
-          console.error('❌ [FormularioNew] Erro ao verificar candidato pendente:', checkData)
-          throw new Error(checkData.message || 'Erro ao verificar candidato pendente')
+        if (!response.ok) {
+          if (response.status === 409) {
+            alert('Você já respondeu o teste. Obrigado!')
+            setSent(true)
+            return
+          }
+          console.error('❌ [FormularioNew] Erro na API insertCandidate:', data)
+          throw new Error(data.message || 'Erro ao processar candidato')
         }
         
-        if (checkData.found && checkData.candidate) {
-          // 2. Candidato pendente encontrado - atualizar usando updateCandidateByToken
-          console.log('🔄 [FormularioNew] Candidato pendente encontrado, atualizando via token...')
-          
-          const updateResponse = await fetch('/api/updateCandidateByToken', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              token: checkData.candidate.access_token,
-              answers,
-              score: totalScore,
-              status
-            })
-          })
-          
-          const updateData = await updateResponse.json()
-          
-          if (!updateResponse.ok) {
-            console.error('❌ [FormularioNew] Erro ao atualizar candidato pendente:', updateData)
-            throw new Error(updateData.message || 'Erro ao atualizar candidato pendente')
-          }
-          
-          console.log('✅ [FormularioNew] Candidato pendente atualizado com sucesso:', updateData)
-          
-        } else {
-          // 3. Nenhum candidato pendente - inserir novo candidato
-          console.log('🔄 [FormularioNew] Nenhum candidato pendente, inserindo novo...')
-          
-          const insertResponse = await fetch('/api/insertCandidate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              name: nome.trim(),
-              email: email.toLowerCase(),
-              answers,
-              score: totalScore,
-              status
-            })
-          })
-          
-          const insertData = await insertResponse.json()
-          
-          if (!insertResponse.ok) {
-            if (insertResponse.status === 409) {
-              alert('Você já respondeu o teste. Obrigado!')
-              setSent(true)
-              return
-            }
-            console.error('❌ [FormularioNew] Erro na API insertCandidate:', insertData)
-            throw new Error(insertData.message || 'Erro ao inserir candidato')
-          }
-          
-          console.log('✅ [FormularioNew] Novo candidato inserido com sucesso:', insertData)
-        }
+        console.log('✅ [FormularioNew] Candidato processado com sucesso:', data)
       }
 
       console.log("✅ [FormularioNew] Respostas enviadas com sucesso!")
