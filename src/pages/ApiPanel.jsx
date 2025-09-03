@@ -8,13 +8,43 @@ import {
   Zap,
   ExternalLink,
   Copy,
-  CheckCircle
+  CheckCircle,
+  Users,
+  User,
+  Trash2,
+  Plus,
+  FileText,
+  BarChart3,
+  Target,
+  Award,
+  Brain,
+  Heart,
+  Star,
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  Info
 } from 'lucide-react'
 import { useState } from 'react'
-// Sidebar removido - usando LayoutWithSidebar no App.jsx
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent,
+  Badge,
+  Button,
+  Separator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '../components/ui'
 
 export default function ApiPanel(){
   const [copiedEndpoint, setCopiedEndpoint] = useState(null)
+  const [activeTab, setActiveTab] = useState('endpoints')
 
   const copyToClipboard = (text, endpoint) => {
     navigator.clipboard.writeText(text)
@@ -22,159 +52,609 @@ export default function ApiPanel(){
     setTimeout(() => setCopiedEndpoint(null), 2000)
   }
 
+  // Endpoints principais da API
   const endpoints = [
     {
       method: 'GET',
       path: '/api/candidates',
-      description: 'Lista candidatos (nome, email, score, status)',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidates'
+      description: 'Lista todos os candidatos com perfil comportamental completo',
+      category: 'Candidatos',
+      icon: Users,
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidates',
+      response: {
+        status: 200,
+        data: [
+          {
+            id: 1,
+            name: "João Silva",
+            email: "joao@email.com",
+            score: 85,
+            status: "ACIMA DA EXPECTATIVA",
+            created_at: "2024-01-15T10:30:00Z",
+            behavioral_profile: {
+              perfil: "Profissional maduro emocionalmente...",
+              comportamento: "Proatividade clara...",
+              competencias: "Fortes competências interpessoais...",
+              lideranca: "Bom potencial para liderar times...",
+              areas_desenvolvimento: ["Delegação eficiente..."],
+              visao_estrategica: "Visão estratégica de médio prazo...",
+              recomendacoes: "Investir em programas de desenvolvimento..."
+            }
+          }
+        ]
+      }
     },
     {
       method: 'GET',
       path: '/api/candidate/:id',
-      description: 'Detalhe do candidato específico',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidate/123'
+      description: 'Detalhes completos de um candidato específico',
+      category: 'Candidatos',
+      icon: User,
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidate/123',
+      response: {
+        status: 200,
+        data: {
+          id: 123,
+          name: "Maria Santos",
+          email: "maria@email.com",
+          answers: {
+            "1": ["RESPONSÁVEL", "PROATIVA", "COMUNICATIVA"],
+            "2": ["LÍDER", "CONFIANTE", "ORGANIZADA"],
+            "3": ["Sempre vou aos compromissos..."],
+            "4": ["Trabalhar com Amor", "ética", "comprometimento"]
+          },
+          score: 92,
+          status: "SUPEROU A EXPECTATIVA",
+          created_at: "2024-01-15T10:30:00Z"
+        }
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/deleteCandidate',
+      description: 'Remove um candidato do sistema (por ID, email ou nome)',
+      category: 'Gestão',
+      icon: Trash2,
+      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"email": "candidato@email.com"}\' https://your-domain.vercel.app/api/deleteCandidate',
+      response: {
+        status: 200,
+        data: {
+          success: true,
+          message: "Candidato removido com sucesso",
+          candidate: {
+            id: 123,
+            name: "João Silva",
+            email: "joao@email.com"
+          }
+        }
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/addUser',
+      description: 'Cria um novo usuário do sistema (RH ou Admin)',
+      category: 'Gestão',
+      icon: Plus,
+      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"name": "Novo Usuário", "email": "usuario@empresa.com", "role": "rh"}\' https://your-domain.vercel.app/api/addUser',
+      response: {
+        status: 200,
+        data: {
+          message: "Usuário Novo Usuário criado com sucesso! Senha temporária: 123456",
+          userId: "uuid-here",
+          email: "usuario@empresa.com",
+          role: "rh",
+          profileCreated: true
+        }
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/gupy-webhook',
+      description: 'Webhook para receber candidatos da plataforma Gupy',
+      category: 'Integração',
+      icon: Globe,
+      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"candidate_id": "12345", "name": "João Silva", "email": "joao@email.com", "job_id": "vaga-001"}\' https://your-domain.vercel.app/api/gupy-webhook',
+      response: {
+        status: 200,
+        data: {
+          success: true,
+          message: "Candidato criado com sucesso",
+          action: "created",
+          candidate: {
+            id: 123,
+            name: "João Silva",
+            email: "joao@email.com",
+            gupy_candidate_id: "12345",
+            status: "PENDENTE_TESTE"
+          },
+          next_steps: [
+            "Candidato receberá link para teste comportamental",
+            "Resultados serão sincronizados automaticamente",
+            "RH pode acompanhar progresso no dashboard"
+          ]
+        }
+      }
     }
   ]
 
+  // Sistema de pontuação e classificação
+  const scoringSystem = {
+    categories: [
+      {
+        id: 1,
+        title: "Como você acha que as pessoas te veem?",
+        maxChoices: 5,
+        weight: "Características com pesos de 1-3 pontos",
+        examples: ["RESPONSÁVEL (2pts)", "LÍDER (2pts)", "GOSTA DE GENTE (3pts)"]
+      },
+      {
+        id: 2,
+        title: "E você, como se vê?",
+        maxChoices: 5,
+        weight: "Características com pesos de 1-3 pontos",
+        examples: ["CONFIANTE (1pt)", "PROATIVA (2pts)", "AMOROSA (3pts)"]
+      },
+      {
+        id: 3,
+        title: "Frases de vida mais importantes",
+        maxChoices: 5,
+        weight: "Frases com pesos de 3-5 pontos",
+        examples: ["Sempre vou aos compromissos... (3pts)", "Consigo entender como os outros se sentem (5pts)"]
+      },
+      {
+        id: 4,
+        title: "Valores mais importantes",
+        maxChoices: 5,
+        weight: "Valores com pesos de 7-9 pontos",
+        examples: ["Trabalhar com Amor (9pts)", "ética (7pts)", "comprometimento (9pts)"]
+      }
+    ],
+    classification: [
+      { range: "≤ 67", status: "ABAIXO DA EXPECTATIVA", color: "destructive" },
+      { range: "68-75", status: "DENTRO DA EXPECTATIVA", color: "warning" },
+      { range: "76-95", status: "ACIMA DA EXPECTATIVA", color: "success" },
+      { range: "≥ 96", status: "SUPEROU A EXPECTATIVA", color: "primary" }
+    ]
+  }
+
+  // Integração com Gupy
+  const gupyIntegration = {
+    webhook: {
+      url: "https://your-domain.vercel.app/api/gupy-webhook",
+      method: "POST",
+      description: "Endpoint para receber dados de candidatos da Gupy",
+      payload: {
+        candidate_id: "ID do candidato na Gupy",
+        name: "Nome completo",
+        email: "Email do candidato",
+        job_id: "ID da vaga",
+        application_date: "Data da candidatura"
+      }
+    },
+    sync: {
+      description: "Sincronização automática de candidatos",
+      frequency: "Tempo real via webhook",
+      mapping: {
+        "gupy_candidate_id": "candidate_id",
+        "gupy_name": "name",
+        "gupy_email": "email"
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Sidebar gerenciado pelo LayoutWithSidebar */}
-      <div className="max-w-6xl mx-auto space-y-8 p-6 relative z-10">
+      <div className="max-w-7xl mx-auto space-y-8 p-6 relative z-10">
         {/* Header da página */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">
             <Code size={40} className="text-primary" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-            Painel de API
+            Painel de API - SisPAC
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Endpoints disponíveis para integrações externas como Gupy, sistemas de RH e outras plataformas
+          <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
+            Documentação completa da API para integração com Gupy, sistemas de RH e outras plataformas de recrutamento
           </p>
         </div>
 
-        {/* Informações de Segurança */}
-        <div className="card-modern p-8">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-warning/20 to-warning/10 rounded-2xl flex items-center justify-center border border-warning/20">
-              <Shield size={24} className="text-warning" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Segurança e Autenticação</h2>
-              <p className="text-muted-foreground">Todos os endpoints são protegidos por autenticação</p>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Key size={20} className="text-primary" />
-                <span className="font-medium">Chave de API</span>
-              </div>
-              <p className="text-muted-foreground text-sm">
-                Configure a variável <code className="bg-muted/50 px-2 py-1 rounded text-xs">VERCEL_API_KEY</code> nas variáveis do projeto Vercel.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Globe size={20} className="text-info" />
-                <span className="font-medium">Header de Autorização</span>
-              </div>
-              <p className="text-muted-foreground text-sm">
-                Inclua o header <code className="bg-muted/50 px-2 py-1 rounded text-xs">Authorization: Bearer YOUR_API_KEY</code> em todas as requisições.
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Navegação por abas */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="endpoints" className="flex items-center gap-2">
+              <Database size={16} />
+              Endpoints
+            </TabsTrigger>
+            <TabsTrigger value="scoring" className="flex items-center gap-2">
+              <Target size={16} />
+              Sistema de Pontuação
+            </TabsTrigger>
+            <TabsTrigger value="gupy" className="flex items-center gap-2">
+              <Globe size={16} />
+              Integração Gupy
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield size={16} />
+              Segurança
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Endpoints Disponíveis */}
-        <div className="card-modern p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-2xl flex items-center justify-center border border-success/20">
-              <Database size={24} className="text-success" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Endpoints Disponíveis</h2>
-              <p className="text-muted-foreground">Lista completa de endpoints da API</p>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            {endpoints.map((endpoint, index) => (
-              <div key={index} className="p-6 border border-border/50 rounded-2xl bg-gradient-to-r from-muted/30 to-muted/10 backdrop-blur-sm">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      endpoint.method === 'GET' 
-                        ? 'bg-success/20 text-success border border-success/30' 
-                        : 'bg-warning/20 text-warning border border-warning/30'
-                    }`}>
-                      {endpoint.method}
+          {/* Aba: Endpoints */}
+          <TabsContent value="endpoints" className="space-y-6">
+            {/* Informações de Segurança Rápida */}
+            <Card className="border-warning/20 bg-warning/5">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <AlertTriangle size={20} className="text-warning" />
+                  <h3 className="font-semibold text-warning">Autenticação Obrigatória</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Todos os endpoints requerem autenticação via Bearer Token. Configure sua chave de API nas variáveis do Vercel.
+                </p>
+                <code className="text-xs bg-muted/50 px-2 py-1 rounded">
+                  Authorization: Bearer YOUR_API_KEY
+                </code>
+              </CardContent>
+            </Card>
+
+            {/* Endpoints por categoria */}
+            <div className="space-y-8">
+              {['Candidatos', 'Gestão', 'Integração'].map(category => (
+                <div key={category}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
+                      {category === 'Candidatos' ? <Users size={16} className="text-primary" /> : 
+                       category === 'Gestão' ? <Plus size={16} className="text-primary" /> :
+                       <Globe size={16} className="text-primary" />}
                     </div>
-                    <code className="text-lg font-mono font-semibold text-foreground">{endpoint.path}</code>
+                    <h2 className="text-2xl font-bold text-foreground">{category}</h2>
                   </div>
                   
-                  <button
-                    onClick={() => copyToClipboard(endpoint.example, endpoint.path)}
-                    className="flex items-center gap-2 px-3 py-2 bg-muted/50 hover:bg-muted/70 rounded-lg transition-colors duration-200"
-                  >
-                    {copiedEndpoint === endpoint.path ? (
-                      <CheckCircle size={16} className="text-success" />
-                    ) : (
-                      <Copy size={16} className="text-muted-foreground" />
-                    )}
-                    <span className="text-sm">
-                      {copiedEndpoint === endpoint.path ? 'Copiado!' : 'Copiar'}
-                    </span>
-                  </button>
-                </div>
-                
-                <p className="text-muted-foreground mb-4">{endpoint.description}</p>
-                
-                <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-muted-foreground">Exemplo de uso:</span>
-                    <ExternalLink size={16} className="text-muted-foreground" />
+                  <div className="space-y-4">
+                    {endpoints
+                      .filter(endpoint => endpoint.category === category)
+                      .map((endpoint, index) => (
+                        <Card key={index} className="border-border/50 hover:border-primary/30 transition-colors">
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-4">
+                                <Badge 
+                                  variant={endpoint.method === 'GET' ? 'default' : 'secondary'}
+                                  className={`${
+                                    endpoint.method === 'GET' 
+                                      ? 'bg-success/20 text-success border-success/30' 
+                                      : 'bg-warning/20 text-warning border-warning/30'
+                                  }`}
+                                >
+                                  {endpoint.method}
+                                </Badge>
+                                <code className="text-lg font-mono font-semibold text-foreground">
+                                  {endpoint.path}
+                                </code>
+                                <endpoint.icon size={20} className="text-muted-foreground" />
+                              </div>
+                              
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => copyToClipboard(endpoint.example, endpoint.path)}
+                                className="flex items-center gap-2"
+                              >
+                                {copiedEndpoint === endpoint.path ? (
+                                  <CheckCircle size={16} className="text-success" />
+                                ) : (
+                                  <Copy size={16} />
+                                )}
+                                {copiedEndpoint === endpoint.path ? 'Copiado!' : 'Copiar'}
+                              </Button>
+                            </div>
+                            
+                            <p className="text-muted-foreground mb-4">{endpoint.description}</p>
+                            
+                            <div className="space-y-4">
+                              <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-muted-foreground">Exemplo de uso:</span>
+                                  <ExternalLink size={16} className="text-muted-foreground" />
+                                </div>
+                                <code className="text-sm font-mono text-foreground break-all">
+                                  {endpoint.example}
+                                </code>
+                              </div>
+                              
+                              <div className="bg-muted/20 p-4 rounded-xl border border-border/30">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <FileText size={16} className="text-info" />
+                                  <span className="text-sm font-medium text-muted-foreground">Resposta de exemplo:</span>
+                                </div>
+                                <pre className="text-xs font-mono text-foreground overflow-x-auto">
+                                  {JSON.stringify(endpoint.response, null, 2)}
+                                </pre>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                   </div>
-                  <code className="text-sm font-mono text-foreground break-all">
-                    {endpoint.example}
-                  </code>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </TabsContent>
 
-        {/* Documentação Adicional */}
-        <div className="card-modern p-8">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20">
-              <Zap size={24} className="text-info" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Documentação e Suporte</h2>
-              <p className="text-muted-foreground">Recursos adicionais para desenvolvedores</p>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Formato de Resposta</h3>
-              <p className="text-muted-foreground text-sm">
-                Todos os endpoints retornam dados no formato JSON com estrutura padronizada e códigos de status HTTP apropriados.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Rate Limiting</h3>
-              <p className="text-muted-foreground text-sm">
-                A API possui limites de requisições por minuto para garantir estabilidade e performance do sistema.
-              </p>
-            </div>
-          </div>
-        </div>
+          {/* Aba: Sistema de Pontuação */}
+          <TabsContent value="scoring" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <Target size={24} className="text-primary" />
+                  Sistema de Avaliação Comportamental
+                </CardTitle>
+                <CardDescription>
+                  Como funciona o sistema de pontuação e classificação dos candidatos
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Categorias de perguntas */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Brain size={20} className="text-primary" />
+                    Categorias de Avaliação
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {scoringSystem.categories.map((category, index) => (
+                      <Card key={index} className="border-border/50">
+                        <CardContent className="p-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                Questão {category.id}
+                              </Badge>
+                              <span className="text-sm font-medium text-muted-foreground">
+                                {category.maxChoices} escolhas
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-sm">{category.title}</h4>
+                            <p className="text-xs text-muted-foreground">{category.weight}</p>
+                            <div className="space-y-1">
+                              {category.examples.map((example, i) => (
+                                <div key={i} className="text-xs bg-muted/30 px-2 py-1 rounded">
+                                  {example}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Classificação */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Award size={20} className="text-primary" />
+                    Classificação por Score
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {scoringSystem.classification.map((item, index) => (
+                      <Card key={index} className={`border-${item.color}/20 bg-${item.color}/5`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-semibold text-sm">{item.status}</div>
+                              <div className="text-xs text-muted-foreground">Score: {item.range}</div>
+                            </div>
+                            <Badge 
+                              variant="outline" 
+                              className={`border-${item.color}/30 text-${item.color}`}
+                            >
+                              {item.range}
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Aba: Integração Gupy */}
+          <TabsContent value="gupy" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <Globe size={24} className="text-primary" />
+                  Integração com Gupy
+                </CardTitle>
+                <CardDescription>
+                  Como integrar o SisPAC com a plataforma Gupy para sincronização automática de candidatos
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Webhook */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Zap size={20} className="text-primary" />
+                    Webhook de Integração
+                  </h3>
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-xs">
+                            {gupyIntegration.webhook.method}
+                          </Badge>
+                          <code className="text-sm font-mono">{gupyIntegration.webhook.url}</code>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {gupyIntegration.webhook.description}
+                        </p>
+                        <div className="bg-muted/30 p-3 rounded-lg">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">
+                            Payload esperado:
+                          </div>
+                          <pre className="text-xs font-mono text-foreground">
+                            {JSON.stringify(gupyIntegration.webhook.payload, null, 2)}
+                          </pre>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Separator />
+
+                {/* Sincronização */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <TrendingUp size={20} className="text-primary" />
+                    Sincronização de Dados
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card className="border-border/50">
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Clock size={16} className="text-info" />
+                            <span className="font-medium text-sm">Frequência</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {gupyIntegration.sync.frequency}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="border-border/50">
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Database size={16} className="text-info" />
+                            <span className="font-medium text-sm">Mapeamento</span>
+                          </div>
+                          <div className="space-y-1">
+                            {Object.entries(gupyIntegration.sync.mapping).map(([key, value]) => (
+                              <div key={key} className="text-xs bg-muted/30 px-2 py-1 rounded">
+                                {key} → {value}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Fluxo de integração */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Star size={20} className="text-primary" />
+                    Fluxo de Integração
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      "1. Candidato se inscreve na vaga na Gupy",
+                      "2. Gupy envia webhook para o SisPAC",
+                      "3. SisPAC cria registro do candidato",
+                      "4. Candidato recebe link para teste comportamental",
+                      "5. Resultados são sincronizados automaticamente",
+                      "6. RH acessa relatórios no SisPAC"
+                    ].map((step, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg">
+                        <div className="w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xs font-semibold">
+                          {index + 1}
+                        </div>
+                        <span className="text-sm">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Aba: Segurança */}
+          <TabsContent value="security" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <Shield size={24} className="text-primary" />
+                  Segurança e Autenticação
+                </CardTitle>
+                <CardDescription>
+                  Configurações de segurança e autenticação da API
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Key size={20} className="text-primary" />
+                      <span className="font-medium">Chave de API</span>
+                    </div>
+                    <p className="text-muted-foreground text-sm">
+                      Configure a variável <code className="bg-muted/50 px-2 py-1 rounded text-xs">VERCEL_API_KEY</code> nas variáveis do projeto Vercel.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Globe size={20} className="text-info" />
+                      <span className="font-medium">Header de Autorização</span>
+                    </div>
+                    <p className="text-muted-foreground text-sm">
+                      Inclua o header <code className="bg-muted/50 px-2 py-1 rounded text-xs">Authorization: Bearer YOUR_API_KEY</code> em todas as requisições.
+                    </p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Info size={20} className="text-primary" />
+                    Informações Importantes
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card className="border-border/50">
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 size={16} className="text-success" />
+                            <span className="font-medium text-sm">Formato de Resposta</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Todos os endpoints retornam dados no formato JSON com estrutura padronizada e códigos de status HTTP apropriados.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="border-border/50">
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <BarChart3 size={16} className="text-info" />
+                            <span className="font-medium text-sm">Rate Limiting</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            A API possui limites de requisições por minuto para garantir estabilidade e performance do sistema.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )
