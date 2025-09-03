@@ -24,7 +24,8 @@ import {
   Activity,
   ArrowLeft,
   Menu,
-  X
+  X,
+  Globe
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
@@ -86,6 +87,13 @@ export function ModernSidebar({ isOpen = true, onClose }) {
       label: 'API Panel',
       icon: Database,
       path: '/api',
+      badge: null,
+      adminOnly: true
+    },
+    {
+      label: 'Integração Gupy',
+      icon: Globe,
+      path: '/integracao-gupy',
       badge: null,
       adminOnly: true
     }

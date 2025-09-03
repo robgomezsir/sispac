@@ -11,6 +11,7 @@ import Formulario from './pages/Formulario.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 import ApiPanel from './pages/ApiPanel.jsx'
+import IntegracaoGupy from './pages/IntegracaoGupy.jsx'
 import AuthDebug from './components/AuthDebug.jsx'
 import RequestPasswordReset from './pages/RequestPasswordReset.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
@@ -36,6 +37,10 @@ export default function App(){
       { 
         path: "/api", 
         element: <AdminOnly><ApiPanel /></AdminOnly> 
+      },
+      { 
+        path: "/integracao-gupy", 
+        element: <AdminOnly><IntegracaoGupy /></AdminOnly> 
       },
       { 
         path: "/debug", 
