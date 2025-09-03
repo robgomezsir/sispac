@@ -244,8 +244,29 @@ export default function Formulario(){
       // Se há token na URL, sempre tentar atualizar registro existente primeiro
       const token = searchParams.get('token')
       
-      if (token && candidateData && candidateData.id) {
-        console.log('🔄 [Formulario] Atualizando candidato existente via token:', candidateData.id)
+      if (token) {
+        // Buscar candidato pelo token
+        console.log('🔄 [Formulario] Buscando candidato pelo token...')
+        
+        const { data: existingCandidate, error: tokenError } = await supabase
+          .from('candidates')
+          .select('id, name, email, status')
+          .eq('access_token', token)
+          .single()
+        
+        if (tokenError) {
+          console.error('❌ [Formulario] Erro ao buscar candidato pelo token:', tokenError)
+          throw new Error('Token inválido ou candidato não encontrado')
+        }
+        
+        if (existingCandidate && existingCandidate.status !== 'PENDENTE_TESTE') {
+          alert('Este teste já foi completado. Obrigado!')
+          setSent(true)
+          return
+        }
+        
+        // Atualizar o candidato existente
+        console.log('🔄 [Formulario] Atualizando candidato encontrado pelo token:', existingCandidate.id)
         
         const updatePayload = {
           answers,
@@ -260,7 +281,7 @@ export default function Formulario(){
           const result = await supabase
             .from('candidates')
             .update(updatePayload)
-            .eq('id', candidateData.id)
+            .eq('id', existingCandidate.id)
             .select()
             .single()
           inserted = result.data
@@ -275,7 +296,7 @@ export default function Formulario(){
             const result = await supabaseAdmin
               .from('candidates')
               .update(updatePayload)
-              .eq('id', candidateData.id)
+              .eq('id', existingCandidate.id)
               .select()
               .single()
             inserted = result.data
@@ -290,7 +311,7 @@ export default function Formulario(){
           throw new Error(updateError?.message || 'Erro ao salvar respostas')
         }
 
-        candidateId = candidateData.id
+        candidateId = existingCandidate.id
         console.log('✅ [Formulario] Candidato atualizado com sucesso:', candidateId)
 
       } else if (token) {
