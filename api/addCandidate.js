@@ -55,18 +55,10 @@ export default async function handler(req, res){
     
     const accessToken = 'sispac_' + Math.abs(hash).toString(16).padStart(32, '0').substring(0, 32)
     
-    // Validar status
-    const validStatuses = [
-      'PENDENTE_TESTE',
-      'SUPEROU A EXPECTATIVA',
-      'ACIMA DA EXPECTATIVA', 
-      'DENTRO DA EXPECTATIVA',
-      'ABAIXO DA EXPECTATIVA',
-      'REMOVIDO'
-    ]
-    const normalizedStatus = validStatuses.includes('PENDENTE_TESTE') ? 'PENDENTE_TESTE' : 'PENDENTE_TESTE'
+    // Status para candidatos de teste - sempre PENDENTE_TESTE
+    const normalizedStatus = 'PENDENTE_TESTE'
     
-    console.log('🔍 [addCandidate] Status normalizado:', normalizedStatus)
+    console.log('🔍 [addCandidate] Status normalizado para candidato de teste:', normalizedStatus)
     
     // Criar dados do candidato
     const candidateData = {
