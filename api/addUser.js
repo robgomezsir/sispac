@@ -156,6 +156,88 @@ export default async function handler(req, res) {
     
     console.log('✅ [addUserSimple] Perfil criado com sucesso:', profileResult)
     
+    // Enviar e-mail com credenciais do usuário
+    try {
+      console.log('🔍 [addUserSimple] Enviando e-mail de boas-vindas...')
+      
+      const emailSubject = 'Bem-vindo ao SisPAC - Suas Credenciais de Acesso'
+      const emailBody = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="margin: 0; font-size: 28px;">🎉 Bem-vindo ao SisPAC!</h1>
+            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Sistema de Avaliação de Candidatos</p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e9ecef;">
+            <h2 style="color: #333; margin-top: 0;">Olá, ${name.trim()}!</h2>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">
+              Sua conta foi criada com sucesso no SisPAC. Abaixo estão suas credenciais de acesso:
+            </p>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0; margin-bottom: 15px;">🔐 Suas Credenciais:</h3>
+              <p style="margin: 8px 0;"><strong>E-mail:</strong> ${authData.user.email}</p>
+              <p style="margin: 8px 0;"><strong>Senha temporária:</strong> <code style="background: #f1f3f4; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${password}</code></p>
+              <p style="margin: 8px 0;"><strong>Função:</strong> ${normalizedRole.toUpperCase()}</p>
+            </div>
+            
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #856404; margin-top: 0;">⚠️ Importante:</h4>
+              <ul style="color: #856404; margin: 0; padding-left: 20px;">
+                <li>Esta é uma senha temporária</li>
+                <li>Recomendamos alterar sua senha no primeiro acesso</li>
+                <li>Mantenha suas credenciais seguras</li>
+              </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}" 
+                 style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                🚀 Acessar SisPAC
+              </a>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+            
+            <p style="color: #666; font-size: 14px; text-align: center; margin: 0;">
+              Se você não solicitou esta conta, ignore este e-mail.<br>
+              <strong>SisPAC</strong> - Sistema de Avaliação de Candidatos
+            </p>
+          </div>
+        </div>
+      `
+      
+      // Enviar e-mail usando nossa API
+      const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: authData.user.email,
+          subject: emailSubject,
+          html: emailBody
+        })
+      })
+      
+      const emailResult = await emailResponse.json()
+      const emailError = !emailResponse.ok ? emailResult : null
+      
+      if (emailError) {
+        console.error('❌ [addUserSimple] Erro ao enviar e-mail:', emailError)
+        // Não falhar a criação do usuário se o e-mail falhar
+        console.log('⚠️ [addUserSimple] Usuário criado, mas e-mail não foi enviado')
+      } else {
+        console.log('✅ [addUserSimple] E-mail de boas-vindas enviado com sucesso')
+      }
+      
+    } catch (emailError) {
+      console.error('❌ [addUserSimple] Erro ao enviar e-mail:', emailError)
+      // Não falhar a criação do usuário se o e-mail falhar
+      console.log('⚠️ [addUserSimple] Usuário criado, mas e-mail não foi enviado')
+    }
+    
     const response = {
       success: true,
       message: `Usuário ${name.trim()} criado com sucesso! Senha temporária: ${password}`,
@@ -165,7 +247,8 @@ export default async function handler(req, res) {
         role: normalizedRole,
         full_name: name.trim()
       },
-      profileCreated: true
+      profileCreated: true,
+      emailSent: true
     }
     
     console.log('✅ [addUserSimple] Resposta final:', response)
