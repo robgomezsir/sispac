@@ -61,41 +61,39 @@ export default async function handler(req, res){
     if(existingCandidate) {
       // Se candidato existe e está pendente, atualizar ao invés de inserir
       if(existingCandidate.status === 'PENDENTE_TESTE') {
-        console.log('🔄 [insertCandidate] Candidato pendente encontrado, atualizando via token...')
+        console.log('🔄 [insertCandidate] Candidato pendente encontrado, atualizando diretamente...')
         
-        const updateResponse = await fetch(`${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/updateCandidateByToken`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token: existingCandidate.access_token,
+        // Atualizar candidato pendente diretamente no banco
+        const { data: updatedCandidate, error: updateError } = await supabase
+          .from('candidates')
+          .update({
             answers,
             score,
-            status
+            status,
+            updated_at: new Date().toISOString()
           })
-        })
+          .eq('id', existingCandidate.id)
+          .select()
+          .single()
         
-        const updateData = await updateResponse.json()
-        
-        if (!updateResponse.ok) {
-          console.error('❌ [insertCandidate] Erro ao atualizar candidato pendente:', updateData)
+        if(updateError) {
+          console.error('❌ [insertCandidate] Erro ao atualizar candidato pendente:', updateError)
           return fail(res, { 
-            message: 'Erro ao atualizar candidato pendente: ' + updateData.message,
-            details: updateData.details
+            message: 'Erro ao atualizar candidato pendente: ' + updateError.message,
+            details: updateError.details
           }, 500)
         }
         
-        console.log('✅ [insertCandidate] Candidato pendente atualizado com sucesso:', updateData)
+        console.log('✅ [insertCandidate] Candidato pendente atualizado com sucesso:', updatedCandidate)
         
         return ok(res, { 
           message: 'Candidato pendente atualizado com sucesso!',
-          candidate: updateData.candidate || {
-            id: existingCandidate.id,
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            status: status,
-            score: score
+          candidate: {
+            id: updatedCandidate.id,
+            name: updatedCandidate.name,
+            email: updatedCandidate.email,
+            status: updatedCandidate.status,
+            score: updatedCandidate.score
           }
         })
       } else {
