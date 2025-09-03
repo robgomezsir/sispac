@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
-import crypto from 'crypto'
 // Sidebar removido - usando LayoutWithSidebar no App.jsx
 import { 
   Settings, 
@@ -69,17 +68,30 @@ export default function Configuracoes(){
     setMessageType(type)
   }
 
-  // Função para gerar token de acesso
+  // Função para gerar token de acesso (compatível com browser)
   const generateAccessToken = (candidateId, email) => {
     try {
       const timestamp = Date.now()
-      const randomBytes = crypto.randomBytes(16).toString('hex')
-      const payload = `${candidateId}_${email}_${timestamp}_${randomBytes}`
-      const hash = crypto.createHash('sha256').update(payload).digest('hex')
-      return 'sispac_' + hash.substring(0, 32)
+      const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+      const payload = `${candidateId}_${email}_${timestamp}_${randomString}`
+      
+      // Usar uma abordagem mais simples para gerar hash
+      let hash = 0
+      for (let i = 0; i < payload.length; i++) {
+        const char = payload.charCodeAt(i)
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash // Convert to 32bit integer
+      }
+      
+      // Converter para string hexadecimal
+      const hashString = Math.abs(hash).toString(16)
+      return 'sispac_' + hashString.padStart(32, '0').substring(0, 32)
     } catch (error) {
       console.error('❌ [Configurações] Erro ao gerar token:', error)
-      throw new Error('Erro ao gerar token de acesso')
+      // Fallback simples
+      const timestamp = Date.now()
+      const randomString = Math.random().toString(36).substring(2, 15)
+      return 'sispac_' + btoa(`${candidateId}_${email}_${timestamp}_${randomString}`).substring(0, 32)
     }
   }
 
@@ -117,51 +129,28 @@ export default function Configuracoes(){
     try {
       console.log('🔍 [Configurações] Iniciando criação de usuário:', { name: name.trim(), email: email.trim().toLowerCase(), role: roleSelect })
       
-      // Verificar se o usuário já existe
-      const { data: existingUser, error: checkError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', email.trim().toLowerCase())
-        .maybeSingle()
+      // Usar a API do backend que tem service_role
+      const response = await fetch('/api/addUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          role: roleSelect
+        })
+      })
       
-      if (checkError) {
-        console.log('⚠️ [Configurações] Erro ao verificar usuário existente:', checkError.message)
-        // Se houver erro de permissão, continuar mesmo assim
-        if (checkError.message.includes('permission denied')) {
-          console.log('⚠️ [Configurações] Permissão negada, continuando sem verificação...')
-        } else {
-          throw new Error(`Erro ao verificar usuário existente: ${checkError.message}`)
-        }
+      const result = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao criar usuário')
       }
       
-      if (existingUser) {
-        showMessage('Usuário com este email já existe.', 'error')
-        return
-      }
-      
-      // Criar perfil do usuário com estrutura correta
-      const userData = {
-        email: email.trim().toLowerCase(),
-        full_name: name.trim(), // Usar full_name em vez de name
-        role: roleSelect,
-        is_active: true,
-        created_at: new Date().toISOString()
-      }
-      
-      console.log('📝 [Configurações] Dados do usuário a serem inseridos:', userData)
-      
-      const { data: newUser, error: profileError } = await supabase
-        .from('profiles')
-        .insert([userData])
-        .select()
-      
-      if (profileError) {
-        console.error('❌ [Configurações] Erro ao criar perfil:', profileError)
-        throw new Error(`Erro ao criar perfil: ${profileError.message}`)
-      }
-      
-      console.log('✅ [Configurações] Usuário criado com sucesso:', newUser)
-      showMessage(`Usuário "${name.trim()}" criado com sucesso!`, 'success')
+      console.log('✅ [Configurações] Usuário criado com sucesso:', result)
+      showMessage(result.message || `Usuário "${name.trim()}" criado com sucesso!`, 'success')
       
       // Limpar campos
       setEmail('')
@@ -190,29 +179,25 @@ export default function Configuracoes(){
     setLoading(true)
     
     try {
-      // Buscar usuário
-      const { data: userProfile, error: searchError } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .eq('email', email.trim().toLowerCase())
-        .single()
+      // Usar a API do backend que tem service_role
+      const response = await fetch('/api/deleteUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase()
+        })
+      })
       
-      if (searchError || !userProfile) {
-        showMessage('Usuário não encontrado.', 'error')
-        return
+      const result = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao remover usuário')
       }
       
-      // Remover perfil
-      const { error: deleteError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userProfile.id)
-      
-      if (deleteError) {
-        throw new Error(`Erro ao remover perfil: ${deleteError.message}`)
-      }
-      
-      showMessage(`Usuário "${userProfile.full_name}" removido com sucesso!`, 'success')
+      showMessage(result.message || `Usuário removido com sucesso!`, 'success')
       setEmail('')
       
     } catch (error) {
@@ -963,7 +948,7 @@ export default function Configuracoes(){
               <select
                 value={roleSelect}
                 onChange={e => setRoleSelect(e.target.value)}
-                className="input-modern w-full h-12"
+                className="input-modern w-full h-12 text-sm"
               >
                 <option value="rh">RH</option>
                 <option value="admin">Administrador</option>
