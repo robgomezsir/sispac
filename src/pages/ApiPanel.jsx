@@ -150,7 +150,7 @@ export default function ApiPanel(){
     {
       method: 'POST',
       path: '/api/gupy-webhook',
-      description: 'Webhook para receber candidatos da plataforma Gupy',
+      description: 'Webhook para receber candidatos da plataforma Gupy com token de acesso único',
       category: 'Integração',
       icon: Globe,
       example: 'curl -X POST -H "Content-Type: application/json" -d \'{"candidate_id": "12345", "name": "João Silva", "email": "joao@email.com", "job_id": "vaga-001"}\' https://your-domain.vercel.app/api/gupy-webhook',
@@ -165,13 +165,43 @@ export default function ApiPanel(){
             name: "João Silva",
             email: "joao@email.com",
             gupy_candidate_id: "12345",
-            status: "PENDENTE_TESTE"
+            status: "PENDENTE_TESTE",
+            access_token: "sispac_abc123def456..."
           },
+          access_link: "https://your-domain.vercel.app/form?token=sispac_abc123def456...",
           next_steps: [
-            "Candidato receberá link para teste comportamental",
+            "Candidato receberá link único para teste comportamental",
+            "Link expira em 24 horas por segurança",
             "Resultados serão sincronizados automaticamente",
             "RH pode acompanhar progresso no dashboard"
           ]
+        }
+      }
+    },
+    {
+      method: 'POST',
+      path: '/api/validate-token',
+      description: 'Valida token de acesso único para o formulário',
+      category: 'Integração',
+      icon: Shield,
+      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"token": "sispac_abc123def456..."}\' https://your-domain.vercel.app/api/validate-token',
+      response: {
+        status: 200,
+        data: {
+          valid: true,
+          message: "Token válido",
+          candidate: {
+            id: 123,
+            name: "João Silva",
+            email: "joao@email.com",
+            gupy_candidate_id: "12345",
+            status: "PENDENTE_TESTE"
+          },
+          token_info: {
+            created_at: "2024-01-15T10:30:00Z",
+            hours_old: 2.5,
+            expires_in_hours: 21.5
+          }
         }
       }
     }
@@ -551,20 +581,65 @@ export default function ApiPanel(){
 
                 <Separator />
 
+                {/* Sistema de Tokens */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Shield size={20} className="text-primary" />
+                    Sistema de Tokens de Acesso
+                  </h3>
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Key size={16} className="text-primary" />
+                              <span className="font-medium text-sm">Geração Automática</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Token único gerado automaticamente para cada candidato
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Clock size={16} className="text-primary" />
+                              <span className="font-medium text-sm">Expiração</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Tokens expiram em 24 horas por segurança
+                            </p>
+                          </div>
+                        </div>
+                        <div className="bg-muted/30 p-3 rounded-lg">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">
+                            Exemplo de link gerado:
+                          </div>
+                          <code className="text-xs font-mono text-foreground break-all">
+                            https://your-domain.vercel.app/form?token=sispac_abc123def456...
+                          </code>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Separator />
+
                 {/* Fluxo de integração */}
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Star size={20} className="text-primary" />
-                    Fluxo de Integração
+                    Fluxo de Integração com Tokens
                   </h3>
                   <div className="space-y-3">
                     {[
                       "1. Candidato se inscreve na vaga na Gupy",
                       "2. Gupy envia webhook para o SisPAC",
-                      "3. SisPAC cria registro do candidato",
-                      "4. Candidato recebe link para teste comportamental",
-                      "5. Resultados são sincronizados automaticamente",
-                      "6. RH acessa relatórios no SisPAC"
+                      "3. SisPAC gera token único e cria registro do candidato",
+                      "4. Candidato recebe link único com token para teste",
+                      "5. Formulário valida token antes de permitir acesso",
+                      "6. Resultados são salvos e sincronizados automaticamente",
+                      "7. RH acessa relatórios no SisPAC"
                     ].map((step, index) => (
                       <div key={index} className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg">
                         <div className="w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xs font-semibold">

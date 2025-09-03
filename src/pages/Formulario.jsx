@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { computeScore, classify } from '../utils/scoring'
 import { questions } from '../data/questions'
 import { supabase, supabaseAdmin } from '../lib/supabase'
@@ -52,6 +53,8 @@ import {
 } from '../components/ui'
 
 export default function Formulario(){
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [nome, setNome] = useState('')
@@ -60,6 +63,66 @@ export default function Formulario(){
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
   const [timeSpent, setTimeSpent] = useState(0)
+  const [tokenValidating, setTokenValidating] = useState(false)
+  const [tokenValid, setTokenValid] = useState(false)
+  const [candidateData, setCandidateData] = useState(null)
+  const [tokenError, setTokenError] = useState(null)
+
+  // Validar token na inicialização
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = searchParams.get('token')
+      
+      if (!token) {
+        // Se não há token, permitir acesso direto (compatibilidade com fluxo antigo)
+        console.log('🔍 [Formulario] Nenhum token fornecido, permitindo acesso direto')
+        setTokenValid(true)
+        return
+      }
+      
+      console.log('🔍 [Formulario] Validando token:', token.substring(0, 8) + '...')
+      setTokenValidating(true)
+      setTokenError(null)
+      
+      try {
+        const response = await fetch('/api/validate-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token })
+        })
+        
+        const data = await response.json()
+        
+        if (response.ok && data.valid) {
+          console.log('✅ [Formulario] Token válido:', data.candidate)
+          setTokenValid(true)
+          setCandidateData(data.candidate)
+          
+          // Preencher dados do candidato se disponíveis
+          if (data.candidate.name) {
+            setNome(data.candidate.name)
+          }
+          if (data.candidate.email) {
+            setEmail(data.candidate.email)
+          }
+        } else {
+          console.log('❌ [Formulario] Token inválido:', data.message)
+          setTokenError(data.message || 'Token inválido')
+          setTokenValid(false)
+        }
+      } catch (error) {
+        console.error('❌ [Formulario] Erro ao validar token:', error)
+        setTokenError('Erro ao validar token. Tente novamente.')
+        setTokenValid(false)
+      } finally {
+        setTokenValidating(false)
+      }
+    }
+    
+    validateToken()
+  }, [searchParams])
 
   // Auto-scroll para o topo quando mudar de pergunta
   useEffect(() => {
@@ -197,6 +260,12 @@ export default function Formulario(){
         status
       }
 
+      // Se há dados do candidato (vindo do token), incluir informações adicionais
+      if (candidateData) {
+        candidatePayload.gupy_candidate_id = candidateData.gupy_candidate_id
+        candidatePayload.access_token = searchParams.get('token')
+      }
+
       // Tentar primeiro com cliente normal, depois com admin se falhar
       let inserted, insertError
       
@@ -275,6 +344,80 @@ export default function Formulario(){
     const secs = seconds % 60
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }, [])
+
+  // Se está validando token, mostrar loading
+  if (tokenValidating) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-6 animate-slide-in-from-top">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow animate-pulse">
+                <Shield size={40} className="sm:w-12 sm:h-12 text-primary" />
+              </div>
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+                  Validando Acesso
+                </h1>
+                <p className="text-lg sm:text-xl text-muted-foreground font-medium px-4">
+                  Verificando seu link de acesso...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Se token é inválido, mostrar erro
+  if (tokenError) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        <div className="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-6 animate-slide-in-from-top">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-3xl flex items-center justify-center mx-auto border border-destructive/20 shadow-glow">
+                <AlertCircle size={40} className="sm:w-12 sm:h-12 text-destructive" />
+              </div>
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-destructive to-foreground bg-clip-text text-transparent">
+                  Acesso Negado
+                </h1>
+                <p className="text-lg sm:text-xl text-muted-foreground font-medium px-4">
+                  {tokenError}
+                </p>
+              </div>
+            </div>
+
+            <Card className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
+              <CardContent className="p-6 sm:p-8 text-center">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-3xl flex items-center justify-center mx-auto border border-destructive/20">
+                    <AlertCircle size={32} className="sm:w-10 sm:h-10 text-destructive" />
+                  </div>
+                  <div className="space-y-3 sm:space-y-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">Link Inválido ou Expirado</h2>
+                    <p className="text-muted-foreground text-base sm:text-lg leading-relaxed px-4">
+                      O link que você está tentando usar é inválido, expirou ou já foi utilizado. 
+                      Entre em contato com o RH para solicitar um novo link de acesso.
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={() => navigate('/')}
+                    className="btn-primary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto"
+                  >
+                    <ArrowRight size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    Voltar ao Início
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Se já foi enviado, mostrar tela de sucesso
   if (sent) {

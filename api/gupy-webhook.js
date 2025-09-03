@@ -1,4 +1,5 @@
 import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
+import { generateAccessToken, createAccessLink, logTokenAction } from './token-utils.js'
 
 export default async function handler(req, res){
   try{
@@ -115,6 +116,10 @@ export default async function handler(req, res){
       })
     }
     
+    // Gerar token de acesso único
+    const accessToken = generateAccessToken(candidate_id, email.trim().toLowerCase())
+    logTokenAction('TOKEN_GENERATED', accessToken, { candidate_id, email: email.trim().toLowerCase() })
+    
     // Criar novo candidato
     const candidateData = {
       name: name.trim(),
@@ -125,6 +130,8 @@ export default async function handler(req, res){
       phone: phone || null,
       resume_url: resume_url || null,
       gupy_data: gupy_data || null,
+      access_token: accessToken,
+      token_created_at: new Date().toISOString(),
       status: 'PENDENTE_TESTE', // Status inicial para candidatos da Gupy
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
@@ -143,6 +150,17 @@ export default async function handler(req, res){
     
     console.log('✅ [gupy-webhook] Candidato criado com sucesso:', newCandidate)
     
+    // Gerar link de acesso único
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'https://your-domain.vercel.app'
+    const accessLink = createAccessLink(baseUrl, accessToken)
+    
+    logTokenAction('ACCESS_LINK_CREATED', accessToken, { 
+      candidate_id: newCandidate.id, 
+      access_link: accessLink 
+    })
+    
     // Aqui você pode adicionar lógica adicional como:
     // - Enviar email para o candidato com link do teste
     // - Notificar o RH sobre novo candidato
@@ -157,10 +175,13 @@ export default async function handler(req, res){
         name: newCandidate.name,
         email: newCandidate.email,
         gupy_candidate_id: newCandidate.gupy_candidate_id,
-        status: newCandidate.status
+        status: newCandidate.status,
+        access_token: accessToken
       },
+      access_link: accessLink,
       next_steps: [
-        'Candidato receberá link para teste comportamental',
+        'Candidato receberá link único para teste comportamental',
+        'Link expira em 24 horas por segurança',
         'Resultados serão sincronizados automaticamente',
         'RH pode acompanhar progresso no dashboard'
       ]

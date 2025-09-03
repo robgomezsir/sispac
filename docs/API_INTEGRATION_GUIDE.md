@@ -144,7 +144,7 @@ curl -X POST \
 
 **POST** `/api/gupy-webhook`
 
-Endpoint para receber candidatos da plataforma Gupy.
+Endpoint para receber candidatos da plataforma Gupy com geração automática de token de acesso único.
 
 **Exemplo de Requisição:**
 ```bash
@@ -171,13 +171,50 @@ curl -X POST \
     "name": "João Silva",
     "email": "joao@email.com",
     "gupy_candidate_id": "12345",
-    "status": "PENDENTE_TESTE"
+    "status": "PENDENTE_TESTE",
+    "access_token": "sispac_abc123def456..."
   },
+  "access_link": "https://your-domain.vercel.app/form?token=sispac_abc123def456...",
   "next_steps": [
-    "Candidato receberá link para teste comportamental",
+    "Candidato receberá link único para teste comportamental",
+    "Link expira em 24 horas por segurança",
     "Resultados serão sincronizados automaticamente",
     "RH pode acompanhar progresso no dashboard"
   ]
+}
+```
+
+### 6. Validar Token de Acesso
+
+**POST** `/api/validate-token`
+
+Valida token de acesso único para o formulário.
+
+**Exemplo de Requisição:**
+```bash
+curl -X POST \
+     -H "Content-Type: application/json" \
+     -d '{"token": "sispac_abc123def456..."}' \
+     https://your-domain.vercel.app/api/validate-token
+```
+
+**Resposta:**
+```json
+{
+  "valid": true,
+  "message": "Token válido",
+  "candidate": {
+    "id": 123,
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "gupy_candidate_id": "12345",
+    "status": "PENDENTE_TESTE"
+  },
+  "token_info": {
+    "created_at": "2024-01-15T10:30:00Z",
+    "hours_old": 2.5,
+    "expires_in_hours": 21.5
+  }
 }
 ```
 
@@ -214,6 +251,32 @@ curl -X POST \
 | 76-95 | ACIMA DA EXPECTATIVA | Profissional maduro |
 | ≥ 96 | SUPEROU A EXPECTATIVA | Alto desempenho |
 
+## Sistema de Tokens de Acesso
+
+### Visão Geral
+
+O SisPAC implementa um sistema de tokens de acesso único para garantir segurança e controle de acesso ao formulário comportamental. Cada candidato recebe um token único que:
+
+- **Expira em 24 horas** por segurança
+- **É válido apenas uma vez** (após completar o teste)
+- **É gerado automaticamente** pelo webhook da Gupy
+- **Permite acesso direto** ao formulário sem login
+
+### Características dos Tokens
+
+- **Formato**: `sispac_` + 32 caracteres hexadecimais
+- **Exemplo**: `sispac_abc123def456789012345678901234567890`
+- **Expiração**: 24 horas a partir da criação
+- **Validação**: Verificada no banco de dados em tempo real
+
+### Fluxo de Segurança
+
+1. **Geração**: Token criado automaticamente no webhook da Gupy
+2. **Distribuição**: Link único enviado para o candidato
+3. **Validação**: Token verificado antes de permitir acesso ao formulário
+4. **Uso**: Token associado aos resultados do teste
+5. **Expiração**: Token invalido após 24 horas ou uso
+
 ## Integração com Gupy
 
 ### Configuração do Webhook
@@ -238,14 +301,16 @@ curl -X POST \
 }
 ```
 
-### Fluxo de Integração
+### Fluxo de Integração com Tokens
 
-1. Candidato se inscreve na vaga na Gupy
-2. Gupy envia webhook para o SisPAC
-3. SisPAC cria registro do candidato
-4. Candidato recebe link para teste comportamental
-5. Resultados são sincronizados automaticamente
-6. RH acessa relatórios no SisPAC
+1. **Candidatura**: Candidato se inscreve na vaga na Gupy
+2. **Webhook**: Gupy envia webhook para o SisPAC
+3. **Geração de Token**: SisPAC gera token único e cria registro do candidato
+4. **Link Único**: Candidato recebe link único com token para teste
+5. **Validação**: Formulário valida token antes de permitir acesso
+6. **Teste**: Candidato preenche o formulário comportamental
+7. **Resultados**: Resultados são salvos e sincronizados automaticamente
+8. **Relatórios**: RH acessa relatórios no SisPAC
 
 ## Códigos de Status HTTP
 
