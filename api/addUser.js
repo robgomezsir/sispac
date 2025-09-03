@@ -72,15 +72,18 @@ export default async function handler(req, res){
     
     console.log('🔍 [addUser] Role recebido:', role, 'Role normalizado:', normalizedRole)
     
-    // Criar perfil na tabela profiles
+    // Criar perfil na tabela profiles com ID independente
     const profileData = {
-      id: data.user.id,
+      id: data.user.id, // Usar o ID do usuário criado no auth
       email: data.user.email,
       role: normalizedRole,
       full_name: name.trim(),
       is_active: true,
       created_at: new Date().toISOString()
     }
+    
+    console.log('🔍 [addUser] ID do usuário auth:', data.user.id)
+    console.log('🔍 [addUser] Email do usuário auth:', data.user.email)
     
     console.log('📝 [addUser] Dados do perfil a serem inseridos:', profileData)
     
