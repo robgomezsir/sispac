@@ -242,6 +242,9 @@ export default function Formulario(){
       let inserted = null
 
       // Se há dados do candidato (vindo do token), atualizar registro existente
+      console.log('🔍 [Formulario] Debug - candidateData:', candidateData)
+      console.log('🔍 [Formulario] Debug - token:', searchParams.get('token'))
+      
       if (candidateData && candidateData.id) {
         console.log('🔄 [Formulario] Atualizando candidato existente:', candidateData.id)
         
@@ -297,44 +300,87 @@ export default function Formulario(){
         
         const { data: existing, error: e1 } = await supabase
           .from('candidates')
-          .select('id')
+          .select('id, status')
           .eq('email', email.toLowerCase())
-          .eq('name', nome.trim())
           .limit(1)
         if(e1) throw e1
-        if(existing && existing.length){
-          alert('Você já respondeu o teste. Obrigado!')
-          setSent(true)
-          return
-        }
-
-        const candidatePayload = {
-          name: nome.trim(),
-          email: email.toLowerCase(),
-          answers,
-          score: totalScore,
-          status
-        }
-
-        // Tentar primeiro com cliente normal, depois com admin se falhar
-        let insertError
         
-        try {
-          const result = await supabase
-            .from('candidates')
-            .insert(candidatePayload)
-            .select()
-            .single()
-          inserted = result.data
-          insertError = result.error
-        } catch (err) {
-          insertError = err
-        }
+        if(existing && existing.length){
+          const existingCandidate = existing[0]
+          console.log('🔍 [Formulario] Candidato existente encontrado:', existingCandidate)
+          
+          if (existingCandidate.status === 'PENDENTE_TESTE') {
+            // Se é um candidato pendente, atualizar em vez de inserir novo
+            console.log('🔄 [Formulario] Candidato pendente encontrado, atualizando...')
+            
+            const updatePayload = {
+              name: nome.trim(),
+              answers,
+              score: totalScore,
+              status,
+              updated_at: new Date().toISOString()
+            }
 
-        // Se falhou com cliente normal, tentar com admin
-        if (insertError && supabaseAdmin !== supabase) {
+            let updateError
+            try {
+              const result = await supabase
+                .from('candidates')
+                .update(updatePayload)
+                .eq('id', existingCandidate.id)
+                .select()
+                .single()
+              inserted = result.data
+              updateError = result.error
+            } catch (err) {
+              updateError = err
+            }
+
+            if (updateError && supabaseAdmin !== supabase) {
+              try {
+                const result = await supabaseAdmin
+                  .from('candidates')
+                  .update(updatePayload)
+                  .eq('id', existingCandidate.id)
+                  .select()
+                  .single()
+                inserted = result.data
+                updateError = result.error
+              } catch (err) {
+                updateError = err
+              }
+            }
+
+            if (updateError || !inserted) {
+              console.error('❌ [Formulario] Erro ao atualizar candidato pendente:', updateError)
+              throw new Error(updateError?.message || 'Erro ao salvar respostas')
+            }
+
+            candidateId = existingCandidate.id
+            console.log('✅ [Formulario] Candidato pendente atualizado com sucesso:', candidateId)
+            
+          } else {
+            // Candidato já completou o teste
+            alert('Você já respondeu o teste. Obrigado!')
+            setSent(true)
+            return
+          }
+        } else {
+          // Se não encontrou candidato existente, inserir novo
+          console.log('🔄 [Formulario] Nenhum candidato existente encontrado, inserindo novo...')
+          
+          const candidatePayload = {
+            name: nome.trim(),
+            email: email.toLowerCase(),
+            answers,
+            score: totalScore,
+            status
+          }
+
+          // Tentar primeiro com cliente normal, depois com admin se falhar
+          let insertError
+          
           try {
-            const result = await supabaseAdmin
+            const result = await supabase
               .from('candidates')
               .insert(candidatePayload)
               .select()
@@ -344,15 +390,30 @@ export default function Formulario(){
           } catch (err) {
             insertError = err
           }
-        }
-        
-        if(insertError || !inserted) {
-          console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
-          throw new Error(insertError?.message || 'Erro ao salvar respostas')
-        }
 
-        candidateId = inserted.id
-        console.log('✅ [Formulario] Novo candidato inserido com sucesso:', candidateId)
+          // Se falhou com cliente normal, tentar com admin
+          if (insertError && supabaseAdmin !== supabase) {
+            try {
+              const result = await supabaseAdmin
+                .from('candidates')
+                .insert(candidatePayload)
+                .select()
+                .single()
+              inserted = result.data
+              insertError = result.error
+            } catch (err) {
+              insertError = err
+            }
+          }
+          
+          if(insertError || !inserted) {
+            console.error('❌ [Formulario] Erro ao inserir candidato:', insertError)
+            throw new Error(insertError?.message || 'Erro ao salvar respostas')
+          }
+
+          candidateId = inserted.id
+          console.log('✅ [Formulario] Novo candidato inserido com sucesso:', candidateId)
+        }
       }
 
       // Inserir resultados detalhados se possível
