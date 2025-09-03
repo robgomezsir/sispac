@@ -10,15 +10,12 @@ import {
   UserMinus, 
   Database, 
   Trash2, 
-  Shield, 
   AlertTriangle,
   CheckCircle,
   XCircle,
   Info,
   Plus,
   Minus,
-  Eye,
-  EyeOff,
   Copy
 } from 'lucide-react'
 
@@ -68,38 +65,7 @@ export default function Configuracoes(){
     setMessageType(type)
   }
 
-  // Função para gerar token de acesso (compatível com browser)
-  const generateAccessToken = (candidateId, email) => {
-    try {
-      const timestamp = Date.now()
-      const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-      const payload = `${candidateId}_${email}_${timestamp}_${randomString}`
-      
-      // Usar uma abordagem mais simples para gerar hash
-      let hash = 0
-      for (let i = 0; i < payload.length; i++) {
-        const char = payload.charCodeAt(i)
-        hash = ((hash << 5) - hash) + char
-        hash = hash & hash // Convert to 32bit integer
-      }
-      
-      // Converter para string hexadecimal
-      const hashString = Math.abs(hash).toString(16)
-      return 'sispac_' + hashString.padStart(32, '0').substring(0, 32)
-    } catch (error) {
-      console.error('❌ [Configurações] Erro ao gerar token:', error)
-      // Fallback simples
-      const timestamp = Date.now()
-      const randomString = Math.random().toString(36).substring(2, 15)
-      return 'sispac_' + btoa(`${candidateId}_${email}_${timestamp}_${randomString}`).substring(0, 32)
-    }
-  }
 
-  // Função para criar link de acesso
-  const createAccessLink = (token) => {
-    const baseUrl = window.location.origin
-    return `${baseUrl}/form?token=${token}`
-  }
 
   // Função para copiar link para área de transferência
   const copyLinkToClipboard = async () => {
