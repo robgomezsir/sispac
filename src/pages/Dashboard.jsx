@@ -99,7 +99,7 @@ export default function Dashboard(){
   
 
 
-  const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status','behavioral_profile'])
+  const [columnsToExport, setColumnsToExport] = useState(['name','email','score','status','behavioral_profile','answers'])
   const [viewMode, setViewMode] = useState('cards') // 'cards' ou 'table'
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' })
   const [advancedFilters, setAdvancedFilters] = useState({
@@ -711,6 +711,7 @@ export default function Dashboard(){
                       {value: 'score', label: 'Pontuação'},
                       {value: 'status', label: 'Status'},
                       {value: 'behavioral_profile', label: 'Análise de Perfil Comportamental (Completa)'},
+                      {value: 'answers', label: 'Respostas do Questionário'},
                       {value: 'created_at', label: 'Data de Criação'}
                     ].map(column => (
                       <label key={column.value} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors duration-200 cursor-pointer">

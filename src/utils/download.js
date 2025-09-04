@@ -17,6 +17,7 @@ export function downloadXlsx(filename, data, columns = null) {
       'score': 'Pontuação',
       'status': 'Status',
       'behavioral_profile': 'Análise de Perfil Comportamental',
+      'answers': 'Respostas do Questionário',
       'created_at': 'Data de Criação'
     }
 
@@ -43,6 +44,24 @@ export function downloadXlsx(filename, data, columns = null) {
               : profile.areas_desenvolvimento || ''
             processedRow['Visão Estratégica'] = profile.visao_estrategica || ''
             processedRow['Recomendações'] = profile.recomendacoes || ''
+          } else if (col === 'answers') {
+            // Processar respostas do questionário
+            if (row[col] && typeof row[col] === 'object') {
+              const answers = row[col]
+              let formattedAnswers = ''
+              
+              // Processar cada questão
+              Object.keys(answers).forEach(questionId => {
+                const questionAnswers = answers[questionId]
+                if (Array.isArray(questionAnswers) && questionAnswers.length > 0) {
+                  formattedAnswers += `Questão ${questionId}: ${questionAnswers.join('; ')}\n`
+                }
+              })
+              
+              processedRow[columnMapping[col] || col] = formattedAnswers.trim()
+            } else {
+              processedRow[columnMapping[col] || col] = 'Nenhuma resposta disponível'
+            }
           } else if (col === 'created_at') {
             // Formatar data
             processedRow[columnMapping[col] || col] = new Date(row[col]).toLocaleDateString('pt-BR')
