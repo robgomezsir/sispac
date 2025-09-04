@@ -1,4 +1,8 @@
 import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
+import sgMail from '@sendgrid/mail'
+
+// Configurar SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 // Função para gerar template de email de convite
 function generateInviteEmailTemplate(name, accessLink) {
@@ -181,27 +185,18 @@ export default async function handler(req, res){
         
         const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
         
-        const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: email.trim().toLowerCase(),
-            subject: emailTemplate.subject,
-            html: emailTemplate.html,
-            text: emailTemplate.text
-          })
-        })
-        
-        if (emailResponse.ok) {
-          const emailData = await emailResponse.json()
-          console.log('✅ [addCandidate] Email enviado com sucesso:', emailData)
-        } else {
-          const errorData = await emailResponse.json()
-          console.error('⚠️ [addCandidate] Erro ao enviar email:', errorData)
-          // Não falhar a operação se o email não for enviado
+        // Enviar email diretamente via SendGrid
+        const msg = {
+          to: email.trim().toLowerCase(),
+          from: process.env.SENDGRID_FROM_EMAIL || 'noreply@sispac.com',
+          subject: emailTemplate.subject,
+          text: emailTemplate.text,
+          html: emailTemplate.html
         }
+        
+        const response = await sgMail.send(msg)
+        console.log('✅ [addCandidate] Email enviado com sucesso via SendGrid:', response[0].statusCode)
+        
       } catch (emailError) {
         console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
         // Não falhar a operação se o email não for enviado
@@ -276,27 +271,18 @@ export default async function handler(req, res){
       
       const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
       
-      const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: email.trim().toLowerCase(),
-          subject: emailTemplate.subject,
-          html: emailTemplate.html,
-          text: emailTemplate.text
-        })
-      })
-      
-      if (emailResponse.ok) {
-        const emailData = await emailResponse.json()
-        console.log('✅ [addCandidate] Email enviado com sucesso:', emailData)
-      } else {
-        const errorData = await emailResponse.json()
-        console.error('⚠️ [addCandidate] Erro ao enviar email:', errorData)
-        // Não falhar a operação se o email não for enviado
+      // Enviar email diretamente via SendGrid
+      const msg = {
+        to: email.trim().toLowerCase(),
+        from: process.env.SENDGRID_FROM_EMAIL || 'noreply@sispac.com',
+        subject: emailTemplate.subject,
+        text: emailTemplate.text,
+        html: emailTemplate.html
       }
+      
+      const response = await sgMail.send(msg)
+      console.log('✅ [addCandidate] Email enviado com sucesso via SendGrid:', response[0].statusCode)
+      
     } catch (emailError) {
       console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
       // Não falhar a operação se o email não for enviado

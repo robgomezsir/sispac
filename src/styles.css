@@ -98,6 +98,45 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
+  /* Correções para dispositivos móveis */
+  @media (max-width: 768px) {
+    html, body {
+      height: auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .mobile-scrollable {
+      height: auto;
+      min-height: 100vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Ajustes específicos para formulário de login em mobile */
+    .mobile-login-container {
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    
+    .mobile-login-form {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 2rem;
+    }
+    
+    /* Garantir que o conteúdo seja visível */
+    .mobile-content {
+      width: 100%;
+      max-width: 100%;
+      padding: 1rem;
+    }
+  }
+
   /* Scrollbar personalizada com design moderno */
   ::-webkit-scrollbar {
     width: 12px;

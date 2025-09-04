@@ -124,11 +124,11 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="h-screen flex items-center justify-center relative overflow-hidden p-4">
-      <div className="w-full max-w-4xl relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+    <div className="min-h-screen flex items-center justify-center relative overflow-auto p-4 mobile-scrollable mobile-login-container">
+      <div className="w-full max-w-4xl relative z-10 py-8 mobile-content">
+        <div className="grid lg:grid-cols-2 gap-8 items-start lg:items-center min-h-0">
           {/* Lado esquerdo - Informações do sistema */}
-          <div className="text-center lg:text-left space-y-6 animate-slide-in-from-left">
+          <div className="text-center lg:text-left space-y-6 animate-slide-in-from-left order-2 lg:order-1">
             {/* Logo e título */}
             <div className="space-y-4">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl border border-primary/20 shadow-glow animate-bounce-soft">
@@ -207,7 +207,7 @@ export default function Home(){
           </div>
 
           {/* Lado direito - Formulário de login */}
-          <div className="animate-slide-in-from-right">
+          <div className="animate-slide-in-from-right order-1 lg:order-2 mobile-login-form">
                                 <Card className="card-modern border-0 shadow-2xl backdrop-blur-sm max-w-md mx-auto hover:shadow-3xl transition-all duration-500 hover:-translate-y-2">
               <CardHeader className="text-center space-y-4 pb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
