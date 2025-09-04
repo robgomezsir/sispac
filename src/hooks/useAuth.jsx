@@ -418,7 +418,25 @@ function useProvideAuth(){
     // Só redirecionar se estiver inicializado, logado, não for convite pendente e ainda não redirecionou
     if (isInitialized && user && role && !isLoading && !isInvitePending && !hasRedirected.current) {
       const currentPath = location.pathname
-      if (currentPath === '/' || currentPath === '/login') {
+      
+      // Rotas públicas que não devem ser redirecionadas automaticamente
+      const publicRoutes = [
+        '/',
+        '/login',
+        '/form',
+        '/debug',
+        '/request-reset',
+        '/reset-password',
+        '/auth/confirm',
+        '/invite-callback',
+        '/welcome',
+        '/join',
+        '/setup-password',
+        '/complete-invite'
+      ]
+      
+      // Redirecionar apenas se não for uma rota pública
+      if (!publicRoutes.includes(currentPath)) {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
         hasRedirected.current = true
         navigate('/dashboard', { replace: true })
