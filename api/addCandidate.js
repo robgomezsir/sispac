@@ -1,5 +1,96 @@
 import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
 
+// Função para gerar template de email de convite
+function generateInviteEmailTemplate(name, accessLink) {
+  return {
+    subject: 'Convite para Avaliação Comportamental - SisPAC',
+    html: `
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Convite para Avaliação Comportamental</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+          .button:hover { background: #5a6fd8; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          .highlight { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>🎯 Avaliação Comportamental</h1>
+          <p>Sistema de Perfil e Análise Comportamental</p>
+        </div>
+        
+        <div class="content">
+          <h2>Olá, ${name}!</h2>
+          
+          <p>Você foi convidado para participar da nossa <strong>Avaliação Comportamental</strong>.</p>
+          
+          <div class="highlight">
+            <h3>📋 Sobre o Teste:</h3>
+            <ul>
+              <li><strong>Duração:</strong> Aproximadamente 10-15 minutos</li>
+              <li><strong>Objetivo:</strong> Identificar seu perfil comportamental e competências</li>
+              <li><strong>Confidencial:</strong> Suas respostas são confidenciais e seguras</li>
+            </ul>
+          </div>
+          
+          <p>Clique no botão abaixo para acessar o teste:</p>
+          
+          <div style="text-align: center;">
+            <a href="${accessLink}" class="button">🚀 Iniciar Avaliação</a>
+          </div>
+          
+          <p><strong>Link direto:</strong><br>
+          <a href="${accessLink}" style="color: #667eea; word-break: break-all;">${accessLink}</a></p>
+          
+          <div class="highlight">
+            <h3>⚠️ Importante:</h3>
+            <ul>
+              <li>Este link é pessoal e intransferível</li>
+              <li>Você pode fazer o teste apenas uma vez</li>
+              <li>Certifique-se de ter um ambiente tranquilo para responder</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p>Este é um e-mail automático do Sistema SisPAC.</p>
+          <p>Se você não solicitou este teste, pode ignorar este e-mail.</p>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+      Olá, ${name}!
+      
+      Você foi convidado para participar da nossa Avaliação Comportamental.
+      
+      SOBRE O TESTE:
+      - Duração: Aproximadamente 10-15 minutos
+      - Objetivo: Identificar seu perfil comportamental e competências
+      - Confidencial: Suas respostas são confidenciais e seguras
+      
+      Para acessar o teste, clique no link abaixo:
+      ${accessLink}
+      
+      IMPORTANTE:
+      - Este link é pessoal e intransferível
+      - Você pode fazer o teste apenas uma vez
+      - Certifique-se de ter um ambiente tranquilo para responder
+      
+      Este é um e-mail automático do Sistema SisPAC.
+      Se você não solicitou este teste, pode ignorar este e-mail.
+    `
+  }
+}
+
 export default async function handler(req, res){
   try{
     // Validar autenticação e permissões
@@ -84,8 +175,40 @@ export default async function handler(req, res){
       
       console.log('✅ Candidato atualizado com novo token:', { email: updatedCandidate.email, token: accessToken })
       
+      // Enviar email de convite automaticamente
+      try {
+        console.log('📧 [addCandidate] Enviando email de convite para candidato atualizado:', email)
+        
+        const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
+        
+        const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: email.trim().toLowerCase(),
+            subject: emailTemplate.subject,
+            html: emailTemplate.html,
+            text: emailTemplate.text
+          })
+        })
+        
+        if (emailResponse.ok) {
+          const emailData = await emailResponse.json()
+          console.log('✅ [addCandidate] Email enviado com sucesso:', emailData)
+        } else {
+          const errorData = await emailResponse.json()
+          console.error('⚠️ [addCandidate] Erro ao enviar email:', errorData)
+          // Não falhar a operação se o email não for enviado
+        }
+      } catch (emailError) {
+        console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
+        // Não falhar a operação se o email não for enviado
+      }
+      
       return ok(res, { 
-        message: `Candidato "${name.trim()}" atualizado com novo link de acesso!`,
+        message: `Candidato "${name.trim()}" atualizado com novo link de acesso! Email de convite enviado.`,
         candidate: updatedCandidate,
         accessToken: accessToken,
         accessLink: accessLink
@@ -147,8 +270,40 @@ export default async function handler(req, res){
     
     console.log('✅ Candidato criado com sucesso:', { email: newCandidate[0].email, token: accessToken })
     
+    // Enviar email de convite automaticamente
+    try {
+      console.log('📧 [addCandidate] Enviando email de convite para:', email)
+      
+      const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
+      
+      const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: email.trim().toLowerCase(),
+          subject: emailTemplate.subject,
+          html: emailTemplate.html,
+          text: emailTemplate.text
+        })
+      })
+      
+      if (emailResponse.ok) {
+        const emailData = await emailResponse.json()
+        console.log('✅ [addCandidate] Email enviado com sucesso:', emailData)
+      } else {
+        const errorData = await emailResponse.json()
+        console.error('⚠️ [addCandidate] Erro ao enviar email:', errorData)
+        // Não falhar a operação se o email não for enviado
+      }
+    } catch (emailError) {
+      console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
+      // Não falhar a operação se o email não for enviado
+    }
+    
     ok(res, { 
-      message: `Candidato "${name.trim()}" criado com sucesso!`,
+      message: `Candidato "${name.trim()}" criado com sucesso! Email de convite enviado.`,
       candidate: newCandidate[0],
       accessToken: accessToken,
       accessLink: accessLink
