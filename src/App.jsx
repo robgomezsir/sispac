@@ -98,8 +98,9 @@ export default function App(){
       <div className="min-h-screen bg-background">
         <Routes>
           {routes.map(({ path, element }) => {
-            // Não mostrar sidebar na página Home
-            if (path === "/") {
+            // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)
+            const publicPages = ["/", "/form", "/request-reset", "/reset-password", "/auth/confirm", "/invite-callback", "/welcome", "/join", "/setup-password", "/complete-invite", "/debug"]
+            if (publicPages.includes(path)) {
               return (
                 <Route key={path} path={path} element={element} />
               )
