@@ -46,7 +46,7 @@ export default async function handler(req, res){
     // Buscar candidato pelo token
     const { data: candidate, error: searchError } = await supabase
       .from('candidates')
-      .select('id, name, email, gupy_candidate_id, status, access_token, token_created_at, created_at')
+      .select('id, name, email, status, access_token, token_created_at, created_at')
       .eq('access_token', cleanToken)
       .single()
     
@@ -103,7 +103,6 @@ export default async function handler(req, res){
         id: candidate.id,
         name: candidate.name,
         email: candidate.email,
-        gupy_candidate_id: candidate.gupy_candidate_id,
         status: candidate.status
       },
       token_info: {
