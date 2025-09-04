@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import * as brevo from '@getbrevo/brevo'
 
 export default async function handler(req, res) {
   // Configurar headers CORS
@@ -15,10 +16,10 @@ export default async function handler(req, res) {
   }
   
   try {
-    console.log('🔍 [send-email] Iniciando envio de e-mail')
+    console.log('🔍 [send-email] Iniciando envio de e-mail via Brevo')
     console.log('🔍 [send-email] Body recebido:', req.body)
     
-    const { to, subject, html, text } = req.body || {}
+    const { to, name, subject, html, text } = req.body || {}
     
     // Validação dos campos obrigatórios
     if (!to || !to.trim()) {
@@ -43,73 +44,82 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Email inválido' })
     }
     
-    // Configurar Supabase com service_role
+    // Verificar se a chave da API do Brevo está configurada
+    if (!process.env.BREVO_API_KEY) {
+      console.error('❌ [send-email] BREVO_API_KEY não configurada')
+      return res.status(500).json({ error: 'Configuração de email não encontrada' })
+    }
+    
+    // Configurar cliente Brevo
+    const brevoApi = new brevo.TransactionalEmailsApi()
+    brevoApi.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY)
+    
+    // Configurar email para envio
+    const sendSmtpEmail = new brevo.SendSmtpEmail({
+      sender: { 
+        name: 'SisPAC', 
+        email: process.env.BREVO_SENDER_EMAIL || 'noreply@sispac.com' 
+      },
+      to: [{ 
+        email: to.trim(), 
+        name: name || to.trim().split('@')[0] 
+      }],
+      subject: subject.trim(),
+      htmlContent: html || text,
+      textContent: text || html?.replace(/<[^>]*>/g, '') // Converter HTML para texto se necessário
+    })
+    
+    console.log('📧 [send-email] Enviando e-mail via Brevo...')
+    console.log('   Para:', to)
+    console.log('   Nome:', name || 'N/A')
+    console.log('   Assunto:', subject)
+    
+    // Enviar email via Brevo
+    const brevoResponse = await brevoApi.sendTransacEmail(sendSmtpEmail)
+    
+    console.log('✅ [send-email] E-mail enviado com sucesso via Brevo:', brevoResponse)
+    
+    // Configurar Supabase para logs (opcional)
     const supabaseUrl = process.env.SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE
     
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('❌ [send-email] Configuração do Supabase não encontrada')
-      return res.status(500).json({ error: 'Configuração do servidor não encontrada' })
-    }
-    
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-    
-    // Para este exemplo, vamos usar o serviço de e-mail do Supabase Auth
-    // que pode ser configurado para enviar e-mails transacionais
-    console.log('🔍 [send-email] Enviando e-mail via Supabase Auth...')
-    
-    // Simular envio de e-mail (em produção, você configuraria um provedor real)
-    // Por enquanto, vamos apenas logar o e-mail que seria enviado
-    console.log('📧 [send-email] E-mail que seria enviado:')
-    console.log('   Para:', to)
-    console.log('   Assunto:', subject)
-    console.log('   HTML:', html ? 'Sim' : 'Não')
-    console.log('   Texto:', text ? 'Sim' : 'Não')
-    
-    // Em um ambiente de produção, você integraria com:
-    // - SendGrid
-    // - Mailgun
-    // - AWS SES
-    // - Resend
-    // - Ou outro provedor de e-mail
-    
-    // Por enquanto, vamos simular um envio bem-sucedido
-    const emailData = {
-      to: to.trim(),
-      subject: subject.trim(),
-      html: html || text,
-      sent_at: new Date().toISOString(),
-      status: 'sent'
-    }
-    
-    // Salvar log do e-mail enviado (opcional)
-    try {
-      const { error: logError } = await supabase
-        .from('email_logs')
-        .insert({
-          to: emailData.to,
-          subject: emailData.subject,
-          sent_at: emailData.sent_at,
-          status: emailData.status
-        })
+    if (supabaseUrl && supabaseServiceKey) {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey)
       
-      if (logError) {
+      // Salvar log do e-mail enviado
+      try {
+        const { error: logError } = await supabase
+          .from('email_logs')
+          .insert({
+            to: to.trim(),
+            subject: subject.trim(),
+            sent_at: new Date().toISOString(),
+            status: 'sent',
+            provider: 'brevo',
+            message_id: brevoResponse.messageId || null
+          })
+        
+        if (logError) {
+          console.log('⚠️ [send-email] Erro ao salvar log do e-mail:', logError)
+        } else {
+          console.log('✅ [send-email] Log do e-mail salvo com sucesso')
+        }
+      } catch (logError) {
         console.log('⚠️ [send-email] Erro ao salvar log do e-mail:', logError)
-      } else {
-        console.log('✅ [send-email] Log do e-mail salvo com sucesso')
       }
-    } catch (logError) {
-      console.log('⚠️ [send-email] Erro ao salvar log do e-mail:', logError)
     }
     
     const response = {
       success: true,
-      message: 'E-mail enviado com sucesso',
+      message: 'E-mail enviado com sucesso via Brevo',
       email: {
-        to: emailData.to,
-        subject: emailData.subject,
-        sent_at: emailData.sent_at,
-        status: emailData.status
+        to: to.trim(),
+        name: name || 'N/A',
+        subject: subject.trim(),
+        sent_at: new Date().toISOString(),
+        status: 'sent',
+        provider: 'brevo',
+        message_id: brevoResponse.messageId
       }
     }
     
@@ -118,9 +128,33 @@ export default async function handler(req, res) {
     return res.status(200).json(response)
     
   } catch (error) {
-    console.error('❌ [send-email] Erro geral:', error)
+    console.error('❌ [send-email] Erro ao enviar e-mail via Brevo:', error)
+    
+    // Log do erro no Supabase se disponível
+    try {
+      const supabaseUrl = process.env.SUPABASE_URL
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE
+      
+      if (supabaseUrl && supabaseServiceKey) {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey)
+        
+        await supabase
+          .from('email_logs')
+          .insert({
+            to: req.body?.to || 'unknown',
+            subject: req.body?.subject || 'unknown',
+            sent_at: new Date().toISOString(),
+            status: 'failed',
+            provider: 'brevo',
+            error_message: error.message
+          })
+      }
+    } catch (logError) {
+      console.log('⚠️ [send-email] Erro ao salvar log de erro:', logError)
+    }
+    
     return res.status(500).json({ 
-      error: 'Erro interno do servidor: ' + error.message,
+      error: 'Erro ao enviar e-mail: ' + error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     })
   }
