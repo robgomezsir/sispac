@@ -188,7 +188,6 @@ export default async function handler(req, res){
           },
           body: JSON.stringify({
             to: email.trim().toLowerCase(),
-            name: name.trim(),
             subject: emailTemplate.subject,
             html: emailTemplate.html,
             text: emailTemplate.text
@@ -284,7 +283,6 @@ export default async function handler(req, res){
         },
         body: JSON.stringify({
           to: email.trim().toLowerCase(),
-          name: name.trim(),
           subject: emailTemplate.subject,
           html: emailTemplate.html,
           text: emailTemplate.text
