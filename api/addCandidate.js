@@ -78,8 +78,8 @@ export default async function handler(req, res){
         return fail(res, { message: 'Erro ao atualizar candidato existente' }, 500)
       }
       
-      // Criar link de acesso
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://sispac.vercel.app'
+      // Criar link de acesso - sempre usar URL principal
+      const baseUrl = 'https://sispac.vercel.app'
       const accessLink = `${baseUrl}/form?token=${accessToken}`
       
       console.log('✅ Candidato atualizado com novo token:', { email: updatedCandidate.email, token: accessToken })
@@ -141,8 +141,8 @@ export default async function handler(req, res){
       }, 500)
     }
     
-    // Criar link de acesso
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://sispac.vercel.app'
+    // Criar link de acesso - sempre usar URL principal
+    const baseUrl = 'https://sispac.vercel.app'
     const accessLink = `${baseUrl}/form?token=${accessToken}`
     
     console.log('✅ Candidato criado com sucesso:', { email: newCandidate[0].email, token: accessToken })
