@@ -51,9 +51,12 @@ export default function Home(){
     if (user && !isLoading && !hasRedirected.current) {
       console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
       hasRedirected.current = true
-      navigate('/dashboard', { replace: true })
+      // Usar setTimeout para garantir que o estado seja atualizado
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, 100)
     }
-  }, [user, isLoading]) // Removida dependência navigate
+  }, [user, isLoading, navigate])
 
   async function onSubmit(e){
     e.preventDefault()
@@ -66,8 +69,11 @@ export default function Home(){
       await signIn(email, password)
       console.log("✅ [Home] Login bem-sucedido")
       
-      // O redirecionamento será feito automaticamente pelo useAuth
-      // Não precisamos fazer nada aqui
+      // Forçar redirecionamento após login bem-sucedido
+      setTimeout(() => {
+        console.log("🚀 [Home] Forçando redirecionamento após login...")
+        navigate('/dashboard', { replace: true })
+      }, 500)
       
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)

@@ -427,7 +427,6 @@ function useProvideAuth(){
       
       // Rotas públicas que não devem ser redirecionadas automaticamente
       const publicRoutes = [
-        '/',
         '/login',
         '/form',
         '/debug',
@@ -441,8 +440,8 @@ function useProvideAuth(){
         '/complete-invite'
       ]
       
-      // Redirecionar apenas se não for uma rota pública
-      if (!publicRoutes.includes(currentPath)) {
+      // Redirecionar se for a página inicial ou se não for uma rota pública
+      if (currentPath === '/' || !publicRoutes.includes(currentPath)) {
         console.log("🚀 [useAuth] Redirecionando para dashboard...")
         hasRedirected.current = true
         navigate('/dashboard', { replace: true })
