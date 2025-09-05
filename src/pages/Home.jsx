@@ -94,25 +94,10 @@ export default function Home(){
     )
   }
 
-  // Se já estiver logado, deixar o useAuth gerenciar o redirecionamento
+  // Se já estiver logado, não renderizar nada - deixar o useAuth gerenciar
   if (user) {
-    console.log('🔍 [Home] Usuário logado, aguardando redirecionamento...')
-    return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        <div className="text-center relative z-10">
-          <div className="w-24 h-24 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-success/20 shadow-glow-success animate-pulse-soft">
-            <CheckCircle size={48} className="text-success animate-bounce-soft" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Acesso Confirmado!</h2>
-          <p className="text-muted-foreground text-lg">Redirecionando para o dashboard...</p>
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className="w-2 h-2 bg-success rounded-full animate-bounce-soft"></div>
-            <div className="w-2 h-2 bg-success rounded-full animate-bounce-soft" style={{animationDelay: '0.1s'}}></div>
-            <div className="w-2 h-2 bg-success rounded-full animate-bounce-soft" style={{animationDelay: '0.2s'}}></div>
-          </div>
-        </div>
-      </div>
-    )
+    console.log('🔍 [Home] Usuário logado, não renderizando formulário...')
+    return null
   }
 
   console.log('🔍 [Home] Mostrando formulário de login...')
