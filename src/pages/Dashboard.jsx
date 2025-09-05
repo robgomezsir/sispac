@@ -49,8 +49,7 @@ import {
   FilterX,
   BarChart4,
   PieChart,
-  LineChart,
-  Mail
+  LineChart
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { 
@@ -288,46 +287,6 @@ export default function Dashboard(){
     }
   }, [sortConfig.key])
 
-  // Função para reenviar email de convite
-  const handleResendEmail = useCallback(async (candidate) => {
-    try {
-      setLoading(true)
-      
-      // Obter token de sessão atual
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session?.access_token) {
-        throw new Error('Sessão expirada. Faça login novamente.')
-      }
-
-      const res = await fetch('/api/addCandidate', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({ 
-          name: candidate.name, 
-          email: candidate.email 
-        })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        throw new Error(data.message || 'Erro ao reenviar email')
-      }
-
-      console.log('✅ Email reenviado com sucesso')
-      alert(`Email de convite reenviado para ${candidate.name} (${candidate.email})`)
-      
-    } catch (err) {
-      console.error('❌ Erro ao reenviar email:', err)
-      setError(err.message || 'Erro ao reenviar email')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
 
   // Função para remover candidato
   const handleDeleteCandidate = useCallback(async (candidate) => {
@@ -629,15 +588,6 @@ export default function Dashboard(){
                       </Button>
                       <Button 
                         variant="outline" 
-                        size="sm"
-                        onClick={() => handleResendEmail(row)}
-                        className="flex-1 h-8 text-xs hover:bg-green-50 hover:text-green-600 hover:border-green-200 transition-all duration-200"
-                      >
-                        <Mail size={14} className="mr-1" />
-                        Email
-                      </Button>
-                      <Button 
-                        variant="outline" 
                         size="sm" 
                         onClick={() => handleDeleteCandidate(row)}
                         className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
@@ -693,15 +643,6 @@ export default function Dashboard(){
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleResendEmail(row)}
-                                className="h-8 px-3 hover:bg-green-50 hover:text-green-600 hover:border-green-200 transition-all duration-200"
-                              >
-                                <Mail size={14} className="mr-1" />
-                                Email
                               </Button>
                               <Button 
                                 variant="outline" 
