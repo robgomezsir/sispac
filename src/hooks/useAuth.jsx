@@ -50,8 +50,14 @@ function useProvideAuth(){
     // Verificação simplificada para evitar travamento
     const checkConnection = async () => {
       try {
-        // Teste simples de conectividade
-        const { data, error } = await supabase.auth.getSession()
+        // Teste simples de conectividade com timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 3000)
+        )
+        
+        const sessionPromise = supabase.auth.getSession()
+        const { data, error } = await Promise.race([sessionPromise, timeoutPromise])
+        
         if (error) {
           console.warn('⚠️ [useAuth] Aviso de conectividade:', error.message)
         }
@@ -72,15 +78,22 @@ function useProvideAuth(){
         setIsLoading(false)
         setIsInitialized(true)
       }
-    }, 10000) // 10 segundos de timeout
+    }, 5000) // 5 segundos de timeout (reduzido)
     
     const initializeAuth = async () => {
       try {
+        console.log('🔍 [useAuth] Iniciando autenticação...')
+        
         // Limpar tokens inválidos antes de começar
         await clearInvalidTokens()
         
-        // Buscar usuário atual
-        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        // Buscar usuário atual com timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout na autenticação')), 5000)
+        )
+        
+        const authPromise = supabase.auth.getUser()
+        const { data: { user: currentUser }, error } = await Promise.race([authPromise, timeoutPromise])
         
         if (!isMounted.current) {
           return
@@ -101,13 +114,8 @@ function useProvideAuth(){
             setAuthError('Erro de autenticação. Tente novamente.')
           }
           
-          // Tentar novamente se não excedeu o limite
-          if (retryCount.current < maxRetries) {
-            retryCount.current++
-            console.log(`🔄 [useAuth] Tentativa ${retryCount.current} de ${maxRetries}...`)
-            setTimeout(initializeAuth, 2000 * retryCount.current) // Backoff exponencial
-            return
-          }
+          // Não tentar novamente automaticamente para evitar loops
+          console.log('🔍 [useAuth] Finalizando inicialização com erro')
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
           
@@ -187,14 +195,6 @@ function useProvideAuth(){
       } catch (err) {
         console.error("❌ [useAuth] Erro na inicialização:", err)
         setAuthError('Erro inesperado na inicialização')
-        
-        // Tentar novamente se não excedeu o limite
-        if (retryCount.current < maxRetries) {
-          retryCount.current++
-          console.log(`🔄 [useAuth] Tentativa ${retryCount.current} de ${maxRetries}...`)
-          setTimeout(initializeAuth, 2000 * retryCount.current)
-          return
-        }
       } finally {
         if (isMounted.current) {
           clearTimeout(timeoutId) // Limpar timeout se a inicialização completar

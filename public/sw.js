@@ -77,7 +77,11 @@ self.addEventListener('fetch', (event) => {
   if (url.protocol === 'chrome-extension:' || 
       url.protocol === 'moz-extension:' || 
       url.protocol === 'safari-extension:' ||
-      url.protocol === 'edge-extension:') {
+      url.protocol === 'edge-extension:' ||
+      url.protocol === 'data:' ||
+      url.hostname === 'invalid' ||
+      url.hostname.includes('pin-') ||
+      url.hostname.includes('extension')) {
     return;
   }
   
