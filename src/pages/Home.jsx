@@ -63,6 +63,10 @@ export default function Home(){
       setEmail('')
       setPassword('')
       
+      // REDIRECIONAMENTO FORÇADO IMEDIATO
+      console.log("🚀 [Home] REDIRECIONANDO FORÇADAMENTE PARA DASHBOARD...")
+      window.location.href = '/dashboard'
+      
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)
       console.error("❌ [Home] Mensagem de erro:", e.message)

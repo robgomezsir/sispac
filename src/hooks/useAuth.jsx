@@ -477,43 +477,14 @@ function useProvideAuth(){
     }
   }, [])
 
-  // Redirecionamento imediato após login bem-sucedido
+  // Redirecionamento simplificado - apenas para usuários já logados na inicialização
   React.useEffect(() => {
-    console.log('🔍 [useAuth] Verificando redirecionamento:', { 
-      isInitialized, 
-      user: !!user, 
-      role: !!role, 
-      isLoading, 
-      isInvitePending,
-      hasRedirected: hasRedirected.current,
-      currentPath: location.pathname
-    })
-    
-    // Redirecionar imediatamente se usuário estiver logado e não tiver redirecionado
-    if (user && role && !isLoading && !isInvitePending && !hasRedirected.current) {
-      const currentPath = location.pathname
-      const publicRoutes = [
-        '/login',
-        '/form',
-        '/debug',
-        '/request-reset',
-        '/reset-password',
-        '/auth/confirm',
-        '/invite-callback',
-        '/welcome',
-        '/join',
-        '/setup-password',
-        '/complete-invite'
-      ]
-      
-      // Redirecionar se for a página inicial ou se não for uma rota pública
-      if (currentPath === '/' || !publicRoutes.includes(currentPath)) {
-        console.log("🚀 [useAuth] Redirecionando para dashboard...")
-        hasRedirected.current = true
-        navigate('/dashboard', { replace: true })
-      }
+    // Apenas redirecionar se usuário já estiver logado na inicialização
+    if (isInitialized && user && role && !isLoading && !isInvitePending && location.pathname === '/') {
+      console.log("🚀 [useAuth] Redirecionando usuário já logado para dashboard...")
+      navigate('/dashboard', { replace: true })
     }
-  }, [user, role, isLoading, isInvitePending, navigate, location.pathname])
+  }, [isInitialized, user, role, isLoading, isInvitePending, navigate, location.pathname])
 
   const signIn = React.useCallback(async (email, password) => {
     try {
@@ -528,16 +499,8 @@ function useProvideAuth(){
       
       console.log('✅ [useAuth] Login bem-sucedido para:', email)
       
-      // Limpar cache e resetar flag de redirecionamento
+      // Limpar cache
       roleCache.current.clear()
-      hasRedirected.current = false
-      
-      // Redirecionamento imediato para admin principal
-      if (email === 'robgomez.sir@gmail.com') {
-        console.log("🚀 [useAuth] Redirecionando admin imediatamente...")
-        hasRedirected.current = true
-        navigate('/dashboard', { replace: true })
-      }
       
       return data
     } catch (err) {
