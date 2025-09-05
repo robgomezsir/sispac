@@ -5,17 +5,9 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zibuyabpsvgulv
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
-// Debug das variáveis de ambiente
-console.log('🔍 [Supabase] URL:', supabaseUrl)
-console.log('🔍 [Supabase] Anon Key:', supabaseAnonKey ? '***' : 'NÃO DEFINIDA')
-console.log('🔍 [Supabase] Service Key:', supabaseServiceKey ? '***' : 'NÃO DEFINIDA')
-
-// Validação rigorosa das variáveis de ambiente
+// Validação das variáveis de ambiente
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ [Supabase] Variáveis de ambiente não configuradas!')
-  console.error('❌ [Supabase] VITE_SUPABASE_URL:', supabaseUrl)
-  console.error('❌ [Supabase] VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'DEFINIDA' : 'NÃO DEFINIDA')
-  console.error('❌ [Supabase] Crie um arquivo .env com as chaves do Supabase!')
   
   // Em produção, mostrar erro mais amigável
   if (!import.meta.env.DEV) {
@@ -27,8 +19,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
       </div>
     `
   }
-} else {
-  console.log('✅ [Supabase] Configuração carregada com sucesso!')
 }
 
 // Função para validar token de forma mais robusta
@@ -46,13 +36,11 @@ const validateToken = (token) => {
     
     // Verificar se o token não expirou
     if (payload.exp && payload.exp < now) {
-      console.warn('⚠️ [Supabase] Token expirado detectado')
       return false
     }
     
     // Verificar se o token não é muito antigo (mais de 1 hora)
     if (payload.iat && (now - payload.iat) > 3600) {
-      console.warn('⚠️ [Supabase] Token muito antigo detectado')
       return false
     }
     
@@ -92,7 +80,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'TOKEN_REFRESHED' && session?.access_token) {
     if (!validateToken(session.access_token)) {
-      console.warn('⚠️ [Supabase] Token inválido após refresh, fazendo logout...')
       try {
         await supabase.auth.signOut()
       } catch (error) {
@@ -107,19 +94,12 @@ if (import.meta.env.DEV) {
   supabase.auth.getSession().then(({ data, error }) => {
     if (error) {
       console.error('❌ [Supabase] Erro na conexão:', error)
-    } else {
-      console.log('✅ [Supabase] Conexão estabelecida com sucesso!')
-      if (data.session) {
-        console.log('✅ [Supabase] Sessão ativa encontrada:', data.session.user.email)
-        // Validar token da sessão
-        if (!validateToken(data.session.access_token)) {
-          console.warn('⚠️ [Supabase] Token da sessão inválido, fazendo logout...')
-          supabase.auth.signOut().catch(error => {
-            console.error('❌ [Supabase] Erro ao fazer logout:', error)
-          })
-        }
-      } else {
-        console.log('ℹ️ [Supabase] Nenhuma sessão ativa')
+    } else if (data.session) {
+      // Validar token da sessão
+      if (!validateToken(data.session.access_token)) {
+        supabase.auth.signOut().catch(error => {
+          console.error('❌ [Supabase] Erro ao fazer logout:', error)
+        })
       }
     }
   })
@@ -140,7 +120,6 @@ export const clearInvalidTokens = async () => {
   try {
     const { data: { session } } = await supabase.auth.getSession()
     if (session && !validateToken(session.access_token)) {
-      console.log('🧹 [Supabase] Limpando token inválido...')
       await supabase.auth.signOut()
       return true
     }
@@ -156,10 +135,8 @@ export const checkSupabaseHealth = async () => {
   try {
     const { data, error } = await supabase.from('profiles').select('count').limit(1)
     if (error) {
-      console.error('❌ [Supabase] Problema de conectividade:', error)
       return false
     }
-    console.log('✅ [Supabase] Conexão saudável')
     return true
   } catch (error) {
     console.error('❌ [Supabase] Erro ao verificar saúde:', error)

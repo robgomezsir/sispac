@@ -38,11 +38,9 @@ function useProvideAuth(){
 
   // Verificar saúde dos caches na inicialização
   React.useEffect(() => {
-    console.log('🔍 [useAuth] Verificando saúde dos caches...')
     const cacheHealth = checkCacheHealth()
     
     if (!cacheHealth.healthy) {
-      console.log('⚠️ [useAuth] Problemas de cache detectados, limpando...')
       clearAuthCache()
     }
   }, [])
@@ -53,7 +51,6 @@ function useProvideAuth(){
       try {
         const isHealthy = await checkSupabaseHealth()
         if (!isHealthy) {
-          console.warn('⚠️ [useAuth] Problemas de conectividade detectados')
           setAuthError('Problemas de conectividade com o servidor')
         }
       } catch (error) {
