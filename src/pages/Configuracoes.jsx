@@ -16,7 +16,9 @@ import {
   Info,
   Plus,
   Minus,
-  Copy
+  Copy,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 
 export default function Configuracoes(){
@@ -27,6 +29,8 @@ export default function Configuracoes(){
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [roleSelect, setRoleSelect] = useState('rh')
+  const [temporaryPassword, setTemporaryPassword] = useState('')
+  const [showTemporaryPassword, setShowTemporaryPassword] = useState(false)
   
   // Estados para candidatos de teste
   const [testCandidateName, setTestCandidateName] = useState('')
@@ -78,6 +82,17 @@ export default function Configuracoes(){
     }
   }
 
+  // Função para copiar senha temporária para área de transferência
+  const copyPasswordToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(temporaryPassword)
+      showMessage('Senha temporária copiada para a área de transferência!', 'success')
+    } catch (error) {
+      console.error('❌ [Configurações] Erro ao copiar senha:', error)
+      showMessage('Erro ao copiar senha. Tente novamente.', 'error')
+    }
+  }
+
   // Função para adicionar usuário
   const handleAddUser = async () => {
     if (!email.trim() || !name.trim()) {
@@ -116,7 +131,15 @@ export default function Configuracoes(){
       }
       
       console.log('✅ [Configurações] Usuário criado com sucesso:', result)
-      showMessage(result.message || `Usuário "${name.trim()}" criado com sucesso!`, 'success')
+      
+      // Capturar senha temporária se disponível
+      if (result.temporaryPassword) {
+        setTemporaryPassword(result.temporaryPassword)
+        setShowTemporaryPassword(true)
+        showMessage(result.message || `Usuário "${name.trim()}" criado com sucesso! Senha temporária gerada.`, 'success')
+      } else {
+        showMessage(result.message || `Usuário "${name.trim()}" criado com sucesso!`, 'success')
+      }
       
       // Limpar campos
       setEmail('')
@@ -601,6 +624,65 @@ export default function Configuracoes(){
                 </div>
               )}
             </button>
+
+            {/* Exibir senha temporária */}
+            {showTemporaryPassword && temporaryPassword && (
+              <div className="mt-6 p-6 bg-gradient-to-r from-warning/10 to-warning/5 border border-warning/20 rounded-xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-warning/20 rounded-lg flex items-center justify-center">
+                    <AlertTriangle size={16} className="text-warning" />
+                  </div>
+                  <h4 className="font-semibold text-warning">Senha Temporária Gerada</h4>
+                </div>
+                <div className="space-y-4">
+                  <div className="p-4 bg-background/50 rounded-lg border border-border/50">
+                    <p className="text-sm text-muted-foreground mb-2">Senha temporária para o usuário:</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 p-3 bg-muted/50 rounded-lg border border-border/30">
+                        <p className="text-lg font-mono text-foreground">
+                          {showTemporaryPassword ? temporaryPassword : '••••••'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setShowTemporaryPassword(!showTemporaryPassword)}
+                        className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
+                        title={showTemporaryPassword ? "Ocultar senha" : "Mostrar senha"}
+                      >
+                        {showTemporaryPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={copyPasswordToClipboard}
+                      className="btn-info-modern px-4 py-2 text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Copy size={16} />
+                        <span>Copiar Senha</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowTemporaryPassword(false)
+                        setTemporaryPassword('')
+                      }}
+                      className="btn-secondary-modern px-4 py-2 text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <XCircle size={16} />
+                        <span>Fechar</span>
+                      </div>
+                    </button>
+                  </div>
+                  <div className="p-3 bg-info/10 border border-info/20 rounded-lg">
+                    <p className="text-sm text-info">
+                      <strong>Importante:</strong> Esta é uma senha temporária. O usuário será redirecionado para redefinir a senha no primeiro login.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

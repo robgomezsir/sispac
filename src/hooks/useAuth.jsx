@@ -25,6 +25,7 @@ function useProvideAuth(){
   const [isInitialized, setIsInitialized] = React.useState(false)
   const [isInvitePending, setIsInvitePending] = React.useState(false)
   const [authError, setAuthError] = React.useState(null)
+  const [needsPasswordReset, setNeedsPasswordReset] = React.useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -35,6 +36,41 @@ function useProvideAuth(){
   const hasRedirected = React.useRef(false)
   const retryCount = React.useRef(0)
   const maxRetries = 3
+
+  // Função para verificar se o usuário precisa redefinir a senha
+  const checkPasswordResetNeeded = React.useCallback(async (user) => {
+    try {
+      // Verificar se o usuário foi criado recentemente (últimos 5 minutos)
+      const userCreatedAt = new Date(user.created_at)
+      const now = new Date()
+      const timeDiff = now - userCreatedAt
+      const fiveMinutes = 5 * 60 * 1000 // 5 minutos em millisegundos
+      
+      // Se o usuário foi criado recentemente, provavelmente tem senha temporária
+      if (timeDiff < fiveMinutes) {
+        console.log('🔍 [useAuth] Usuário criado recentemente, pode precisar redefinir senha')
+        return true
+      }
+      
+      // Verificar se o usuário tem metadata indicando senha temporária
+      if (user.user_metadata?.temporary_password === true) {
+        console.log('🔍 [useAuth] Usuário tem metadata de senha temporária')
+        return true
+      }
+      
+      // Verificar se o usuário nunca fez login (último login é igual à criação)
+      const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at) : null
+      if (lastSignIn && Math.abs(lastSignIn - userCreatedAt) < 60000) { // 1 minuto de diferença
+        console.log('🔍 [useAuth] Usuário nunca fez login real, precisa redefinir senha')
+        return true
+      }
+      
+      return false
+    } catch (error) {
+      console.error('❌ [useAuth] Erro ao verificar necessidade de redefinição de senha:', error)
+      return false
+    }
+  }, [])
 
   // Verificar saúde dos caches na inicialização
   React.useEffect(() => {
@@ -127,6 +163,15 @@ function useProvideAuth(){
             setRole(adminRole)
             setUser(currentUser)
             setAuthError(null)
+            return
+          }
+
+          // Verificar se o usuário precisa redefinir a senha
+          const needsReset = await checkPasswordResetNeeded(currentUser)
+          if (needsReset && location.pathname !== '/reset-password') {
+            console.log('🔍 [useAuth] Usuário precisa redefinir senha, redirecionando...')
+            setNeedsPasswordReset(true)
+            navigate('/reset-password', { replace: true })
             return
           }
           
@@ -229,6 +274,15 @@ function useProvideAuth(){
           setAuthError(null)
           return
         }
+
+        // Verificar se o usuário precisa redefinir a senha
+        const needsReset = await checkPasswordResetNeeded(session.user)
+        if (needsReset && location.pathname !== '/reset-password') {
+          console.log('🔍 [useAuth] Usuário precisa redefinir senha após login, redirecionando...')
+          setNeedsPasswordReset(true)
+          navigate('/reset-password', { replace: true })
+          return
+        }
         
         // Verificar perfil do usuário logado
         try {
@@ -282,6 +336,7 @@ function useProvideAuth(){
         setUser(null)
         setRole(null)
         setAuthError(null)
+        setNeedsPasswordReset(false)
         roleCache.current.clear()
         
         // Limpar cache de autenticação
@@ -524,6 +579,7 @@ function useProvideAuth(){
     role,
     isLoading,
     isInvitePending,
+    needsPasswordReset,
     finalizeInvite,
     signIn,
     signOut,
@@ -531,7 +587,7 @@ function useProvideAuth(){
     authError,
     clearError,
     retryConnection
-  }), [user, role, isLoading, isInvitePending, finalizeInvite, signIn, signOut, authError, clearError, retryConnection])
+  }), [user, role, isLoading, isInvitePending, needsPasswordReset, finalizeInvite, signIn, signOut, authError, clearError, retryConnection])
 
   return authValue
 }

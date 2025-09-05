@@ -65,6 +65,17 @@ export default function ResetPassword() {
       } else {
         setMessage("✅ Senha redefinida com sucesso! Redirecionando para login...");
         
+        // Atualizar metadata do usuário para remover flag de senha temporária
+        try {
+          await supabase.auth.updateUser({
+            data: {
+              temporary_password: false
+            }
+          });
+        } catch (metadataError) {
+          console.warn('⚠️ [ResetPassword] Erro ao atualizar metadata:', metadataError);
+        }
+        
         // Faz logout para forçar novo login com a nova senha
         await supabase.auth.signOut();
         

@@ -104,7 +104,8 @@ export default async function handler(req, res) {
       user_metadata: {
         name: name.trim(),
         role: normalizedRole,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        temporary_password: true
       }
     })
     
@@ -240,13 +241,14 @@ export default async function handler(req, res) {
     
     const response = {
       success: true,
-      message: `Usuário ${name.trim()} criado com sucesso! Senha temporária: ${password}`,
+      message: `Usuário ${name.trim()} criado com sucesso!`,
       user: {
         id: authData.user.id,
         email: authData.user.email,
         role: normalizedRole,
         full_name: name.trim()
       },
+      temporaryPassword: password,
       profileCreated: true,
       emailSent: true
     }
