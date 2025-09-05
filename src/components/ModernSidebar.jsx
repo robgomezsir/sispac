@@ -81,7 +81,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
       icon: Settings,
       path: '/config',
       badge: null,
-      adminOnly: true
+      adminOnly: false
     },
     {
       label: 'API Panel',

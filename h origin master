@@ -1,0 +1,5 @@
+[33ma5e18fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m feat: Remove botões desnecessários e melhora responsividade mobile
+[33m94ce361[m fix: update Vercel environment variables for SendGrid
+[33mbcd202d[m feat: implement SendGrid integration for email sending
+[33m9f9bc9a[m feat: integrate Brevo email service for real email sending
+[33m790a762[m feat: implement automatic email sending for candidate invitations

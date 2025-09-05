@@ -41,9 +41,9 @@ export default function Configuracoes(){
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('info')
 
-  // Verificar se o usuário tem permissão
+  // Verificar se o usuário tem permissão (admin ou rh)
   useEffect(() => {
-    if (role !== 'admin') {
+    if (role !== 'admin' && role !== 'rh') {
       navigate('/dashboard', { replace: true })
     }
   }, [role, navigate])
@@ -467,7 +467,7 @@ export default function Configuracoes(){
 
 
 
-  if (role !== 'admin') {
+  if (role !== 'admin' && role !== 'rh') {
     return (
       <div className="min-h-[50vh] flex items-center justify-center relative overflow-hidden">
         <div className="text-center relative z-10">
@@ -530,124 +530,128 @@ export default function Configuracoes(){
           </p>
         </div>
         
-        {/* Adicionar Usuário */}
-        <div className="card-modern p-8 space-y-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
-              <UserPlus size={24} className="text-primary" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Adicionar Usuário</h2>
-              <p className="text-muted-foreground">Crie novos usuários com diferentes níveis de acesso</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Nome completo</label>
-              <input
-                type="text"
-                placeholder="Digite o nome completo"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="input-modern w-full h-12"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Email</label>
-              <input
-                type="email"
-                placeholder="exemplo@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="input-modern w-full h-12"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Função</label>
-              <select
-                value={roleSelect}
-                onChange={e => setRoleSelect(e.target.value)}
-                className="input-modern w-full h-12 text-sm"
-              >
-                <option value="rh">RH</option>
-                <option value="admin">Administrador</option>
-              </select>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleAddUser}
-            disabled={loading}
-            className="btn-primary-modern px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                <span>Adicionando...</span>
+        {/* Adicionar Usuário - Desabilitado para RH */}
+        {role === 'admin' && (
+          <div className="card-modern p-8 space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <UserPlus size={24} className="text-primary" />
               </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <UserPlus size={18} />
-                <span>Adicionar Usuário</span>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Adicionar Usuário</h2>
+                <p className="text-muted-foreground">Crie novos usuários com diferentes níveis de acesso</p>
               </div>
-            )}
-          </button>
-        </div>
-
-        {/* Remover Usuário */}
-        <div className="card-modern p-8 space-y-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-2xl flex items-center justify-center border border-destructive/20">
-              <UserMinus size={24} className="text-destructive" />
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Remover Usuário</h2>
-              <p className="text-muted-foreground">Remova usuários do sistema de forma segura</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Nome completo</label>
+                <input
+                  type="text"
+                  placeholder="Digite o nome completo"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="input-modern w-full h-12"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Email</label>
+                <input
+                  type="email"
+                  placeholder="exemplo@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="input-modern w-full h-12"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Função</label>
+                <select
+                  value={roleSelect}
+                  onChange={e => setRoleSelect(e.target.value)}
+                  className="input-modern w-full h-12 text-sm"
+                >
+                  <option value="rh">RH</option>
+                  <option value="admin">Administrador</option>
+                </select>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleAddUser}
+              disabled={loading}
+              className="btn-primary-modern px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  <span>Adicionando...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <UserPlus size={18} />
+                  <span>Adicionar Usuário</span>
+                </div>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Remover Usuário - Desabilitado para RH */}
+        {role === 'admin' && (
+          <div className="card-modern p-8 space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-2xl flex items-center justify-center border border-destructive/20">
+                <UserMinus size={24} className="text-destructive" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Remover Usuário</h2>
+                <p className="text-muted-foreground">Remova usuários do sistema de forma segura</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 space-y-2">
+                <label className="text-sm font-medium text-foreground">Email do usuário</label>
+                <input
+                  type="email"
+                  placeholder="exemplo@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="input-modern w-full h-12"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleDeleteUser}
+                  disabled={loading}
+                  className="btn-warning-modern px-8 py-3 h-12 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-3 border-warning-foreground/30 border-t-warning-foreground rounded-full animate-spin" />
+                      <span>Removendo...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <UserMinus size={18} />
+                      <span>Remover Usuário</span>
+                    </div>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-          
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium text-foreground">Email do usuário</label>
-              <input
-                type="email"
-                placeholder="exemplo@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="input-modern w-full h-12"
-              />
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={handleDeleteUser}
-                disabled={loading}
-                className="btn-warning-modern px-8 py-3 h-12 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-3 border-warning-foreground/30 border-t-warning-foreground rounded-full animate-spin" />
-                    <span>Removendo...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <UserMinus size={18} />
-                    <span>Remover Usuário</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
 
-        {/* Gerenciar Candidatos de Teste */}
+        {/* Gerenciamento de Candidatos */}
         <div className="card-modern p-8 space-y-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20">
               <Users size={24} className="text-info" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Gerenciar Candidatos de Teste</h2>
+              <h2 className="text-2xl font-bold text-foreground">Gerenciamento de Candidatos</h2>
               <p className="text-muted-foreground">Adicione e remova candidatos para testes do sistema</p>
             </div>
           </div>
@@ -658,7 +662,7 @@ export default function Configuracoes(){
               <div className="w-10 h-10 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center border border-success/20">
                 <Plus size={20} className="text-success" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground">Adicionar Candidato de Teste</h3>
+              <h3 className="text-xl font-semibold text-foreground">Adicionar Candidato</h3>
               <p className="text-sm text-muted-foreground">Apenas nome e email são necessários. O candidato receberá um link para realizar o teste.</p>
             </div>
             
@@ -698,7 +702,7 @@ export default function Configuracoes(){
               ) : (
                 <div className="flex items-center gap-3">
                   <Plus size={18} />
-                  <span>Adicionar Candidato de Teste</span>
+                  <span>Adicionar Candidato</span>
                 </div>
               )}
             </button>
@@ -737,7 +741,7 @@ export default function Configuracoes(){
               <div className="w-10 h-10 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20">
                 <Minus size={20} className="text-warning" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground">Remover Candidato de Teste</h3>
+              <h3 className="text-xl font-semibold text-foreground">Remover Candidato</h3>
             </div>
             
             <div className="flex flex-col md:flex-row gap-4">
@@ -765,7 +769,7 @@ export default function Configuracoes(){
                   ) : (
                     <div className="flex items-center gap-3">
                       <Minus size={18} />
-                      <span>Remover Candidato de Teste</span>
+                      <span>Remover Candidato</span>
                     </div>
                   )}
                 </button>
@@ -774,57 +778,59 @@ export default function Configuracoes(){
           </div>
         </div>
 
-        {/* Operações do Sistema */}
-        <div className="card-modern p-8 space-y-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl flex items-center justify-center border border-secondary/20">
-              <Database size={24} className="text-secondary-foreground" />
+        {/* Operações do Sistema - Desabilitado para RH */}
+        {role === 'admin' && (
+          <div className="card-modern p-8 space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl flex items-center justify-center border border-secondary/20">
+                <Database size={24} className="text-secondary-foreground" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Operações do Sistema</h2>
+                <p className="text-muted-foreground">Execute operações de manutenção e backup do sistema</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Operações do Sistema</h2>
-              <p className="text-muted-foreground">Execute operações de manutenção e backup do sistema</p>
-            </div>
-          </div>
-          
-          <div className="flex flex-wrap gap-4">
-            <button
-              onClick={handleBackup}
-              disabled={loading}
-              className="btn-info-modern px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-3 border-info-foreground/30 border-t-info-foreground rounded-full animate-spin" />
-                  <span>Fazendo backup...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Database size={18} />
-                  <span>Fazer Backup</span>
-                </div>
-              )}
-            </button>
             
-            <button
-              onClick={handlePurge}
-              disabled={loading}
-              className="btn-destructive px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-3 border-destructive-foreground/30 border-t-destructive-foreground rounded-full animate-spin" />
-                  <span>Limpando...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Trash2 size={18} />
-                  <span>Limpar Dados</span>
-                </div>
-              )}
-            </button>
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={handleBackup}
+                disabled={loading}
+                className="btn-info-modern px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-3 border-info-foreground/30 border-t-info-foreground rounded-full animate-spin" />
+                    <span>Fazendo backup...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Database size={18} />
+                    <span>Fazer Backup</span>
+                  </div>
+                )}
+              </button>
+              
+              <button
+                onClick={handlePurge}
+                disabled={loading}
+                className="btn-destructive px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-3 border-destructive-foreground/30 border-t-destructive-foreground rounded-full animate-spin" />
+                    <span>Limpando...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Trash2 size={18} />
+                    <span>Limpar Dados</span>
+                  </div>
+                )}
+              </button>
 
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mensagens de feedback */}
         {message && (

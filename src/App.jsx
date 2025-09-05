@@ -32,7 +32,7 @@ export default function App(){
       },
       { 
         path: "/config", 
-        element: <AdminOnly><Configuracoes /></AdminOnly> 
+        element: <Protected><Configuracoes /></Protected> 
       },
       { 
         path: "/api", 
