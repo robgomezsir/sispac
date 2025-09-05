@@ -68,25 +68,12 @@ export default function Home(){
     
     try{
       console.log("🔐 [Home] Chamando signIn...")
-      const result = await signIn(email, password)
+      await signIn(email, password)
       console.log("✅ [Home] Login bem-sucedido")
       
-      // Aguardar um pouco para o estado ser atualizado pelo listener de auth
-      setTimeout(() => {
-        console.log("🚀 [Home] Verificando se usuário foi definido...")
-        if (user) {
-          console.log("🚀 [Home] Usuário definido, redirecionando...")
-          navigate('/dashboard', { replace: true })
-        } else {
-          console.log("⚠️ [Home] Usuário ainda não definido, aguardando...")
-          // Tentar novamente em 1 segundo
-          setTimeout(() => {
-            if (user) {
-              navigate('/dashboard', { replace: true })
-            }
-          }, 1000)
-        }
-      }, 200)
+      // Limpar campos após login bem-sucedido
+      setEmail('')
+      setPassword('')
       
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)

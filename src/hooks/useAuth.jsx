@@ -154,14 +154,16 @@ function useProvideAuth(){
         } else if (currentUser) {
           console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
           
-          // Verificar se é o usuário admin principal primeiro
+          // Definir usuário imediatamente
+          setUser(currentUser)
+          setAuthError(null)
+          
+          // Verificar se é o usuário admin principal
           if (currentUser.email === 'robgomez.sir@gmail.com') {
             console.log('🔍 [useAuth] Usuário admin principal detectado')
             const adminRole = 'admin'
             roleCache.current.set(currentUser.id, adminRole)
             setRole(adminRole)
-            setUser(currentUser)
-            setAuthError(null)
             return
           }
 
@@ -263,14 +265,18 @@ function useProvideAuth(){
       console.log('🔍 [useAuth] Evento de auth:', event, session?.user?.email)
       
       if (event === 'SIGNED_IN' && session?.user) {
-        // Verificar se é o usuário admin principal primeiro
+        console.log('🔍 [useAuth] Usuário logado:', session.user.email)
+        
+        // Definir usuário imediatamente
+        setUser(session.user)
+        setAuthError(null)
+        
+        // Verificar se é o usuário admin principal
         if (session.user.email === 'robgomez.sir@gmail.com') {
           console.log('🔍 [useAuth] Usuário admin principal logado')
           const adminRole = 'admin'
           roleCache.current.set(session.user.id, adminRole)
           setRole(adminRole)
-          setUser(session.user)
-          setAuthError(null)
           return
         }
 
@@ -308,10 +314,6 @@ function useProvideAuth(){
             }
           }
           
-          // Atualizar estado
-          setUser(session.user)
-          setAuthError(null)
-          
           // Definir role
           if (profileData?.role) {
             roleCache.current.set(session.user.id, profileData.role)
@@ -328,7 +330,6 @@ function useProvideAuth(){
           const defaultRole = 'rh'
           roleCache.current.set(session.user.id, defaultRole)
           setRole(defaultRole)
-          setUser(session.user)
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
