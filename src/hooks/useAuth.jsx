@@ -267,6 +267,9 @@ function useProvideAuth(){
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('🔍 [useAuth] Usuário logado:', session.user.email)
         
+        // Resetar flag de redirecionamento para permitir novo redirecionamento
+        hasRedirected.current = false
+        
         // Definir usuário imediatamente
         setUser(session.user)
         setAuthError(null)
@@ -464,45 +467,38 @@ function useProvideAuth(){
     }
   }, [])
 
-  // Redirecionamento otimizado - SEM dependências circulares
-  React.useEffect(() => {
-    console.log('🔍 [useAuth] Verificando redirecionamento:', { 
-      isInitialized, 
-      user: !!user, 
-      role: !!role, 
-      isLoading, 
-      isInvitePending,
-      hasRedirected: hasRedirected.current,
-      currentPath: location.pathname
-    })
-    
-    // Só redirecionar se estiver inicializado, logado, não for convite pendente e ainda não redirecionou
-    if (isInitialized && user && role && !isLoading && !isInvitePending && !hasRedirected.current) {
-      const currentPath = location.pathname
-      
-      // Rotas públicas que não devem ser redirecionadas automaticamente
-      const publicRoutes = [
-        '/login',
-        '/form',
-        '/debug',
-        '/request-reset',
-        '/reset-password',
-        '/auth/confirm',
-        '/invite-callback',
-        '/welcome',
-        '/join',
-        '/setup-password',
-        '/complete-invite'
-      ]
-      
-      // Redirecionar se for a página inicial ou se não for uma rota pública
-      if (currentPath === '/' || !publicRoutes.includes(currentPath)) {
-        console.log("🚀 [useAuth] Redirecionando para dashboard...")
-        hasRedirected.current = true
-        navigate('/dashboard', { replace: true })
-      }
+  // Função para verificar se deve redirecionar
+  const shouldRedirect = React.useCallback(() => {
+    if (!isInitialized || !user || !role || isLoading || isInvitePending || hasRedirected.current) {
+      return false
     }
-  }, [isInitialized, user, role, isLoading, isInvitePending, navigate, location.pathname])
+    
+    const currentPath = location.pathname
+    const publicRoutes = [
+      '/login',
+      '/form',
+      '/debug',
+      '/request-reset',
+      '/reset-password',
+      '/auth/confirm',
+      '/invite-callback',
+      '/welcome',
+      '/join',
+      '/setup-password',
+      '/complete-invite'
+    ]
+    
+    return currentPath === '/' || !publicRoutes.includes(currentPath)
+  }, [isInitialized, user, role, isLoading, isInvitePending, location.pathname])
+
+  // Redirecionamento simplificado - apenas quando necessário
+  React.useEffect(() => {
+    if (shouldRedirect()) {
+      console.log("🚀 [useAuth] Redirecionando para dashboard...")
+      hasRedirected.current = true
+      navigate('/dashboard', { replace: true })
+    }
+  }, [shouldRedirect, navigate])
 
   const signIn = React.useCallback(async (email, password) => {
     try {
@@ -517,7 +513,7 @@ function useProvideAuth(){
       
       console.log('✅ [useAuth] Login bem-sucedido para:', email)
       
-      // Limpar cache ao fazer novo login
+      // Limpar cache e resetar flag de redirecionamento
       roleCache.current.clear()
       hasRedirected.current = false
       

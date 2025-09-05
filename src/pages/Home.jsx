@@ -45,20 +45,8 @@ export default function Home(){
     console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
   }, [user, isLoading, loading, authError])
 
-  // Redirecionar automaticamente se já estiver logado - SEM dependências circulares
-  useEffect(() => {
-    console.log('🔍 [Home] Verificando redirecionamento...')
-    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, hasRedirected: hasRedirected.current })
-    
-    if (user && !isLoading && !hasRedirected.current) {
-      console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
-      hasRedirected.current = true
-      // Usar setTimeout para garantir que o estado seja atualizado
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true })
-      }, 100)
-    }
-  }, [user, isLoading, navigate])
+  // O redirecionamento é agora gerenciado pelo useAuth
+  // Removido para evitar conflitos de redirecionamento
 
   async function onSubmit(e){
     e.preventDefault()
@@ -106,9 +94,9 @@ export default function Home(){
     )
   }
 
-  // Se já estiver logado, mostrar loading de redirecionamento
+  // Se já estiver logado, deixar o useAuth gerenciar o redirecionamento
   if (user) {
-    console.log('🔍 [Home] Usuário logado, mostrando tela de redirecionamento...')
+    console.log('🔍 [Home] Usuário logado, aguardando redirecionamento...')
     return (
       <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
         <div className="text-center relative z-10">

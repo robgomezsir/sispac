@@ -1,14 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button, Card, CardContent, CardHeader, CardTitle } from './ui'
 
 export default function AuthDebug() {
-  const { user, role, isLoading, signIn } = useAuth()
+  const { user, role, isLoading, signIn, authError, isInvitePending, needsPasswordReset } = useAuth()
+  const location = useLocation()
   const [testEmail, setTestEmail] = useState('robgomez.sir@gmail.com')
   const [testPassword, setTestPassword] = useState('')
   const [testResult, setTestResult] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [logs, setLogs] = useState([])
+  
+  useEffect(() => {
+    const log = {
+      timestamp: new Date().toLocaleTimeString(),
+      path: location.pathname,
+      user: user ? user.email : 'Não logado',
+      role: role || 'Não definido',
+      isLoading,
+      authError: authError || 'Nenhum'
+    }
+    
+    setLogs(prev => [log, ...prev.slice(0, 9)]) // Manter apenas os últimos 10 logs
+  }, [user, role, isLoading, authError, location.pathname])
 
   const testConnection = async () => {
     setLoading(true)
@@ -84,6 +100,18 @@ export default function AuthDebug() {
           <div>
             <strong>ID:</strong> {user?.id || 'Nenhum'}
           </div>
+          <div>
+            <strong>Convite Pendente:</strong> {isInvitePending ? 'Sim' : 'Não'}
+          </div>
+          <div>
+            <strong>Precisa Resetar Senha:</strong> {needsPasswordReset ? 'Sim' : 'Não'}
+          </div>
+          <div>
+            <strong>Erro:</strong> {authError || 'Nenhum'}
+          </div>
+          <div>
+            <strong>Rota Atual:</strong> {location.pathname}
+          </div>
         </div>
 
         {/* Teste de Conexão */}
@@ -139,6 +167,25 @@ export default function AuthDebug() {
           >
             🔄 Recarregar Página
           </Button>
+        </div>
+
+        {/* Histórico de Mudanças */}
+        <div className="p-4 bg-muted rounded-lg">
+          <h4 className="font-semibold mb-2">📈 Histórico de Mudanças:</h4>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {logs.map((log, index) => (
+              <div key={index} className="text-sm p-2 bg-background rounded border">
+                <div className="font-mono text-xs text-muted-foreground">{log.timestamp}</div>
+                <div><strong>Rota:</strong> {log.path}</div>
+                <div><strong>Usuário:</strong> {log.user}</div>
+                <div><strong>Role:</strong> {log.role}</div>
+                <div><strong>Carregando:</strong> {log.isLoading ? 'Sim' : 'Não'}</div>
+                {log.authError !== 'Nenhum' && (
+                  <div className="text-destructive"><strong>Erro:</strong> {log.authError}</div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Informações do Supabase */}

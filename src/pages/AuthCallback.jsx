@@ -139,14 +139,39 @@ export default function AuthCallback() {
     setMessage("");
 
     try {
-      const result = await finalizeInvite(inviteData.user.email, password);
-      
-      if (result.success) {
-        setMessage("✅ Senha criada com sucesso! Redirecionando para o dashboard...");
-        setTimeout(() => navigate("/dashboard"), 2000);
-      } else {
-        setMessage("❌ Erro ao criar senha: " + result.error);
+      // Usar os tokens do convite para definir a sessão
+      const { data, error: sessionError } = await supabase.auth.setSession({
+        access_token: inviteData.accessToken,
+        refresh_token: inviteData.refreshToken,
+      });
+
+      if (sessionError) {
+        setMessage("❌ Erro ao configurar sessão: " + sessionError.message);
+        return;
       }
+
+      // Atualizar a senha do usuário
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+
+      if (updateError) {
+        setMessage("❌ Erro ao criar senha: " + updateError.message);
+        return;
+      }
+
+      // Atualizar metadata para remover flag de senha temporária
+      await supabase.auth.updateUser({
+        data: {
+          temporary_password: false
+        }
+      });
+
+      setMessage("✅ Senha criada com sucesso! Redirecionando para o dashboard...");
+      
+      // Aguardar um pouco para garantir que o estado seja atualizado
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 1500);
+      
     } catch (err) {
       console.error('❌ [AuthCallback] Erro ao criar senha:', err);
       setMessage("❌ Erro inesperado: " + err.message);
