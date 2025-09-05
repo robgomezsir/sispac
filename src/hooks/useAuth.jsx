@@ -532,12 +532,19 @@ function useProvideAuth(){
       roleCache.current.clear()
       hasRedirected.current = false
       
+      // Redirecionamento imediato para admin principal
+      if (email === 'robgomez.sir@gmail.com') {
+        console.log("🚀 [useAuth] Redirecionando admin imediatamente...")
+        hasRedirected.current = true
+        navigate('/dashboard', { replace: true })
+      }
+      
       return data
     } catch (err) {
       console.error("❌ [useAuth] Exceção no login:", err)
       throw err
     }
-  }, [])
+  }, [navigate])
 
   // Função para fazer logout
   const signOut = async () => {

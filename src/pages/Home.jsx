@@ -97,7 +97,16 @@ export default function Home(){
   // Se já estiver logado, não renderizar nada - deixar o useAuth gerenciar
   if (user) {
     console.log('🔍 [Home] Usuário logado, não renderizando formulário...')
-    return null
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </div>
+          <div className="text-muted-foreground">Redirecionando...</div>
+        </div>
+      </div>
+    )
   }
 
   console.log('🔍 [Home] Mostrando formulário de login...')
