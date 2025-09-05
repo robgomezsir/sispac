@@ -48,7 +48,6 @@ export default function AuthCallback() {
 
         // Se não há tokens e estamos em /welcome, redirecionar para login
         if (!accessToken && !refreshToken) {
-          console.log('🔍 [AuthCallback] Sem tokens, redirecionando para login...');
           navigate('/', { replace: true });
           return;
         }

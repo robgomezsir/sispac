@@ -1,7 +1,5 @@
 // Utilitário para limpar caches e resolver problemas de estado persistente
 export const clearAllCaches = () => {
-  console.log('🧹 [CacheCleaner] Iniciando limpeza de caches...')
-  
   try {
     // Limpar localStorage de forma seletiva
     const keysToKeep = ['theme', 'supabase.auth.token'] // Manter configurações essenciais
@@ -10,7 +8,6 @@ export const clearAllCaches = () => {
     allKeys.forEach(key => {
       if (!keysToKeep.includes(key) && !key.startsWith('supabase.auth')) {
         localStorage.removeItem(key)
-        console.log(`🧹 [CacheCleaner] Removido do localStorage: ${key}`)
       }
     })
     
@@ -21,7 +18,6 @@ export const clearAllCaches = () => {
     allSessionKeys.forEach(key => {
       if (!sessionKeysToKeep.includes(key)) {
         sessionStorage.removeItem(key)
-        console.log(`🧹 [CacheCleaner] Removido do sessionStorage: ${key}`)
       }
     })
     
@@ -32,7 +28,6 @@ export const clearAllCaches = () => {
           // Manter caches essenciais
           if (!cacheName.includes('auth') && !cacheName.includes('user')) {
             caches.delete(cacheName)
-            console.log(`🧹 [CacheCleaner] Cache removido: ${cacheName}`)
           }
         })
       })
@@ -44,13 +39,11 @@ export const clearAllCaches = () => {
         databases.forEach(db => {
           if (db.name && !db.name.includes('auth') && !db.name.includes('user')) {
             indexedDB.deleteDatabase(db.name)
-            console.log(`🧹 [CacheCleaner] IndexedDB removido: ${db.name}`)
           }
         })
       })
     }
     
-    console.log('✅ [CacheCleaner] Limpeza de caches concluída com sucesso')
     return true
   } catch (error) {
     console.error('❌ [CacheCleaner] Erro ao limpar caches:', error)
@@ -60,8 +53,6 @@ export const clearAllCaches = () => {
 
 // Função para limpar apenas caches de autenticação
 export const clearAuthCache = () => {
-  console.log('🧹 [CacheCleaner] Limpando cache de autenticação...')
-  
   try {
     // Remover dados de autenticação específicos do localStorage
     const authKeys = [
@@ -75,7 +66,6 @@ export const clearAuthCache = () => {
     authKeys.forEach(key => {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key)
-        console.log(`🧹 [CacheCleaner] Token removido: ${key}`)
       }
     })
     
@@ -88,11 +78,9 @@ export const clearAuthCache = () => {
     sessionAuthKeys.forEach(key => {
       if (sessionStorage.getItem(key)) {
         sessionStorage.removeItem(key)
-        console.log(`🧹 [CacheCleaner] Dados de sessão removidos: ${key}`)
       }
     })
     
-    console.log('✅ [CacheCleaner] Cache de autenticação limpo com sucesso')
     return true
   } catch (error) {
     console.error('❌ [CacheCleaner] Erro ao limpar cache de autenticação:', error)
@@ -102,8 +90,6 @@ export const clearAuthCache = () => {
 
 // Função para verificar se há problemas de cache
 export const checkCacheHealth = () => {
-  console.log('🔍 [CacheCleaner] Verificando saúde dos caches...')
-  
   const issues = []
   
   try {
@@ -111,7 +97,6 @@ export const checkCacheHealth = () => {
     const localStorageSize = new Blob(Object.keys(localStorage).map(key => 
       key + localStorage.getItem(key)
     )).size
-    console.log(`🔍 [CacheCleaner] Tamanho do localStorage: ${localStorageSize} bytes`)
     
     if (localStorageSize > 1024 * 1024) { // 1MB
       issues.push('localStorage muito grande')
@@ -121,7 +106,6 @@ export const checkCacheHealth = () => {
     const sessionStorageSize = new Blob(Object.keys(sessionStorage).map(key => 
       key + sessionStorage.getItem(key)
     )).size
-    console.log(`🔍 [CacheCleaner] Tamanho do sessionStorage: ${sessionStorageSize} bytes`)
     
     // Verificar se há tokens expirados
     const hasExpiredTokens = Object.keys(localStorage).some(key => 
@@ -141,7 +125,6 @@ export const checkCacheHealth = () => {
       issues.push('Dados de autenticação corrompidos')
     }
     
-    console.log(`🔍 [CacheCleaner] Problemas encontrados: ${issues.length}`)
     return {
       healthy: issues.length === 0,
       issues,
@@ -160,8 +143,6 @@ export const checkCacheHealth = () => {
 
 // Função para reset completo da aplicação
 export const resetApplication = () => {
-  console.log('🔄 [CacheCleaner] Iniciando reset completo da aplicação...')
-  
   try {
     // Limpar todos os caches
     clearAllCaches()
@@ -171,12 +152,10 @@ export const resetApplication = () => {
       const [name] = cookie.split('=')
       if (name.trim().includes('supabase') || name.trim().includes('sb-')) {
         document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-        console.log(`🧹 [CacheCleaner] Cookie removido: ${name.trim()}`)
       }
     })
     
     // Forçar reload da página
-    console.log('🔄 [CacheCleaner] Recarregando aplicação...')
     window.location.reload()
     
     return true

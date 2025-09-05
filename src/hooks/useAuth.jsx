@@ -63,11 +63,9 @@ function useProvideAuth(){
 
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
-    console.log('🔍 [useAuth] useEffect de inicialização executando...')
     
     const initializeAuth = async () => {
       try {
-        console.log('🔍 [useAuth] Iniciando autenticação...')
         
         // Limpar tokens inválidos antes de começar
         await clearInvalidTokens()
