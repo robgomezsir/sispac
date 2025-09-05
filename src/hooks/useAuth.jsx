@@ -45,16 +45,18 @@ function useProvideAuth(){
     }
   }, [])
 
-  // Verificar saúde da conexão Supabase
+  // Verificar saúde da conexão Supabase (simplificado)
   React.useEffect(() => {
+    // Verificação simplificada para evitar travamento
     const checkConnection = async () => {
       try {
-        const isHealthy = await checkSupabaseHealth()
-        if (!isHealthy) {
-          setAuthError('Problemas de conectividade com o servidor')
+        // Teste simples de conectividade
+        const { data, error } = await supabase.auth.getSession()
+        if (error) {
+          console.warn('⚠️ [useAuth] Aviso de conectividade:', error.message)
         }
       } catch (error) {
-        console.error('❌ [useAuth] Erro ao verificar conectividade:', error)
+        console.warn('⚠️ [useAuth] Aviso de conectividade:', error.message)
       }
     }
     
@@ -63,20 +65,24 @@ function useProvideAuth(){
 
   // Inicialização única - SEM dependências que causam loops
   React.useEffect(() => {
+    // Timeout de segurança para garantir que isLoading seja definido como false
+    const timeoutId = setTimeout(() => {
+      if (isMounted.current && isLoading) {
+        console.warn('⚠️ [useAuth] Timeout de inicialização, definindo isLoading como false')
+        setIsLoading(false)
+        setIsInitialized(true)
+      }
+    }, 10000) // 10 segundos de timeout
     
     const initializeAuth = async () => {
       try {
-        
         // Limpar tokens inválidos antes de começar
         await clearInvalidTokens()
         
         // Buscar usuário atual
-        console.log('🔍 [useAuth] Chamando supabase.auth.getUser()...')
         const { data: { user: currentUser }, error } = await supabase.auth.getUser()
-        console.log('🔍 [useAuth] Resposta do getUser:', { user: !!currentUser, error: !!error })
         
         if (!isMounted.current) {
-          console.log('🔍 [useAuth] Componente desmontado, abortando...')
           return
         }
         
@@ -191,7 +197,7 @@ function useProvideAuth(){
         }
       } finally {
         if (isMounted.current) {
-          console.log('🔍 [useAuth] Finalizando inicialização, definindo estados...')
+          clearTimeout(timeoutId) // Limpar timeout se a inicialização completar
           setIsLoading(false)
           setIsInitialized(true)
         }
@@ -199,6 +205,11 @@ function useProvideAuth(){
     }
 
     initializeAuth()
+    
+    // Cleanup do timeout
+    return () => {
+      clearTimeout(timeoutId)
+    }
 
     // Configurar listener de mudança de auth
     console.log('🔍 [useAuth] Configurando listener de auth...')
