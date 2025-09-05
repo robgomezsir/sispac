@@ -11,12 +11,6 @@ import './styles.css'
 // Configuração de desenvolvimento
 if (isDevelopment()) {
   devLog('🚀 [main] Iniciando aplicação em modo DESENVOLVIMENTO...')
-  devLog('🔧 [main] Variáveis de ambiente:', {
-    NODE_ENV: import.meta.env.NODE_ENV,
-    MODE: import.meta.env.MODE,
-    DEV: import.meta.env.DEV,
-    VITE_APP_ENV: import.meta.env.VITE_APP_ENV
-  })
 } else {
   console.log('🚀 [main] Iniciando aplicação em modo PRODUÇÃO...')
 }
@@ -29,10 +23,6 @@ try {
   }
   
   const root = ReactDOM.createRoot(rootElement)
-  
-  if (isDevelopment()) {
-    devLog('🚀 [main] Root criado com sucesso')
-  }
   
   root.render(
     <React.StrictMode>
@@ -50,7 +40,6 @@ try {
   
   if (isDevelopment()) {
     devLog('🚀 [main] Aplicação renderizada com sucesso')
-    devLog('🔧 [main] Servidor rodando em: http://localhost:5173')
   } else {
     console.log('✅ [main] Aplicação renderizada com sucesso em produção')
   }

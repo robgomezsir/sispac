@@ -19,79 +19,67 @@ import AuthCallback from './pages/AuthCallback.jsx'
 
 // Componente App principal otimizado
 export default function App(){
-  console.log('🚀 [App] Componente App renderizando...')
-  
   // Rotas memoizadas para evitar re-criação
-  const routes = useMemo(() => {
-    const routeList = [
-      { path: "/", element: <Home /> },
-      { path: "/form", element: <Formulario /> },
-      { 
-        path: "/dashboard", 
-        element: <Protected><Dashboard /></Protected> 
-      },
-      { 
-        path: "/config", 
-        element: <Protected><Configuracoes /></Protected> 
-      },
-      { 
-        path: "/api", 
-        element: <AdminOnly><ApiPanel /></AdminOnly> 
-      },
-      { 
-        path: "/integracao-gupy", 
-        element: <AdminOnly><IntegracaoGupy /></AdminOnly> 
-      },
-      { 
-        path: "/debug", 
-        element: <AuthDebug /> 
-      },
-      { 
-        path: "/request-reset", 
-        element: <RequestPasswordReset /> 
-      },
-      { 
-        path: "/reset-password", 
-        element: <ResetPassword /> 
-      },
-      { 
-        path: "/auth/confirm", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "/invite-callback", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "/welcome", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "/join", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "/setup-password", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "/complete-invite", 
-        element: <AuthCallback /> 
-      },
-      { 
-        path: "*", 
-        element: <Navigate to="/" replace /> 
-      }
-    ]
-    
-    console.log('🔍 [App] Rotas definidas:', routeList.map(r => ({ 
-      path: r.path, 
-      hasAdminOnly: r.element?.type?.name === 'AdminOnly',
-      elementType: r.element?.type?.name,
-      isAdminRoute: r.path === '/config' || r.path === '/api'
-    })))
-    return routeList
-  }, [])
+  const routes = useMemo(() => [
+    { path: "/", element: <Home /> },
+    { path: "/form", element: <Formulario /> },
+    { 
+      path: "/dashboard", 
+      element: <Protected><Dashboard /></Protected> 
+    },
+    { 
+      path: "/config", 
+      element: <Protected><Configuracoes /></Protected> 
+    },
+    { 
+      path: "/api", 
+      element: <AdminOnly><ApiPanel /></AdminOnly> 
+    },
+    { 
+      path: "/integracao-gupy", 
+      element: <AdminOnly><IntegracaoGupy /></AdminOnly> 
+    },
+    { 
+      path: "/debug", 
+      element: <AuthDebug /> 
+    },
+    { 
+      path: "/request-reset", 
+      element: <RequestPasswordReset /> 
+    },
+    { 
+      path: "/reset-password", 
+      element: <ResetPassword /> 
+    },
+    { 
+      path: "/auth/confirm", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/invite-callback", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/welcome", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/join", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/setup-password", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "/complete-invite", 
+      element: <AuthCallback /> 
+    },
+    { 
+      path: "*", 
+      element: <Navigate to="/" replace /> 
+    }
+  ], [])
   
   return (
     <SidebarProvider>

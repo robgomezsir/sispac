@@ -75,12 +75,9 @@ export default function FormularioNew(){
       
       if (!token) {
         // Se não há token, permitir acesso direto (compatibilidade com fluxo antigo)
-        console.log('🔍 [FormularioNew] Nenhum token fornecido, permitindo acesso direto')
         setTokenValid(true)
         return
       }
-      
-      console.log('🔍 [FormularioNew] Validando token:', token.substring(0, 8) + '...')
       setTokenValidating(true)
       setTokenError(null)
       
@@ -96,7 +93,6 @@ export default function FormularioNew(){
         const data = await response.json()
         
         if (response.ok && data.valid) {
-          console.log('✅ [FormularioNew] Token válido:', data.candidate)
           setTokenValid(true)
           setCandidateData(data.candidate)
           
@@ -108,12 +104,10 @@ export default function FormularioNew(){
             setEmail(data.candidate.email)
           }
         } else {
-          console.log('❌ [FormularioNew] Token inválido:', data.message)
           setTokenError(data.message || 'Token inválido')
           setTokenValid(false)
         }
       } catch (error) {
-        console.error('❌ [FormularioNew] Erro ao validar token:', error)
         setTokenError('Erro ao validar token. Tente novamente.')
         setTokenValid(false)
       } finally {
@@ -230,14 +224,8 @@ export default function FormularioNew(){
       const status = classify(totalScore)
       const token = searchParams.get('token')
 
-      console.log('🔄 [FormularioNew] Iniciando envio de respostas...')
-      console.log('🔄 [FormularioNew] Token presente:', !!token)
-      console.log('🔄 [FormularioNew] Score calculado:', totalScore)
-      console.log('🔄 [FormularioNew] Status:', status)
-
       if (token) {
         // NOVA ABORDAGEM: Usar API específica para atualizar candidato via token
-        console.log('🔄 [FormularioNew] Usando API updateCandidateByToken...')
         
         const response = await fetch('/api/updateCandidateByToken', {
           method: 'POST',
@@ -255,15 +243,11 @@ export default function FormularioNew(){
         const data = await response.json()
         
         if (!response.ok) {
-          console.error('❌ [FormularioNew] Erro na API updateCandidateByToken:', data)
           throw new Error(data.message || 'Erro ao atualizar candidato')
         }
         
-        console.log('✅ [FormularioNew] Candidato atualizado com sucesso via API:', data)
-        
       } else {
         // Fluxo sem token: usar API insertCandidate (que já verifica candidatos pendentes)
-        console.log('🔄 [FormularioNew] Fluxo sem token: usando API insertCandidate...')
         
         const response = await fetch('/api/insertCandidate', {
           method: 'POST',
@@ -287,18 +271,13 @@ export default function FormularioNew(){
             setSent(true)
             return
           }
-          console.error('❌ [FormularioNew] Erro na API insertCandidate:', data)
           throw new Error(data.message || 'Erro ao processar candidato')
         }
-        
-        console.log('✅ [FormularioNew] Candidato processado com sucesso:', data)
       }
 
-      console.log("✅ [FormularioNew] Respostas enviadas com sucesso!")
       setSent(true)
       
     } catch (err) {
-      console.error("❌ [FormularioNew] Erro ao enviar respostas:", err)
       setError(err.message || 'Erro ao enviar respostas')
     } finally {
       setSending(false)

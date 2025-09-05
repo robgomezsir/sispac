@@ -2,7 +2,6 @@ import { getSupabaseAdmin, ok, fail } from './_utils.js'
 
 export default async function handler(req, res){
   try{
-    console.log('🔄 [insertCandidate] Iniciando inserção de candidato')
     
     // Configurar headers CORS
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -44,7 +43,6 @@ export default async function handler(req, res){
     const supabase = getSupabaseAdmin()
     
     // Verificar se candidato já existe (completo ou pendente)
-    console.log('🔍 [insertCandidate] Verificando se candidato já existe:', email.trim().toLowerCase())
     
     const { data: existingCandidate, error: checkError } = await supabase
       .from('candidates')
@@ -54,14 +52,12 @@ export default async function handler(req, res){
       .maybeSingle()
     
     if(checkError) {
-      console.error('❌ [insertCandidate] Erro ao verificar candidato existente:', checkError)
       return fail(res, { message: 'Erro ao verificar candidato existente' }, 500)
     }
     
     if(existingCandidate) {
       // Se candidato existe e está pendente, atualizar ao invés de inserir
       if(existingCandidate.status === 'PENDENTE_TESTE') {
-        console.log('🔄 [insertCandidate] Candidato pendente encontrado, atualizando diretamente...')
         
         // Atualizar candidato pendente diretamente no banco
         const { data: updatedCandidate, error: updateError } = await supabase
@@ -77,14 +73,11 @@ export default async function handler(req, res){
           .single()
         
         if(updateError) {
-          console.error('❌ [insertCandidate] Erro ao atualizar candidato pendente:', updateError)
           return fail(res, { 
             message: 'Erro ao atualizar candidato pendente: ' + updateError.message,
             details: updateError.details
           }, 500)
         }
-        
-        console.log('✅ [insertCandidate] Candidato pendente atualizado com sucesso:', updatedCandidate)
         
         return ok(res, { 
           message: 'Candidato pendente atualizado com sucesso!',
@@ -98,13 +91,11 @@ export default async function handler(req, res){
         })
       } else {
         // Candidato já completou o teste
-        console.log('⚠️ [insertCandidate] Candidato já completou o teste:', existingCandidate.id)
         return fail(res, { message: 'Candidato com este email já completou o teste' }, 409)
       }
     }
     
     // Inserir novo candidato
-    console.log('🔄 [insertCandidate] Inserindo novo candidato...')
     
     const candidatePayload = {
       name: name.trim(),
@@ -122,20 +113,12 @@ export default async function handler(req, res){
       .single()
     
     if(insertError) {
-      console.error('❌ [insertCandidate] Erro ao inserir candidato:', insertError)
       return fail(res, { 
         message: 'Erro ao inserir candidato: ' + insertError.message,
         details: insertError.details,
         code: insertError.code
       }, 500)
     }
-    
-    console.log('✅ [insertCandidate] Candidato inserido com sucesso:', {
-      id: insertedCandidate.id,
-      email: insertedCandidate.email,
-      status: insertedCandidate.status,
-      score: insertedCandidate.score
-    })
     
     return ok(res, { 
       message: 'Candidato inserido com sucesso!',
@@ -149,7 +132,6 @@ export default async function handler(req, res){
     })
     
   }catch(e){ 
-    console.error('❌ [insertCandidate] Erro na API:', e)
     fail(res, e) 
   }
 }
