@@ -48,6 +48,8 @@ export default function Home(){
   // Redirecionar automaticamente se já estiver logado - SEM dependências circulares
   useEffect(() => {
     console.log('🔍 [Home] Verificando redirecionamento...')
+    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, hasRedirected: hasRedirected.current })
+    
     if (user && !isLoading && !hasRedirected.current) {
       console.log("🚀 [Home] Usuário já logado, redirecionando para dashboard...")
       hasRedirected.current = true
@@ -66,14 +68,25 @@ export default function Home(){
     
     try{
       console.log("🔐 [Home] Chamando signIn...")
-      await signIn(email, password)
+      const result = await signIn(email, password)
       console.log("✅ [Home] Login bem-sucedido")
       
-      // Forçar redirecionamento após login bem-sucedido
+      // Aguardar um pouco para o estado ser atualizado pelo listener de auth
       setTimeout(() => {
-        console.log("🚀 [Home] Forçando redirecionamento após login...")
-        navigate('/dashboard', { replace: true })
-      }, 500)
+        console.log("🚀 [Home] Verificando se usuário foi definido...")
+        if (user) {
+          console.log("🚀 [Home] Usuário definido, redirecionando...")
+          navigate('/dashboard', { replace: true })
+        } else {
+          console.log("⚠️ [Home] Usuário ainda não definido, aguardando...")
+          // Tentar novamente em 1 segundo
+          setTimeout(() => {
+            if (user) {
+              navigate('/dashboard', { replace: true })
+            }
+          }, 1000)
+        }
+      }, 200)
       
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)

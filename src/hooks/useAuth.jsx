@@ -40,27 +40,26 @@ function useProvideAuth(){
   // Função para verificar se o usuário precisa redefinir a senha
   const checkPasswordResetNeeded = React.useCallback(async (user) => {
     try {
-      // Verificar se o usuário foi criado recentemente (últimos 5 minutos)
-      const userCreatedAt = new Date(user.created_at)
-      const now = new Date()
-      const timeDiff = now - userCreatedAt
-      const fiveMinutes = 5 * 60 * 1000 // 5 minutos em millisegundos
-      
-      // Se o usuário foi criado recentemente, provavelmente tem senha temporária
-      if (timeDiff < fiveMinutes) {
-        console.log('🔍 [useAuth] Usuário criado recentemente, pode precisar redefinir senha')
-        return true
-      }
-      
       // Verificar se o usuário tem metadata indicando senha temporária
       if (user.user_metadata?.temporary_password === true) {
         console.log('🔍 [useAuth] Usuário tem metadata de senha temporária')
         return true
       }
       
-      // Verificar se o usuário nunca fez login (último login é igual à criação)
+      // Verificar se o usuário foi criado recentemente (últimos 2 minutos) E tem metadata de senha temporária
+      const userCreatedAt = new Date(user.created_at)
+      const now = new Date()
+      const timeDiff = now - userCreatedAt
+      const twoMinutes = 2 * 60 * 1000 // 2 minutos em millisegundos
+      
+      if (timeDiff < twoMinutes && user.user_metadata?.temporary_password === true) {
+        console.log('🔍 [useAuth] Usuário criado recentemente com senha temporária')
+        return true
+      }
+      
+      // Verificar se o usuário nunca fez login real (último login é igual à criação)
       const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at) : null
-      if (lastSignIn && Math.abs(lastSignIn - userCreatedAt) < 60000) { // 1 minuto de diferença
+      if (lastSignIn && Math.abs(lastSignIn - userCreatedAt) < 30000) { // 30 segundos de diferença
         console.log('🔍 [useAuth] Usuário nunca fez login real, precisa redefinir senha')
         return true
       }
