@@ -520,17 +520,24 @@ export default function Configuracoes(){
         {/* Header da página */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl mb-4 border border-primary/20 shadow-glow">
-            <Settings size={40} className="text-primary" />
+            {role === 'admin' ? (
+              <Settings size={40} className="text-primary" />
+            ) : (
+              <Users size={40} className="text-primary" />
+            )}
           </div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-            Configurações do Sistema
+            {role === 'admin' ? 'Configurações do Sistema' : 'Gerenciamento de Candidatos'}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Gerencie usuários, candidatos de teste e operações do sistema de forma segura e intuitiva
+            {role === 'admin' 
+              ? 'Gerencie usuários, candidatos de teste e operações do sistema de forma segura e intuitiva'
+              : 'Gerencie candidatos de teste para avaliações comportamentais'
+            }
           </p>
         </div>
         
-        {/* Adicionar Usuário - Desabilitado para RH */}
+        {/* Adicionar Usuário - Admin apenas */}
         {role === 'admin' && (
           <div className="card-modern p-8 space-y-6">
             <div className="flex items-center gap-3 mb-6">
@@ -651,8 +658,15 @@ export default function Configuracoes(){
               <Users size={24} className="text-info" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Gerenciamento de Candidatos</h2>
-              <p className="text-muted-foreground">Adicione e remova candidatos para testes do sistema</p>
+              <h2 className="text-2xl font-bold text-foreground">
+                {role === 'admin' ? 'Gerenciamento de Candidatos' : 'Gerenciar Candidatos de Teste'}
+              </h2>
+              <p className="text-muted-foreground">
+                {role === 'admin' 
+                  ? 'Adicione e remova candidatos para testes do sistema'
+                  : 'Adicione e remova candidatos para avaliações comportamentais'
+                }
+              </p>
             </div>
           </div>
           
@@ -778,7 +792,137 @@ export default function Configuracoes(){
           </div>
         </div>
 
-        {/* Operações do Sistema - Desabilitado para RH */}
+        {/* Seções desabilitadas para usuários RH */}
+        {role === 'rh' && (
+          <>
+            {/* Adicionar Usuário - Desabilitado para RH */}
+            <div className="card-modern p-8 space-y-6 opacity-50 pointer-events-none">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-muted/20 to-muted/10 rounded-2xl flex items-center justify-center border border-muted/20">
+                  <UserPlus size={24} className="text-muted-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-muted-foreground">Adicionar Usuário</h2>
+                  <p className="text-muted-foreground">Funcionalidade disponível apenas para administradores</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Nome completo</label>
+                  <input
+                    type="text"
+                    placeholder="Digite o nome completo"
+                    disabled
+                    className="input-modern w-full h-12 bg-muted/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Email</label>
+                  <input
+                    type="email"
+                    placeholder="exemplo@email.com"
+                    disabled
+                    className="input-modern w-full h-12 bg-muted/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Função</label>
+                  <select
+                    disabled
+                    className="input-modern w-full h-12 text-sm bg-muted/50"
+                  >
+                    <option value="rh">RH</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button
+                disabled
+                className="btn-primary-modern px-8 py-3 opacity-50 cursor-not-allowed"
+              >
+                <div className="flex items-center gap-3">
+                  <UserPlus size={18} />
+                  <span>Adicionar Usuário</span>
+                </div>
+              </button>
+            </div>
+
+            {/* Remover Usuário - Desabilitado para RH */}
+            <div className="card-modern p-8 space-y-6 opacity-50 pointer-events-none">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-muted/20 to-muted/10 rounded-2xl flex items-center justify-center border border-muted/20">
+                  <UserMinus size={24} className="text-muted-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-muted-foreground">Remover Usuário</h2>
+                  <p className="text-muted-foreground">Funcionalidade disponível apenas para administradores</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Email do usuário</label>
+                  <input
+                    type="email"
+                    placeholder="exemplo@email.com"
+                    disabled
+                    className="input-modern w-full h-12 bg-muted/50"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    disabled
+                    className="btn-warning-modern px-8 py-3 h-12 opacity-50 cursor-not-allowed"
+                  >
+                    <div className="flex items-center gap-3">
+                      <UserMinus size={18} />
+                      <span>Remover Usuário</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Operações do Sistema - Desabilitado para RH */}
+            <div className="card-modern p-8 space-y-6 opacity-50 pointer-events-none">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-muted/20 to-muted/10 rounded-2xl flex items-center justify-center border border-muted/20">
+                  <Database size={24} className="text-muted-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-muted-foreground">Operações do Sistema</h2>
+                  <p className="text-muted-foreground">Funcionalidade disponível apenas para administradores</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-4">
+                <button
+                  disabled
+                  className="btn-info-modern px-6 py-3 opacity-50 cursor-not-allowed"
+                >
+                  <div className="flex items-center gap-3">
+                    <Database size={18} />
+                    <span>Fazer Backup</span>
+                  </div>
+                </button>
+                
+                <button
+                  disabled
+                  className="btn-destructive px-6 py-3 opacity-50 cursor-not-allowed"
+                >
+                  <div className="flex items-center gap-3">
+                    <Trash2 size={18} />
+                    <span>Limpar Dados</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Operações do Sistema - Admin apenas */}
         {role === 'admin' && (
           <div className="card-modern p-8 space-y-6">
             <div className="flex items-center gap-3 mb-6">
