@@ -37,8 +37,7 @@ import {
   BookOpen,
   GraduationCap,
   ChevronDown,
-  FileText,
-  Shield
+  FileText
 } from 'lucide-react'
 import { 
   Button, 
