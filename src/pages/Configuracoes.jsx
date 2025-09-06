@@ -24,6 +24,18 @@ import {
   Calendar,
   Clock
 } from 'lucide-react'
+import { 
+  Button, 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent, 
+  CardFooter,
+  Input,
+  Label,
+  Badge
+} from '../components/ui'
 
 export default function Configuracoes(){
   const { user, role } = useAuth()
