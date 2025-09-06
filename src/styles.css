@@ -51,7 +51,7 @@
     --tracking-normal: 0em;
     --spacing: 0.25rem;
     
-    /* Cores de sucesso, aviso e info - Tons pastéis */
+    /* Cores de sucesso, aviso e info - Tons pastÃ©is */
     --success: 142 76% 80%;
     --success-foreground: 142 40% 20%;
     --warning: 38 92% 80%;
@@ -59,7 +59,7 @@
     --info: 199 89% 80%;
     --info-foreground: 199 40% 20%;
     
-    /* Variáveis de design */
+    /* VariÃ¡veis de design */
     --sidebar-width: 20rem;
     --header-height: 4rem;
   }
@@ -183,7 +183,7 @@
     letter-spacing: var(--tracking-normal);
   }
 
-  /* Correções para dispositivos móveis */
+  /* CorreÃ§Ãµes para dispositivos mÃ³veis */
   @media (max-width: 768px) {
     html, body {
       height: auto;
@@ -198,7 +198,7 @@
       -webkit-overflow-scrolling: touch;
     }
     
-    /* Ajustes específicos para formulário de login em mobile */
+    /* Ajustes especÃ­ficos para formulÃ¡rio de login em mobile */
     .mobile-login-container {
       padding: 1rem;
       min-height: 100vh;
@@ -214,7 +214,7 @@
       margin-top: 2rem;
     }
     
-    /* Garantir que o conteúdo seja visível */
+    /* Garantir que o conteÃºdo seja visÃ­vel */
     .mobile-content {
       width: 100%;
       max-width: 100%;
@@ -247,7 +247,7 @@
 }
 
 @layer components {
-  /* Animações personalizadas com easing suave e moderno */
+  /* AnimaÃ§Ãµes personalizadas com easing suave e moderno */
   .animate-in {
     animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -455,7 +455,7 @@
     }
   }
   
-  /* Gradientes personalizados com tons pastéis vibrantes */
+  /* Gradientes personalizados com tons pastÃ©is vibrantes */
   .bg-gradient-radial {
     background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
   }
@@ -558,7 +558,7 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
   }
   
-  /* Transições personalizadas com easing suave e moderno */
+  /* TransiÃ§Ãµes personalizadas com easing suave e moderno */
   .transition-smooth {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -580,7 +580,7 @@
     @apply animate-out;
   }
 
-  /* Utilitários para tabelas com design moderno */
+  /* UtilitÃ¡rios para tabelas com design moderno */
   .table-container {
     @apply relative w-full overflow-auto rounded-2xl border border-border/50;
   }
@@ -605,14 +605,19 @@
     @apply p-4 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-sm;
   }
 
-  /* Utilitários para dropdowns com animações suaves */
+  /* UtilitÃ¡rios para dropdowns com animaÃ§Ãµes suaves */
   .dropdown-content {
     @apply bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-top overflow-hidden rounded-2xl border border-border/50 p-2 shadow-xl backdrop-blur-sm;
   }
 
-  /* Utilitários para selects com design moderno */
+  /* UtilitÃ¡rios para selects com design moderno - CORRIGIDO */
   .select-trigger {
-    @apply border-input data-[placeholder]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-2xl border bg-transparent px-4 py-3 text-sm whitespace-nowrap shadow-sm transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-muted/30;
+    @apply border-input data-[placeholder]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-auto min-w-[180px] items-center justify-between gap-3 rounded-2xl border bg-transparent px-4 py-3 text-sm whitespace-nowrap shadow-sm transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-muted/30;
+  }
+
+  /* Versão alternativa para casos que precisam de mais espaço */
+  .select-trigger-wide {
+    @apply border-input data-[placeholder]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-auto min-w-[200px] max-w-[300px] items-center justify-between gap-4 rounded-2xl border bg-transparent px-5 py-3 text-sm whitespace-nowrap shadow-sm transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-muted/30;
   }
 
   .select-content {
@@ -765,15 +770,22 @@
       inset -20px -20px 60px rgba(255, 255, 255, 0.8);
   }
 
-  /* Estilos para seletores com flexbox */
+  /* Estilos para seletores com flexbox - CORRIGIDO */
   .select-container {
     display: flex;
     width: 100%;
+    min-width: 0;
   }
 
-  .select-container select {
-    flex: 1;
-    min-width: 0; /* permite que o flex funcione corretamente */
-    width: 100%;
+  .select-container .select-trigger {
+    flex: 0 1 auto; /* não cresce, mas pode encolher, tamanho automático */
+    min-width: 180px;
+    max-width: 100%;
+  }
+
+  .select-container .select-trigger-wide {
+    flex: 0 1 auto;
+    min-width: 200px;
+    max-width: 300px;
   }
 }
