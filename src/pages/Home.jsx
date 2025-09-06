@@ -116,108 +116,110 @@ export default function Home(){
   console.log('🔍 [Home] Mostrando formulário de login...')
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-auto p-6 mobile-scrollable mobile-login-container bg-gradient-to-br from-background via-background to-accent/5">
-      <div className="w-full max-w-6xl relative z-10 py-12 mobile-content">
-        <div className="grid lg:grid-cols-2 gap-12 items-start lg:items-center min-h-0">
+    <div className="min-h-screen flex items-center justify-center relative overflow-auto p-4 mobile-scrollable mobile-login-container bg-gradient-to-br from-background via-background to-accent/5">
+      <div className="w-full max-w-7xl relative z-10 py-8 mobile-content">
+        <div className="grid lg:grid-cols-2 gap-8 items-center min-h-0">
           {/* Lado esquerdo - Informações do sistema */}
-          <div className="text-center lg:text-left space-y-8 animate-slide-in-from-left order-2 lg:order-1">
+          <div className="text-center lg:text-left space-y-6 animate-slide-in-from-left order-2 lg:order-1">
             {/* Logo e título */}
-            <div className="space-y-6">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary/30 to-primary/20 rounded-3xl border-2 border-primary/30 shadow-2xl animate-float group">
-                <img 
-                  src="/logo192.png" 
-                  alt="SisPAC Logo" 
-                  className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent animate-glow">
-                  SisPAC
-                </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground font-bold leading-relaxed">
-                  Sistema Propósito de Avaliação Comportamental
-                </p>
-                <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium">
-                  Plataforma moderna para avaliação e análise comportamental de candidatos
-                </p>
+            <div className="space-y-5">
+              <div className="flex flex-col items-center lg:items-start space-y-4">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/25 to-primary/15 rounded-2xl border-2 border-primary/25 shadow-xl group">
+                  <img 
+                    src="/logo192.png" 
+                    alt="SisPAC Logo" 
+                    className="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+                    SisPAC
+                  </h1>
+                  <p className="text-lg md:text-xl text-muted-foreground font-semibold leading-relaxed">
+                    Sistema Propósito de Avaliação Comportamental
+                  </p>
+                  <p className="text-base text-muted-foreground/80 leading-relaxed">
+                    Plataforma moderna para avaliação e análise comportamental de candidatos
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Características do sistema */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-3xl bg-gradient-to-br from-success/15 to-success/8 border-2 border-success/30 hover:from-success/25 hover:to-success/15 transition-all duration-300 group hover:scale-105 transform-gpu shadow-lg hover:shadow-xl">
-                  <div className="w-14 h-14 bg-gradient-to-br from-success/30 to-success/20 rounded-2xl flex items-center justify-center border-2 border-success/30 group-hover:scale-110 transition-transform duration-300 shadow-md">
-                    <Shield size={28} className="text-success" />
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 border border-success/20 hover:from-success/20 hover:to-success/10 transition-all duration-300 group hover:scale-105 transform-gpu">
+                  <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center border border-success/20 group-hover:scale-110 transition-transform duration-300">
+                    <Shield size={24} className="text-success" />
                   </div>
                   <div className="text-center lg:text-left">
-                    <h3 className="font-bold text-foreground text-lg">Seguro</h3>
-                    <p className="text-sm text-muted-foreground font-medium">Dados protegidos</p>
+                    <h3 className="font-semibold text-foreground">Seguro</h3>
+                    <p className="text-sm text-muted-foreground">Dados protegidos</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-3xl bg-gradient-to-br from-warning/15 to-warning/8 border-2 border-warning/30 hover:from-warning/25 hover:to-warning/15 transition-all duration-300 group hover:scale-105 transform-gpu shadow-lg hover:shadow-xl">
-                  <div className="w-14 h-14 bg-gradient-to-br from-warning/30 to-warning/20 rounded-2xl flex items-center justify-center border-2 border-warning/30 group-hover:scale-110 transition-transform duration-300 shadow-md">
-                    <Zap size={28} className="text-warning" />
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-warning/10 to-warning/5 border border-warning/20 hover:from-warning/20 hover:to-warning/10 transition-all duration-300 group hover:scale-105 transform-gpu">
+                  <div className="w-12 h-12 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20 group-hover:scale-110 transition-transform duration-300">
+                    <Zap size={24} className="text-warning" />
                   </div>
                   <div className="text-center lg:text-left">
-                    <h3 className="font-bold text-foreground text-lg">Rápido</h3>
-                    <p className="text-sm text-muted-foreground font-medium">Processamento ágil</p>
+                    <h3 className="font-semibold text-foreground">Rápido</h3>
+                    <p className="text-sm text-muted-foreground">Processamento ágil</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center lg:items-start gap-3 p-4 rounded-3xl bg-gradient-to-br from-info/15 to-info/8 border-2 border-info/30 hover:from-info/25 hover:to-info/15 transition-all duration-300 group hover:scale-105 transform-gpu shadow-lg hover:shadow-xl">
-                  <div className="w-14 h-14 bg-gradient-to-br from-info/30 to-info/20 rounded-2xl flex items-center justify-center border-2 border-info/30 group-hover:scale-110 transition-transform duration-300 shadow-md">
-                    <Heart size={28} className="text-info" />
+                <div className="flex flex-col items-center lg:items-start gap-2 p-3 rounded-2xl bg-gradient-to-br from-info/10 to-info/5 border border-info/20 hover:from-info/20 hover:to-info/10 transition-all duration-300 group hover:scale-105 transform-gpu">
+                  <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20 group-hover:scale-110 transition-transform duration-300">
+                    <Heart size={24} className="text-info" />
                   </div>
                   <div className="text-center lg:text-left">
-                    <h3 className="font-bold text-foreground text-lg">Intuitivo</h3>
-                    <p className="text-sm text-muted-foreground font-medium">Interface amigável</p>
+                    <h3 className="font-semibold text-foreground">Intuitivo</h3>
+                    <p className="text-sm text-muted-foreground">Interface amigável</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Estatísticas ou benefícios */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center lg:text-left p-4 rounded-3xl bg-gradient-to-br from-warning/15 to-warning/8 border-2 border-warning/30 hover:scale-105 transition-all duration-300 transform-gpu shadow-lg hover:shadow-xl">
-                <div className="flex items-center justify-center lg:justify-start gap-3 mb-3">
-                  <Star size={24} className="text-warning" />
-                  <span className="text-3xl font-black text-foreground">99%</span>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-gradient-to-br from-warning/10 to-warning/5 border border-warning/20 hover:scale-105 transition-all duration-300 transform-gpu">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
+                  <Star size={20} className="text-warning" />
+                  <span className="text-2xl font-bold text-foreground">99%</span>
                 </div>
-                <p className="text-sm text-muted-foreground font-semibold">Precisão nos resultados</p>
+                <p className="text-sm text-muted-foreground">Precisão nos resultados</p>
               </div>
               
-              <div className="text-center lg:text-left p-4 rounded-3xl bg-gradient-to-br from-success/15 to-success/8 border-2 border-success/30 hover:scale-105 transition-all duration-300 transform-gpu shadow-lg hover:shadow-xl">
-                <div className="flex items-center justify-center lg:justify-start gap-3 mb-3">
-                  <Award size={24} className="text-success" />
-                  <span className="text-3xl font-black text-foreground">24/7</span>
+              <div className="text-center lg:text-left p-3 rounded-2xl bg-gradient-to-br from-success/10 to-success/5 border border-success/20 hover:scale-105 transition-all duration-300 transform-gpu">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
+                  <Award size={20} className="text-success" />
+                  <span className="text-2xl font-bold text-foreground">24/7</span>
                 </div>
-                <p className="text-sm text-muted-foreground font-semibold">Disponibilidade</p>
+                <p className="text-sm text-muted-foreground">Disponibilidade</p>
               </div>
             </div>
           </div>
 
           {/* Lado direito - Formulário de login */}
           <div className="animate-slide-in-from-right order-1 lg:order-2 mobile-login-form">
-            <Card className="border-0 shadow-2xl backdrop-blur-md max-w-lg mx-auto hover:shadow-3xl transition-all duration-500 hover:-translate-y-3 bg-card/90">
-              <CardHeader className="text-center space-y-6 pb-8">
-                <div className="w-24 h-24 bg-gradient-to-br from-primary/30 to-primary/20 rounded-3xl flex items-center justify-center mx-auto border-2 border-primary/30 shadow-2xl animate-pulse-soft group">
-                  <Lock size={48} className="text-primary group-hover:scale-110 transition-transform duration-300" />
+            <Card className="border-0 shadow-xl backdrop-blur-sm max-w-md mx-auto hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-card/95">
+              <CardHeader className="text-center space-y-4 pb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20 shadow-lg group">
+                  <Lock size={40} className="text-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <div className="space-y-3">
-                  <CardTitle className="text-3xl font-black">Acesso ao Sistema</CardTitle>
-                  <CardDescription className="text-lg text-muted-foreground/80 font-medium">
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl font-bold">Acesso ao Sistema</CardTitle>
+                  <CardDescription className="text-base text-muted-foreground/80">
                     Faça login para acessar o painel administrativo
                   </CardDescription>
                 </div>
               </CardHeader>
               
-              <CardContent className="pb-8">
-                <form onSubmit={onSubmit} className="space-y-6">
-                  <div className="space-y-4">
-                    <Label htmlFor="email" className="text-base font-bold text-foreground flex items-center gap-3">
-                      <Mail size={20} className="text-primary" />
+              <CardContent className="pb-6">
+                <form onSubmit={onSubmit} className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Mail size={16} className="text-primary" />
                       Email
                     </Label>
                     <div className="relative">
@@ -228,15 +230,15 @@ export default function Home(){
                         onChange={e => setEmail(e.target.value)} 
                         required
                         placeholder="seu@email.com"
-                        className="h-16 text-lg pl-14 pr-6 rounded-2xl"
+                        className="h-12 text-base pl-12 pr-4 rounded-xl"
                       />
-                      <Mail size={24} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <Label htmlFor="password" className="text-base font-bold text-foreground flex items-center gap-3">
-                      <Lock size={20} className="text-primary" />
+                  <div className="space-y-3">
+                    <Label htmlFor="password" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Lock size={16} className="text-primary" />
                       Senha
                     </Label>
                     <div className="relative">
@@ -247,15 +249,15 @@ export default function Home(){
                         onChange={e => setPassword(e.target.value)} 
                         required
                         placeholder="••••••••"
-                        className="h-16 text-lg pl-14 pr-14 rounded-2xl"
+                        className="h-12 text-base pl-12 pr-12 rounded-xl"
                       />
-                      <Lock size={24} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-5 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-300 hover:scale-110"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-110"
                       >
-                        {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
                   </div>
@@ -263,20 +265,20 @@ export default function Home(){
                   <Button 
                     type="submit"
                     variant="default"
-                    size="lg"
-                    className="w-full h-16 text-lg font-bold mt-6 group" 
+                    size="default"
+                    className="w-full h-12 text-base font-semibold mt-4 group" 
                     disabled={loading}
                   >
                     {loading ? (
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                         <span>Entrando...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-4">
-                        <LogIn size={24} />
+                      <div className="flex items-center gap-3">
+                        <LogIn size={20} />
                         <span>Entrar no Sistema</span>
-                        <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-300" />
+                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
                       </div>
                     )}
                   </Button>
@@ -287,15 +289,15 @@ export default function Home(){
 
               {/* Exibir erros de formulário com design moderno */}
               {err && (
-                <div className="px-8 pb-8">
-                  <div className="w-full p-6 bg-gradient-to-r from-destructive/15 to-destructive/8 border-2 border-destructive/30 text-destructive rounded-3xl text-base backdrop-blur-sm shadow-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 bg-destructive/20 rounded-full flex items-center justify-center">
-                        <svg className="h-5 w-5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="px-6 pb-6">
+                  <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl text-sm backdrop-blur-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
+                        <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <span className="font-bold">{err}</span>
+                      <span className="font-medium">{err}</span>
                     </div>
                   </div>
                 </div>
@@ -303,11 +305,11 @@ export default function Home(){
             </Card>
 
             {/* Footer com informações adicionais */}
-            <div className="text-center mt-8 space-y-2">
-              <p className="text-base text-muted-foreground/80 font-medium">
+            <div className="text-center mt-6 space-y-1">
+              <p className="text-sm text-muted-foreground/80">
                 © 2024 SisPAC - Sistema de Avaliação Comportamental
               </p>
-              <p className="text-sm text-muted-foreground/60 font-medium">
+              <p className="text-xs text-muted-foreground/60">
                 Desenvolvido com ❤️ para facilitar a avaliação de candidatos
               </p>
             </div>
