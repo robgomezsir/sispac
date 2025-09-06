@@ -18,7 +18,11 @@ import {
   Minus,
   Copy,
   Eye,
-  EyeOff
+  EyeOff,
+  ChevronDown,
+  RefreshCw,
+  Calendar,
+  Clock
 } from 'lucide-react'
 
 export default function Configuracoes(){
@@ -44,6 +48,11 @@ export default function Configuracoes(){
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('info')
+  
+  // Estados para lista de usuários
+  const [users, setUsers] = useState([])
+  const [usersLoading, setUsersLoading] = useState(false)
+  const [usersExpanded, setUsersExpanded] = useState(false)
 
   // Verificar se o usuário tem permissão (admin ou rh)
   useEffect(() => {
@@ -67,6 +76,34 @@ export default function Configuracoes(){
   const showMessage = (msg, type = 'info') => {
     setMessage(msg)
     setMessageType(type)
+  }
+
+  // Função para buscar usuários cadastrados
+  const loadUsers = async () => {
+    setUsersLoading(true)
+    
+    try {
+      console.log('🔍 [Configurações] Buscando usuários cadastrados...')
+      
+      // Buscar usuários da tabela profiles
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (profilesError) {
+        throw new Error(`Erro ao buscar usuários: ${profilesError.message}`)
+      }
+      
+      console.log('✅ [Configurações] Usuários carregados:', profilesData?.length || 0)
+      setUsers(profilesData || [])
+      
+    } catch (error) {
+      console.error('❌ [Configurações] Erro ao buscar usuários:', error)
+      showMessage(`Erro ao carregar usuários: ${error.message}`, 'error')
+    } finally {
+      setUsersLoading(false)
+    }
   }
 
 
@@ -681,6 +718,125 @@ export default function Configuracoes(){
                     </p>
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Lista de Usuários Cadastrados - Admin apenas */}
+        {role === 'admin' && (
+          <div className="card-modern p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center border border-info/20">
+                  <Users size={24} className="text-info" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">Usuários Cadastrados</h2>
+                  <p className="text-muted-foreground">Visualize todos os usuários do sistema</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={loadUsers}
+                  disabled={usersLoading}
+                  className="btn-info-modern px-4 py-2"
+                >
+                  {usersLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-info-foreground/30 border-t-info-foreground rounded-full animate-spin" />
+                      <span>Carregando...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <RefreshCw size={16} />
+                      <span>Atualizar</span>
+                    </div>
+                  )}
+                </Button>
+                <Button
+                  onClick={() => setUsersExpanded(!usersExpanded)}
+                  className="btn-secondary-modern px-4 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronDown size={16} className={`transition-transform duration-300 ${usersExpanded ? 'rotate-180' : ''}`} />
+                    <span>{usersExpanded ? 'Ocultar' : 'Mostrar'}</span>
+                  </div>
+                </Button>
+              </div>
+            </div>
+
+            {/* Conteúdo expansível */}
+            {usersExpanded && (
+              <div className="mt-6 animate-slide-in-from-top">
+                {usersLoading ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-info/20 to-info/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-info/20">
+                      <div className="w-8 h-8 border-3 border-info/30 border-t-info rounded-full animate-spin" />
+                    </div>
+                    <div className="text-muted-foreground font-medium">Carregando usuários...</div>
+                  </div>
+                ) : users.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border/50">
+                      <Users size={32} className="text-muted-foreground" />
+                    </div>
+                    <div className="text-muted-foreground font-medium">Nenhum usuário cadastrado</div>
+                    <div className="text-sm text-muted-foreground mt-2">Clique em "Atualizar" para carregar os usuários</div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="text-sm text-muted-foreground mb-4">
+                      {users.length} usuário{users.length !== 1 ? 's' : ''} cadastrado{users.length !== 1 ? 's' : ''}
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {users.map((user) => (
+                        <div 
+                          key={user.id} 
+                          className="bg-gradient-to-br from-card/80 to-card/40 border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-foreground truncate">
+                                {user.name || 'Nome não informado'}
+                              </h3>
+                              <p className="text-sm text-muted-foreground truncate">
+                                {user.email}
+                              </p>
+                            </div>
+                            <div className="ml-2">
+                              <Badge 
+                                variant={user.role === 'admin' ? 'default' : 'secondary'}
+                                className={user.role === 'admin' ? 'bg-primary/20 text-primary border-primary/30' : ''}
+                              >
+                                {user.role === 'admin' ? 'Admin' : 'RH'}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <Calendar size={12} />
+                              <span>
+                                Criado em {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                              </span>
+                            </div>
+                            
+                            {user.last_sign_in_at && (
+                              <div className="flex items-center gap-2">
+                                <Clock size={12} />
+                                <span>
+                                  Último acesso em {new Date(user.last_sign_in_at).toLocaleDateString('pt-BR')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

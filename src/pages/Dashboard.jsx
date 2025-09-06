@@ -588,6 +588,15 @@ export default function Dashboard(){
                       </Button>
                       <Button 
                         variant="outline" 
+                        size="sm"
+                        onClick={() => exportOne(row)}
+                        className="flex-1 h-8 text-xs hover:bg-success/10 hover:text-success hover:border-success/20 transition-all duration-200"
+                      >
+                        <Download size={14} className="mr-1" />
+                        Download
+                      </Button>
+                      <Button 
+                        variant="outline" 
                         size="sm" 
                         onClick={() => handleDeleteCandidate(row)}
                         className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
@@ -643,6 +652,15 @@ export default function Dashboard(){
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => exportOne(row)}
+                                className="h-8 px-3 hover:bg-success/10 hover:text-success hover:border-success/20 transition-all duration-200"
+                              >
+                                <Download size={14} className="mr-1" />
+                                Download
                               </Button>
                               <Button 
                                 variant="outline" 
