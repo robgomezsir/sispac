@@ -153,6 +153,11 @@ export default {
         "bounce-soft": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
         "spring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       },
+      fontFamily: {
+        sans: ["var(--font-sans)", "Plus Jakarta Sans", "sans-serif"],
+        serif: ["var(--font-serif)", "Lora", "serif"],
+        mono: ["var(--font-mono)", "Roboto Mono", "monospace"],
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
