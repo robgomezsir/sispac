@@ -648,7 +648,8 @@ export default function Configuracoes(){
                 <select
                   value={roleSelect}
                   onChange={e => setRoleSelect(e.target.value)}
-                  className="input-modern w-full h-12 text-base align-top"
+                  className="input-modern w-full h-12 text-sm sm:text-base align-top"
+                  style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
                 >
                   <option value="rh">RH</option>
                   <option value="admin">Administrador</option>
@@ -1080,7 +1081,8 @@ export default function Configuracoes(){
                   <label className="text-sm font-medium text-muted-foreground">Função</label>
                   <select
                     disabled
-                    className="input-modern w-full h-12 text-base align-top bg-muted/50"
+                    className="input-modern w-full h-12 text-sm sm:text-base align-top bg-muted/50"
+                    style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
                   >
                     <option value="rh">RH</option>
                     <option value="admin">Administrador</option>
