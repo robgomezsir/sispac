@@ -35,7 +35,10 @@ import {
   Timer,
   Calendar,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  ChevronDown,
+  FileText,
+  Shield
 } from 'lucide-react'
 import { 
   Button, 
@@ -67,6 +70,8 @@ export default function FormularioNew(){
   const [tokenValid, setTokenValid] = useState(false)
   const [candidateData, setCandidateData] = useState(null)
   const [tokenError, setTokenError] = useState(null)
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
+  const [privacyExpanded, setPrivacyExpanded] = useState(false)
 
   // Validar token na inicialização
   useEffect(() => {
@@ -515,12 +520,163 @@ export default function FormularioNew(){
                       className="input-modern h-12 sm:h-14 text-base"
                     />
                   </div>
+
+                  {/* Cartão de Aceite da Política de Privacidade */}
+                  <div className="space-y-3 sm:space-y-4">
+                    <Card className="border-border/50 bg-card/50 hover:shadow-md transition-all duration-300">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="space-y-4">
+                          {/* Header do cartão */}
+                          <div 
+                            className="flex items-center justify-between cursor-pointer group"
+                            onClick={() => setPrivacyExpanded(!privacyExpanded)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
+                                <Shield size={16} className="text-primary" />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id="privacy-accept"
+                                  checked={privacyAccepted}
+                                  onChange={(e) => {
+                                    e.stopPropagation()
+                                    setPrivacyAccepted(e.target.checked)
+                                  }}
+                                  className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
+                                />
+                                <label 
+                                  htmlFor="privacy-accept" 
+                                  className="text-sm font-semibold text-foreground cursor-pointer"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Aceito a Política de Privacidade para Candidatos
+                                </label>
+                              </div>
+                            </div>
+                            <ChevronDown 
+                              size={20} 
+                              className={`text-muted-foreground transition-transform duration-300 group-hover:text-primary ${
+                                privacyExpanded ? 'rotate-180' : ''
+                              }`} 
+                            />
+                          </div>
+
+                          {/* Conteúdo expansível */}
+                          {privacyExpanded && (
+                            <div className="mt-4 pt-4 border-t border-border/50 animate-slide-in-from-top">
+                              <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <FileText size={16} className="text-primary" />
+                                  <span className="font-semibold text-foreground">Política de Privacidade para Candidatos</span>
+                                </div>
+                                
+                                <p className="text-xs text-muted-foreground/80">
+                                  [Nome da Empresa] valoriza a proteção dos seus dados pessoais e, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD), informa abaixo como tratamos os dados de candidatos em processos seletivos.
+                                </p>
+
+                                <div className="space-y-3">
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">1. Controlador dos Dados</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      A responsável pelo tratamento dos seus dados é [Nome da Empresa], inscrita no CNPJ sob nº [número do CNPJ], com sede em [endereço].
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">2. Dados Coletados</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Durante o processo seletivo, poderemos coletar e tratar os seguintes dados:
+                                    </p>
+                                    <ul className="text-xs text-muted-foreground/80 mt-1 ml-4 space-y-1">
+                                      <li>• Nome completo, e-mail e telefone de contato;</li>
+                                      <li>• Resultados de testes;</li>
+                                      <li>• Outras informações necessárias para avaliação do candidato.</li>
+                                    </ul>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">3. Finalidade do Tratamento</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Os dados coletados serão utilizados exclusivamente para:
+                                    </p>
+                                    <ul className="text-xs text-muted-foreground/80 mt-1 ml-4 space-y-1">
+                                      <li>• Conduzir processos de recrutamento e seleção;</li>
+                                      <li>• Avaliar a adequação do candidato à vaga;</li>
+                                      <li>• Cumprir obrigações legais ou regulatórias relacionadas à contratação.</li>
+                                    </ul>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">4. Base Legal</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      O tratamento de dados ocorre com fundamento em:
+                                    </p>
+                                    <ul className="text-xs text-muted-foreground/80 mt-1 ml-4 space-y-1">
+                                      <li>• Execução de contrato e procedimentos preliminares (Art. 7º, V da LGPD);</li>
+                                      <li>• Legítimo interesse da empresa para fins de recrutamento (Art. 7º, IX da LGPD).</li>
+                                    </ul>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">5. Compartilhamento</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Os dados poderão ser acessados apenas por profissionais de RH, gestores da área responsável pela vaga e consultorias contratadas para apoio na seleção, sempre sob obrigação de confidencialidade.
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">6. Armazenamento e Segurança</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Seus dados serão armazenados em sistemas internos com acesso restrito e medidas de segurança técnicas e administrativas para evitar acessos não autorizados.
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">7. Prazo de Retenção</h4>
+                                    <ul className="text-xs text-muted-foreground/80 mt-1 ml-4 space-y-1">
+                                      <li>• Se contratado, os dados passarão a compor o dossiê do colaborador.</li>
+                                      <li>• Se não contratado, os dados serão mantidos por até [X meses] para futuras oportunidades, salvo se você solicitar a exclusão imediata.</li>
+                                    </ul>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">8. Direitos do Candidato</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Nos termos da LGPD, você pode, a qualquer momento:
+                                    </p>
+                                    <ul className="text-xs text-muted-foreground/80 mt-1 ml-4 space-y-1">
+                                      <li>• Solicitar acesso aos seus dados pessoais;</li>
+                                      <li>• Corrigir informações incorretas;</li>
+                                      <li>• Pedir a exclusão dos seus dados;</li>
+                                      <li>• Revogar o consentimento para permanência no banco de talentos.</li>
+                                    </ul>
+                                    <p className="text-xs text-muted-foreground/80 mt-2">
+                                      Para exercer seus direitos, entre em contato pelo e-mail: [contato@empresa.com].
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-xs">9. Alterações</h4>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">
+                                      Esta Política pode ser atualizada periodicamente. A versão mais recente estará sempre disponível em [site da empresa].
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </CardContent>
 
                 <CardFooter className="flex justify-center pt-6 sm:pt-8">
                   <Button 
                     onClick={() => setStep(1)}
-                    disabled={!nome.trim() || !email.trim()}
+                    disabled={!nome.trim() || !email.trim() || !privacyAccepted}
                     className="btn-primary-modern px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg group w-full sm:w-auto"
                   >
                     <Play size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
