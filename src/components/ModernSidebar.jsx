@@ -15,8 +15,6 @@ import {
   ChevronRight,
   Users,
   Shield,
-  Bell,
-  Search,
   Plus,
   Zap,
   Target,
@@ -133,16 +131,6 @@ export function ModernSidebar({ isOpen = true, onClose }) {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          {!isMobile && (
-            <>
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300">
-                <Bell size={18} className="text-sidebar-foreground/70" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300">
-                <Search size={18} className="text-sidebar-foreground/70" />
-              </Button>
-            </>
-          )}
           {isMobile && onClose && (
             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300" onClick={onClose}>
               <X size={18} className="text-sidebar-foreground/70" />
@@ -223,7 +211,20 @@ export function ModernSidebar({ isOpen = true, onClose }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-sidebar-foreground truncate">
-              {user?.user_metadata?.full_name || user?.email || 'Usuário'}
+              {(() => {
+                const now = new Date()
+                const hour = now.getHours()
+                let greeting = 'Bom dia'
+                
+                if (hour >= 12 && hour < 18) {
+                  greeting = 'Boa tarde'
+                } else if (hour >= 18 || hour < 6) {
+                  greeting = 'Boa noite'
+                }
+                
+                const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário'
+                return `${greeting}, ${userName}!`
+              })()}
             </p>
             <p className="text-xs text-sidebar-foreground/70 truncate font-medium">
               {role === 'admin' ? 'Administrador' : 'Usuário'}
