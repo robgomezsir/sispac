@@ -72,18 +72,20 @@ export function AdvancedFilters({
               <Label htmlFor="status-filter" className="text-sm font-medium">
                 Status
               </Label>
-              <select
-                id="status-filter"
-                value={localFilters.status || ''}
-                onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">Todos os status</option>
-                <option value="SUPEROU A EXPECTATIVA">Superou a Expectativa</option>
-                <option value="ACIMA DA EXPECTATIVA">Acima da Expectativa</option>
-                <option value="DENTRO DA EXPECTATIVA">Dentro da Expectativa</option>
-                <option value="ABAIXO DA EXPECTATIVA">Abaixo da Expectativa</option>
-              </select>
+              <div className="select-container">
+                <select
+                  id="status-filter"
+                  value={localFilters.status || ''}
+                  onChange={(e) => handleFilterChange('status', e.target.value)}
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Todos os status</option>
+                  <option value="SUPEROU A EXPECTATIVA">Superou a Expectativa</option>
+                  <option value="ACIMA DA EXPECTATIVA">Acima da Expectativa</option>
+                  <option value="DENTRO DA EXPECTATIVA">Dentro da Expectativa</option>
+                  <option value="ABAIXO DA EXPECTATIVA">Abaixo da Expectativa</option>
+                </select>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -144,18 +146,20 @@ export function AdvancedFilters({
               <Label htmlFor="sort-by" className="text-sm font-medium">
                 Ordenar por
               </Label>
-              <select
-                id="sort-by"
-                value={localFilters.sortBy || 'created_at'}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="created_at">Data de Criação</option>
-                <option value="name">Nome</option>
-                <option value="email">Email</option>
-                <option value="score">Pontuação</option>
-                <option value="status">Status</option>
-              </select>
+              <div className="select-container">
+                <select
+                  id="sort-by"
+                  value={localFilters.sortBy || 'created_at'}
+                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="created_at">Data de Criação</option>
+                  <option value="name">Nome</option>
+                  <option value="email">Email</option>
+                  <option value="score">Pontuação</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
             </div>
           </div>
 

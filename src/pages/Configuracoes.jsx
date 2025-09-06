@@ -645,15 +645,17 @@ export default function Configuracoes(){
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Função</label>
-                <select
-                  value={roleSelect}
-                  onChange={e => setRoleSelect(e.target.value)}
-                  className="input-modern w-full h-12 text-sm sm:text-base align-top"
-                  style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
-                >
-                  <option value="rh">RH</option>
-                  <option value="admin">Administrador</option>
-                </select>
+                <div className="select-container">
+                  <select
+                    value={roleSelect}
+                    onChange={e => setRoleSelect(e.target.value)}
+                    className="input-modern h-12 text-sm sm:text-base align-top"
+                    style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
+                  >
+                    <option value="rh">RH</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
               </div>
             </div>
             
@@ -1079,14 +1081,16 @@ export default function Configuracoes(){
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-muted-foreground">Função</label>
-                  <select
-                    disabled
-                    className="input-modern w-full h-12 text-sm sm:text-base align-top bg-muted/50"
-                    style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
-                  >
-                    <option value="rh">RH</option>
-                    <option value="admin">Administrador</option>
-                  </select>
+                  <div className="select-container">
+                    <select
+                      disabled
+                      className="input-modern h-12 text-sm sm:text-base align-top bg-muted/50"
+                      style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
+                    >
+                      <option value="rh">RH</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               
