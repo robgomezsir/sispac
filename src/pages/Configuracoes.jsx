@@ -927,7 +927,7 @@ export default function Configuracoes(){
                 <Plus size={20} className="text-success" />
               </div>
               <h3 className="text-xl font-semibold text-foreground">Adicionar Candidato</h3>
-              <p className="text-sm text-muted-foreground">Apenas nome e email são necessários. O candidato receberá um link para realizar o teste.</p>
+              <p className="text-sm text-muted-foreground">Apenas nome e email são necessários.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
