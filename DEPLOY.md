@@ -5,7 +5,7 @@
 ### Status do Deploy
 - ✅ **Deploy Bem-sucedido**
 - 🌐 **URL Principal:** https://sispac.vercel.app
-- 🔗 **URL de Deploy:** https://sispac-1kctki41z-rob-gomezs-projects.vercel.app
+- 🔗 **URL de Deploy:** https://sispac-kcb58seda-rob-gomezs-projects.vercel.app
 - 📊 **Status:** Ready (Funcionando)
 
 ### Configurações Verificadas
@@ -50,10 +50,19 @@
 - ✅ **Autenticação em Produção:** Usuários autenticados agora têm acesso
 - ✅ **Logs de Debug Removidos:** Código limpo e otimizado
 
+### Atualizações do Esquema de Cores (31/08/2025)
+- ✅ **Esquema shadcn/ui Aplicado:** Novo sistema de cores RGB direto
+- ✅ **Tema Claro Otimizado:** Fundo branco suave com texto preto para máximo contraste
+- ✅ **Tema Escuro Implementado:** Fundo escuro com texto claro para melhor legibilidade
+- ✅ **Cores Primárias Atualizadas:** Roxo vibrante (#7033ff) para elementos principais
+- ✅ **Sistema de Sombras Moderno:** Sombras mais sutis e elegantes
+- ✅ **Tipografia Aprimorada:** IBM Plex Mono para código e letter-spacing otimizado
+- ✅ **Acessibilidade Melhorada:** Contraste otimizado em todos os elementos
+
 ### Próximos Passos
 - [ ] Configurar domínio personalizado
 - [ ] Implementar monitoramento
 - [ ] Configurar CI/CD automático
 
 ---
-*Deploy realizado via Vercel CLI v46.0.2*
+*Deploy realizado via Vercel CLI v47.0.4*
