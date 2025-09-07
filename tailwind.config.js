@@ -258,12 +258,14 @@ export default {
   		backgroundImage: {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
   			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-  			'gradient-pastel': 'linear-gradient(135deg, hsl(262, 83%, 95%) 0%, hsl(220, 14%, 96%) 25%, hsl(262, 83%, 98%) 50%, hsl(220, 14%, 97%) 75%, hsl(262, 83%, 96%) 100%)',
-  			'gradient-primary-soft': 'linear-gradient(135deg, hsl(262, 83%, 85%) 0%, hsl(262, 83%, 90%) 50%, hsl(262, 83%, 95%) 100%)',
-  			'gradient-success-soft': 'linear-gradient(135deg, hsl(142, 76%, 90%) 0%, hsl(142, 76%, 95%) 50%, hsl(142, 76%, 98%) 100%)',
-  			'gradient-warning-soft': 'linear-gradient(135deg, hsl(38, 92%, 90%) 0%, hsl(38, 92%, 95%) 50%, hsl(38, 92%, 98%) 100%)',
-  			'gradient-info-soft': 'linear-gradient(135deg, hsl(199, 89%, 90%) 0%, hsl(199, 89%, 95%) 50%, hsl(199, 89%, 98%) 100%)',
-  			'gradient-shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%)'
+  			'gradient-pastel': 'linear-gradient(135deg, hsl(250, 100%, 97%) 0%, hsl(220, 14%, 98%) 25%, hsl(250, 100%, 98%) 50%, hsl(220, 14%, 99%) 75%, hsl(250, 100%, 99%) 100%)',
+  			'gradient-primary-soft': 'linear-gradient(135deg, hsl(250, 100%, 90%) 0%, hsl(250, 100%, 95%) 50%, hsl(250, 100%, 98%) 100%)',
+  			'gradient-success-soft': 'linear-gradient(135deg, hsl(142, 76%, 92%) 0%, hsl(142, 76%, 96%) 50%, hsl(142, 76%, 98%) 100%)',
+  			'gradient-warning-soft': 'linear-gradient(135deg, hsl(38, 92%, 92%) 0%, hsl(38, 92%, 96%) 50%, hsl(38, 92%, 98%) 100%)',
+  			'gradient-info-soft': 'linear-gradient(135deg, hsl(199, 89%, 92%) 0%, hsl(199, 89%, 96%) 50%, hsl(199, 89%, 98%) 100%)',
+  			'gradient-shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+  			'gradient-glass': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+  			'gradient-glass-dark': 'linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%)'
   		}
   	}
   },

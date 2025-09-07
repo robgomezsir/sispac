@@ -1,19 +1,15 @@
 import React from 'react'
 import { 
-  PastelCard, 
-  PastelCardHeader, 
-  PastelCardTitle, 
-  PastelCardDescription, 
-  PastelCardContent, 
-  PastelCardFooter,
-  PastelButton,
-  PastelArea,
-  PastelAreaHeader,
-  PastelAreaTitle,
-  PastelAreaContent,
-  PastelSeparator,
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent, 
+  CardFooter,
+  Button,
   Input,
-  Badge
+  Badge,
+  Separator
 } from '../components/ui'
 import { 
   Heart, 
@@ -44,78 +40,78 @@ export default function PastelDemo() {
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card 1 - Default */}
-          <PastelCard interactive glow>
-            <PastelCardHeader>
+          <Card variant="modern" interactive className="hover:shadow-2xl">
+            <CardHeader>
               <div className="flex items-center space-x-2">
                 <Heart className="h-5 w-5 text-primary" />
-                <PastelCardTitle>Card Padrão</PastelCardTitle>
+                <CardTitle>Card Moderno</CardTitle>
               </div>
-              <PastelCardDescription>
+              <CardDescription>
                 Um cartão com design pastel suave e feedback tátil.
-              </PastelCardDescription>
-            </PastelCardHeader>
-            <PastelCardContent>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <p className="text-sm text-muted-foreground">
                 Este cartão demonstra o design pastel com gradientes suaves e 
                 efeitos de hover responsivos.
               </p>
-            </PastelCardContent>
-            <PastelCardFooter>
-              <PastelButton size="sm" variant="primary">
+            </CardContent>
+            <CardFooter>
+              <Button size="sm" variant="default">
                 Explorar
-              </PastelButton>
-            </PastelCardFooter>
-          </PastelCard>
+              </Button>
+            </CardFooter>
+          </Card>
 
           {/* Card 2 - Success */}
-          <PastelCard variant="success" interactive>
-            <PastelCardHeader>
+          <Card variant="pastel" interactive className="hover:shadow-2xl">
+            <CardHeader>
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-success" />
-                <PastelCardTitle>Card de Sucesso</PastelCardTitle>
+                <CardTitle>Card Pastel</CardTitle>
               </div>
-              <PastelCardDescription>
+              <CardDescription>
                 Design com tons verdes pastéis harmoniosos.
-              </PastelCardDescription>
-            </PastelCardHeader>
-            <PastelCardContent>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <p className="text-sm text-muted-foreground">
                 Perfeito para indicar ações bem-sucedidas ou status positivos.
               </p>
-            </PastelCardContent>
-            <PastelCardFooter>
-              <PastelButton size="sm" variant="success">
+            </CardContent>
+            <CardFooter>
+              <Button size="sm" variant="success">
                 Confirmar
-              </PastelButton>
-            </PastelCardFooter>
-          </PastelCard>
+              </Button>
+            </CardFooter>
+          </Card>
 
           {/* Card 3 - Glass */}
-          <PastelCard variant="glass" interactive>
-            <PastelCardHeader>
+          <Card variant="glass" interactive className="hover:shadow-2xl">
+            <CardHeader>
               <div className="flex items-center space-x-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <PastelCardTitle>Card Glass</PastelCardTitle>
+                <CardTitle>Card Glass</CardTitle>
               </div>
-              <PastelCardDescription>
+              <CardDescription>
                 Efeito glassmorphism com backdrop blur.
-              </PastelCardDescription>
-            </PastelCardHeader>
-            <PastelCardContent>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <p className="text-sm text-muted-foreground">
                 Design moderno com transparência e efeitos de vidro.
               </p>
-            </PastelCardContent>
-            <PastelCardFooter>
-              <PastelButton size="sm" variant="glass">
+            </CardContent>
+            <CardFooter>
+              <Button size="sm" variant="glass">
                 Visualizar
-              </PastelButton>
-            </PastelCardFooter>
-          </PastelCard>
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
 
         {/* Separator */}
-        <PastelSeparator variant="primary" animated />
+        <Separator className="my-8" />
 
         {/* Areas Section */}
         <div className="space-y-6">
@@ -123,49 +119,49 @@ export default function PastelDemo() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Area 1 */}
-            <PastelArea variant="info" interactive>
-              <PastelAreaHeader>
-                <PastelAreaTitle className="flex items-center space-x-2">
+            <Card variant="modern" interactive className="hover:shadow-2xl">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
                   <Zap className="h-5 w-5 text-info" />
                   <span>Área Informativa</span>
-                </PastelAreaTitle>
-              </PastelAreaHeader>
-              <PastelAreaContent>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
                   Esta área demonstra como as delimitações suaves funcionam 
                   com tons pastéis.
                 </p>
                 <div className="space-y-2">
-                  <Input placeholder="Digite algo..." variant="glass" />
+                  <Input placeholder="Digite algo..." variant="modern" />
                   <div className="flex space-x-2">
                     <Badge variant="secondary">Tag 1</Badge>
                     <Badge variant="outline">Tag 2</Badge>
                   </div>
                 </div>
-              </PastelAreaContent>
-            </PastelArea>
+              </CardContent>
+            </Card>
 
             {/* Area 2 */}
-            <PastelArea variant="warning" interactive>
-              <PastelAreaHeader>
-                <PastelAreaTitle className="flex items-center space-x-2">
+            <Card variant="pastel" interactive className="hover:shadow-2xl">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
                   <Star className="h-5 w-5 text-warning" />
                   <span>Área de Aviso</span>
-                </PastelAreaTitle>
-              </PastelAreaHeader>
-              <PastelAreaContent>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
                   Tons amarelos pastéis para chamar atenção sem ser agressivo.
                 </p>
                 <div className="space-y-2">
-                  <Input placeholder="Campo de entrada..." variant="filled" />
+                  <Input placeholder="Campo de entrada..." variant="glass" />
                   <div className="flex space-x-2">
                     <Badge variant="secondary">Importante</Badge>
                     <Badge variant="outline">Urgente</Badge>
                   </div>
                 </div>
-              </PastelAreaContent>
-            </PastelArea>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -174,30 +170,34 @@ export default function PastelDemo() {
           <h2 className="text-2xl font-bold text-center">Botões Pastéis</h2>
           
           <div className="flex flex-wrap gap-4 justify-center">
-            <PastelButton variant="default" shimmer>
+            <Button variant="default">
               <Palette className="h-4 w-4" />
               Padrão
-            </PastelButton>
-            <PastelButton variant="success" glow>
+            </Button>
+            <Button variant="success">
               <Shield className="h-4 w-4" />
               Sucesso
-            </PastelButton>
-            <PastelButton variant="warning">
+            </Button>
+            <Button variant="warning">
               <Star className="h-4 w-4" />
               Aviso
-            </PastelButton>
-            <PastelButton variant="info">
+            </Button>
+            <Button variant="info">
               <Zap className="h-4 w-4" />
               Info
-            </PastelButton>
-            <PastelButton variant="glass">
+            </Button>
+            <Button variant="glass">
               <Sparkles className="h-4 w-4" />
               Glass
-            </PastelButton>
-            <PastelButton variant="outline">
+            </Button>
+            <Button variant="outline">
               <Sun className="h-4 w-4" />
               Outline
-            </PastelButton>
+            </Button>
+            <Button variant="pastel">
+              <Moon className="h-4 w-4" />
+              Pastel
+            </Button>
           </div>
         </div>
 

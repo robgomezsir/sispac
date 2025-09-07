@@ -90,7 +90,7 @@ export default function App(){
   return (
     <ThemeProvider>
       <SidebarProvider>
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
           <Routes>
           {routes.map(({ path, element }) => {
             // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)

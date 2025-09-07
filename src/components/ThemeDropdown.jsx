@@ -74,7 +74,7 @@ export function ThemeDropdown() {
         size="sm"
         onClick={handleOpen}
         className={cn(
-          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px] btn-modern-outline",
+          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
           "hover:bg-accent/50 text-muted-foreground hover:text-foreground",
           "border-border/50 hover:border-border",
           isOpen && "bg-accent/30 border-border"
@@ -98,7 +98,7 @@ export function ThemeDropdown() {
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute top-full right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 glass-modern-smooth",
+            "absolute top-full right-0 mt-2 w-48 bg-card/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl z-50",
             "transition-all duration-200 ease-out",
             isAnimating 
               ? "opacity-0 scale-95 translate-y-[-8px]" 
@@ -123,9 +123,9 @@ export function ThemeDropdown() {
                   key={value}
                   onClick={() => handleThemeSelect(value)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-all duration-150",
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150",
                     "hover:bg-accent/50 focus:bg-accent/50 focus:outline-none",
-                    "group relative overflow-hidden",
+                    "group relative overflow-hidden hover:scale-105 active:scale-95",
                     isSelected && "bg-accent/30"
                   )}
                   style={{
@@ -140,7 +140,7 @@ export function ThemeDropdown() {
                   
                   {/* Icon */}
                   <div className={cn(
-                    "relative z-10 p-1.5 rounded-md transition-all duration-200",
+                    "relative z-10 p-1.5 rounded-lg transition-all duration-200",
                     isSelected 
                       ? "bg-primary/10 text-primary" 
                       : "bg-muted/50 text-muted-foreground group-hover:bg-primary/5 group-hover:text-primary"
@@ -170,7 +170,7 @@ export function ThemeDropdown() {
 
                   {/* Selection Indicator */}
                   {isSelected && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full shadow-sm" />
                   )}
                 </button>
               )
@@ -189,7 +189,7 @@ export function ThemeDropdown() {
       {/* Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px]"
+          className="fixed inset-0 z-40 bg-black/5 backdrop-blur-sm"
           onClick={handleClose}
         />
       )}
