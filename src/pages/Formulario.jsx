@@ -333,8 +333,8 @@ export default function FormularioNew(){
               </div>
             </div>
 
-            <div className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}} className="rounded-lg border bg-card text-card-foreground shadow-sm">
-              <div className="p-6 sm:p-8 text-center rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
+              <div className="p-6 sm:p-8 text-center">
                 <div className="space-y-4 sm:space-y-6">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-destructive/20 to-destructive/10 rounded-3xl flex items-center justify-center mx-auto border border-destructive/20">
                     <AlertCircle size={32} className="sm:w-10 sm:h-10 text-destructive" />
@@ -384,8 +384,8 @@ export default function FormularioNew(){
             </div>
 
             {/* Mensagem de agradecimento */}
-            <div className="card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}} className="rounded-lg border bg-card text-card-foreground shadow-sm">
-              <div className="p-6 sm:p-8 text-center rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm card-modern animate-slide-in-from-bottom" style={{animationDelay: '0.2s'}}>
+              <div className="p-6 sm:p-8 text-center">
                 <div className="space-y-4 sm:space-y-6">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-success/20 to-success/10 rounded-3xl flex items-center justify-center mx-auto border border-success/20 shadow-glow-success">
                     <CheckCircle size={32} className="sm:w-10 sm:h-10 text-success" />
@@ -462,13 +462,13 @@ export default function FormularioNew(){
             {step === 0 ? (
               // Tela inicial
               <div className="card-modern rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div className="text-center space-y-4 sm:space-y-6 pb-6 sm:pb-8 rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="text-center space-y-4 sm:space-y-6 pb-6 sm:pb-8">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mx-auto border border-primary/20 shadow-glow">
                     <GraduationCap size={32} className="sm:w-10 sm:h-10 text-primary" />
                   </div>
                   <div className="space-y-2 sm:space-y-3">
-                    <h3 className="text-2xl sm:text-3xl font-bold rounded-lg border bg-card text-card-foreground shadow-sm">Bem-vindo ao Teste</h3>
-                    <p className="text-base sm:text-lg text-muted-foreground/80 px-4 rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <h3 className="text-2xl sm:text-3xl font-bold">Bem-vindo ao Teste</h3>
+                    <p className="text-base sm:text-lg text-muted-foreground/80 px-4">
                       Antes de começar, precisamos de algumas informações básicas
                     </p>
                   </div>
@@ -476,7 +476,7 @@ export default function FormularioNew(){
                 
                 <div className="space-y-4 sm:space-y-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                   <div className="space-y-3 sm:space-y-4">
-                    <label htmlFor="nome" className="text-sm font-semibold text-foreground flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <label htmlFor="nome" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <User size={16} className="text-primary" />
                       Nome Completo
                     </label>
@@ -484,7 +484,7 @@ export default function FormularioNew(){
                       id="nome"
                       type="text"
                       value={nome} 
-                      onChange={e = className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"> setNome(e.target.value)} 
+                      onChange={e => setNome(e.target.value)} 
                       required
                       placeholder="Digite seu nome completo"
                       className="input-modern h-12 sm:h-14 text-base"
@@ -492,7 +492,7 @@ export default function FormularioNew(){
                   </div>
                   
                   <div className="space-y-3 sm:space-y-4">
-                    <label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Mail size={16} className="text-primary" />
                       Email
                     </label>
@@ -500,7 +500,7 @@ export default function FormularioNew(){
                       id="email"
                       type="email"
                       value={email} 
-                      onChange={e = className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"> setEmail(e.target.value)} 
+                      onChange={e => setEmail(e.target.value)} 
                       required
                       placeholder="seu@email.com"
                       className="input-modern h-12 sm:h-14 text-base"
@@ -509,8 +509,8 @@ export default function FormularioNew(){
 
                   {/* Cartão de Aceite da Política de Privacidade */}
                   <div className="space-y-3 sm:space-y-4">
-                    <div className="border-border/50 bg-card/50 hover:shadow-md transition-all duration-300 rounded-lg border bg-card text-card-foreground shadow-sm">
-                      <div className="p-4 sm:p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-border/50 bg-card/50 hover:shadow-md transition-all duration-300">
+                      <div className="p-4 sm:p-6">
                         <div className="space-y-4">
                           {/* Header do cartão */}
                           <div 
@@ -659,9 +659,9 @@ export default function FormularioNew(){
                   </div>
                 </div>
 
-                <div className="flex justify-center pt-6 sm:pt-8 rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="flex justify-center pt-6 sm:pt-8">
                   <button 
-                    onClick={() => setViewMode('cards')}
+                    onClick={() => setStep(1)}
                     disabled={!nome.trim() || !email.trim() || !privacyAccepted}
                     className="btn-primary-modern px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg group w-full sm:w-auto"
                   >
@@ -674,15 +674,15 @@ export default function FormularioNew(){
             ) : (
               // Questão atual
               <div className="card-modern rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div className="pb-4 sm:pb-6 rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="pb-4 sm:pb-6">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center gap-3 sm:gap-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                         <span className="text-base sm:text-lg font-bold text-primary">{step}</span>
                       </div>
                       <div>
-                        <h3 className="text-xl sm:text-2xl font-bold rounded-lg border bg-card text-card-foreground shadow-sm">Questão {step}</h3>
-                        <p className="text-sm sm:text-base text-muted-foreground rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <h3 className="text-xl sm:text-2xl font-bold">Questão {step}</h3>
+                        <p className="text-sm sm:text-base text-muted-foreground">
                           {questions[step - 1]?.maxChoices > 1 
                             ? `Selecione até ${questions[step - 1].maxChoices} opções` 
                             : 'Selecione uma opção'}
@@ -744,13 +744,13 @@ export default function FormularioNew(){
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between pt-6 sm:pt-8 rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between pt-6 sm:pt-8">
                   <button 
                     variant="outline"
                     onClick={prevStep}
                     disabled={!canGoBack}
-                    className="btn-secondary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-2 sm:order-1"
-                   className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground btn-secondary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-2 sm:order-1"
+                  >
                     <ArrowLeft size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
                     Anterior
                   </button>
@@ -758,8 +758,8 @@ export default function FormularioNew(){
                   <button 
                     onClick={step === questions.length ? handleSubmit : nextStep}
                     disabled={!canProceed}
-                    className="btn-primary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-1 sm:order-2"
-                   className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 btn-primary-modern px-6 sm:px-8 py-3 sm:py-4 group w-full sm:w-auto order-1 sm:order-2"
+                  >
                     {step === questions.length ? (
                       <>
                         <Send size={18} className="sm:w-5 sm:h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
