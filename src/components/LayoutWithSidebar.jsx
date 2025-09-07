@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ModernSidebar } from './ModernSidebar.jsx'
 import { useSidebar } from '../contexts/SidebarContext.jsx'
 import { Menu, X } from 'lucide-react'
-import { Button } from './ui'
+// Componente Button customizado será criado
 
 export function LayoutWithSidebar({ children }) {
   const { isMobile } = useSidebar()
@@ -24,14 +24,12 @@ export function LayoutWithSidebar({ children }) {
               </div>
               <h1 className="font-semibold text-foreground">SisPAC</h1>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={toggleSidebar}
-              className="h-8 w-8 p-0"
+              className="btn btn-ghost h-8 w-8 p-0"
             >
               {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
-            </Button>
+            </button>
           </div>
         </div>
       )}

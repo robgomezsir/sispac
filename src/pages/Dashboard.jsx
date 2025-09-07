@@ -49,43 +49,7 @@ import {
   FilterX,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { 
-  Button, 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter,
-  Input,
-  Label,
-  Badge,
-  Separator,
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
-  ModernCard,
-  ModernCardHeader,
-  ModernCardContent,
-  ModernCardFooter,
-  ModernStatCard,
-  ModernActionCard
-} from '../components/ui'
+// Componentes customizados serão criados
 
 export default function Dashboard(){
   const { user, role } = useAuth()

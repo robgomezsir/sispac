@@ -18,16 +18,7 @@ import {
   Award,
   Target
 } from 'lucide-react'
-import { 
-  Button, 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent,
-  Input,
-  Label
-} from '../components/ui'
+// Componentes customizados serão criados
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()

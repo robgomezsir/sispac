@@ -27,7 +27,7 @@ import {
   Palette
 } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { Button, Badge, Separator } from './ui'
+// Componentes customizados serão criados
 import { ThemeDropdown } from './ThemeDropdown.jsx'
 
 export function ModernSidebar({ isOpen = true, onClose }) {
@@ -141,9 +141,9 @@ export function ModernSidebar({ isOpen = true, onClose }) {
         </div>
         <div className="flex items-center space-x-2">
           {isMobile && onClose && (
-            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300" onClick={onClose}>
+            <button className="btn btn-ghost h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300" onClick={onClose}>
               <X size={18} className="text-sidebar-foreground/70" />
-            </Button>
+            </button>
           )}
         </div>
       </div>
@@ -174,16 +174,16 @@ export function ModernSidebar({ isOpen = true, onClose }) {
                   <span className="font-medium">{item.label}</span>
                 </div>
                 {item.badge && (
-                  <Badge variant="secondary" className="text-xs">
+                  <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">
                     {item.badge}
-                  </Badge>
+                  </span>
                 )}
               </Link>
             )
           })}
         </div>
 
-        <Separator className="my-6 bg-sidebar-border/30" />
+        <div className="my-6 h-px bg-sidebar-border/30" />
 
         {/* Quick Actions */}
         <div className="space-y-4">
@@ -191,14 +191,14 @@ export function ModernSidebar({ isOpen = true, onClose }) {
             Ações Rápidas
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 btn-modern-outline">
+            <button className="btn btn-outline h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
               <Plus size={16} className="mr-2" />
               Novo
-            </Button>
-            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 btn-modern-secondary">
+            </button>
+            <button className="btn btn-secondary h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
               <Zap size={16} className="mr-2" />
               Relatório
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -242,15 +242,13 @@ export function ModernSidebar({ isOpen = true, onClose }) {
         </div>
 
         {/* Logout Button */}
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={handleSignOut}
-          className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20 rounded-xl h-12 font-semibold hover:scale-105 transition-all duration-300"
+          className="btn btn-ghost w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20 rounded-xl h-12 font-semibold hover:scale-105 transition-all duration-300"
         >
           <LogOut size={18} className="mr-3" />
           Sair
-        </Button>
+        </button>
       </div>
     </div>
   )

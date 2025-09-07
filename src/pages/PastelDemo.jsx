@@ -1,16 +1,5 @@
 import React from 'react'
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter,
-  Button,
-  Input,
-  Badge,
-  Separator
-} from '../components/ui'
+// Componentes customizados serão criados
 import { 
   Heart, 
   Star, 

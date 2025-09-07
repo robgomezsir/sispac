@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Button, Card, CardContent, CardHeader, CardTitle } from './ui'
+// Componentes customizados serão criados
 
 export default function AuthDebug() {
   const { user, role, isLoading, signIn, authError, isInvitePending, needsPasswordReset } = useAuth()

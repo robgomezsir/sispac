@@ -39,20 +39,7 @@ import {
   ChevronDown,
   FileText
 } from 'lucide-react'
-import { 
-  Button, 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter,
-  Input,
-  Label,
-  Badge,
-  Progress,
-  Separator
-} from '../components/ui'
+// Componentes customizados serão criados
 
 export default function FormularioNew(){
   const [searchParams] = useSearchParams()

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext.jsx'
 import { Sun, Moon, Monitor, ChevronDown, Check } from 'lucide-react'
-import { Button } from './ui'
+// Componente Button customizado será criado
 import { cn } from '../lib/utils'
 
 export function ThemeDropdown() {
@@ -68,13 +68,11 @@ export function ThemeDropdown() {
   return (
     <div className="relative">
       {/* Trigger Button */}
-      <Button
+      <button
         ref={triggerRef}
-        variant="outline"
-        size="sm"
         onClick={handleOpen}
         className={cn(
-          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
+          "btn btn-outline h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
           "hover:bg-accent/50 text-muted-foreground hover:text-foreground",
           "border-border/50 hover:border-border",
           isOpen && "bg-accent/30 border-border"
@@ -91,7 +89,7 @@ export function ThemeDropdown() {
             isOpen && "rotate-180"
           )} 
         />
-      </Button>
+      </button>
 
       {/* Dropdown Menu */}
       {isOpen && (

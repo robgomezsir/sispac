@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge } from '../components/ui'
+// Componente Badge customizado será criado
 import { TrendingUp, Minus, TrendingDown, Award } from 'lucide-react'
 
 // Função para obter badge de status

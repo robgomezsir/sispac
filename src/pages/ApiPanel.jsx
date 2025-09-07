@@ -27,20 +27,7 @@ import {
   Info
 } from 'lucide-react'
 import { useState } from 'react'
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent,
-  Badge,
-  Button,
-  Separator,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '../components/ui'
+// Componentes customizados serão criados
 
 export default function ApiPanel(){
   const [copiedEndpoint, setCopiedEndpoint] = useState(null)
