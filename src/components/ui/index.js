@@ -1,10 +1,10 @@
 // Componentes shadcn/ui
-export { Button, buttonVariants } from './button'
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
-export { Input } from './input'
-export { Label } from './label'
-export { Badge, badgeVariants } from './badge'
-export { Separator } from './separator'
+export { Button, buttonVariants } from './button.jsx'
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card.jsx'
+export { Input } from './input.jsx'
+export { Label } from './label.jsx'
+export { Badge, badgeVariants } from './badge.jsx'
+export { Separator } from './separator.jsx'
 
 // Componentes customizados do SisPAC
 export { 
