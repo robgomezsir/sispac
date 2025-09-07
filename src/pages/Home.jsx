@@ -202,7 +202,7 @@ export default function Home(){
 
           {/* Lado direito - Formulário de login */}
           <div className="animate-slide-in-from-right order-1 lg:order-2 mobile-login-form">
-            <Card className="border-0 shadow-xl backdrop-blur-sm max-w-md mx-auto hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-card/95 glass-modern-smooth">
+            <Card className="clay-card max-w-md mx-auto hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 clay-glow-primary">
               <CardHeader className="text-center space-y-4 pb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20 shadow-lg group">
                   <Lock size={40} className="text-primary group-hover:scale-110 transition-transform duration-300" />
@@ -230,7 +230,7 @@ export default function Home(){
                         onChange={e => setEmail(e.target.value)} 
                         required
                         placeholder="seu@email.com"
-                        className="h-12 text-base pl-12 pr-4 rounded-xl input-modern-smooth"
+                        className="h-12 text-base pl-12 pr-4 clay-input"
                       />
                       <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                     </div>
@@ -249,7 +249,7 @@ export default function Home(){
                         onChange={e => setPassword(e.target.value)} 
                         required
                         placeholder="••••••••"
-                        className="h-12 text-base pl-12 pr-12 rounded-xl input-modern-smooth"
+                        className="h-12 text-base pl-12 pr-12 clay-input"
                       />
                       <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                       <button
@@ -266,7 +266,7 @@ export default function Home(){
                     type="submit"
                     variant="default"
                     size="default"
-                    className="w-full h-12 text-base font-semibold mt-4 group btn-modern-primary" 
+                    className="w-full h-12 text-base font-semibold mt-4 group clay-button bg-primary text-primary-foreground hover:bg-primary/90 clay-glow-primary" 
                     disabled={loading}
                   >
                     {loading ? (

@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Esquema de cores suaves e elegantes */
     --background: #e7e5e4;
     --foreground: #1e293b;
     --card: #f5f5f4;
@@ -40,6 +41,8 @@
     --font-serif: Lora, serif;
     --font-mono: Roboto Mono, monospace;
     --radius: 1.25rem;
+    
+    /* Sombras suaves e elevadas */
     --shadow-2xs: 2px 2px 10px 4px hsl(240 4% 60% / 0.09);
     --shadow-xs: 2px 2px 10px 4px hsl(240 4% 60% / 0.09);
     --shadow-sm: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 1px 2px 3px hsl(240 4% 60% / 0.18);
@@ -48,16 +51,24 @@
     --shadow-lg: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 4px 6px 3px hsl(240 4% 60% / 0.18);
     --shadow-xl: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 8px 10px 3px hsl(240 4% 60% / 0.18);
     --shadow-2xl: 2px 2px 10px 4px hsl(240 4% 60% / 0.45);
+    
+    /* Efeitos de brilho suaves */
+    --glow-primary: 0 0 20px rgb(99 102 241 / 0.3);
+    --glow-success: 0 0 20px rgb(34 197 94 / 0.3);
+    --glow-warning: 0 0 20px rgb(245 158 11 / 0.3);
+    --glow-info: 0 0 20px rgb(59 130 246 / 0.3);
+    --glow-destructive: 0 0 20px rgb(239 68 68 / 0.3);
+    
     --tracking-normal: 0em;
     --spacing: 0.25rem;
     
-    /* Cores de sucesso, aviso e info - Tons pastéis */
-    --success: 142 76% 80%;
-    --success-foreground: 142 40% 20%;
-    --warning: 38 92% 80%;
-    --warning-foreground: 38 40% 20%;
-    --info: 199 89% 80%;
-    --info-foreground: 199 40% 20%;
+    /* Cores de status - Tons suaves */
+    --success: 34 197 94;
+    --success-foreground: 255 255 255;
+    --warning: 245 158 11;
+    --warning-foreground: 255 255 255;
+    --info: 59 130 246;
+    --info-foreground: 255 255 255;
     
     /* Variáveis de design */
     --sidebar-width: 20rem;
@@ -65,6 +76,7 @@
   }
 
   .dark {
+    /* Tema escuro suave e elegante */
     --background: #1e1b18;
     --foreground: #e2e8f0;
     --card: #2c2825;
@@ -97,6 +109,80 @@
     --sidebar-accent-foreground: #d1d5db;
     --sidebar-border: #3a3633;
     --sidebar-ring: #818cf8;
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-serif: Lora, serif;
+    --font-mono: Roboto Mono, monospace;
+    --radius: 1.25rem;
+    
+    /* Sombras escuras suaves */
+    --shadow-2xs: 2px 2px 10px 4px hsl(0 0% 0% / 0.09);
+    --shadow-xs: 2px 2px 10px 4px hsl(0 0% 0% / 0.09);
+    --shadow-sm: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 1px 2px 3px hsl(0 0% 0% / 0.18);
+    --shadow: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 1px 2px 3px hsl(0 0% 0% / 0.18);
+    --shadow-md: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 2px 4px 3px hsl(0 0% 0% / 0.18);
+    --shadow-lg: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 4px 6px 3px hsl(0 0% 0% / 0.18);
+    --shadow-xl: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 8px 10px 3px hsl(0 0% 0% / 0.18);
+    --shadow-2xl: 2px 2px 10px 4px hsl(0 0% 0% / 0.45);
+    
+    /* Efeitos de brilho escuros */
+    --glow-primary: 0 0 20px rgb(129 140 248 / 0.4);
+    --glow-success: 0 0 20px rgb(34 197 94 / 0.4);
+    --glow-warning: 0 0 20px rgb(245 158 11 / 0.4);
+    --glow-info: 0 0 20px rgb(59 130 246 / 0.4);
+    --glow-destructive: 0 0 20px rgb(239 68 68 / 0.4);
+  }
+
+  @theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+    --font-serif: var(--font-serif);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    --shadow-2xs: var(--shadow-2xs);
+    --shadow-xs: var(--shadow-xs);
+    --shadow-sm: var(--shadow-sm);
+    --shadow: var(--shadow);
+    --shadow-md: var(--shadow-md);
+    --shadow-lg: var(--shadow-lg);
+    --shadow-xl: var(--shadow-xl);
+    --shadow-2xl: var(--shadow-2xl);
   }
 
   * {
@@ -189,11 +275,379 @@
       transform: translateY(0) scale(1);
     }
     50% {
-      transform: translateY(2px) scale(0.98);
+      transform: translateY(1px) scale(0.98);
     }
     100% {
       transform: translateY(0) scale(1);
     }
+  }
+
+  @keyframes tactileLift {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      transform: translateY(-1px) scale(1.01);
+    }
+  }
+
+  /* Claymorphism Components - Linhas Suaves */
+  .clay-card {
+    @apply backdrop-blur-sm border rounded-2xl;
+    background-color: hsl(var(--card) / 0.9);
+    border-color: hsl(var(--border) / 0.6);
+    box-shadow: 
+      var(--shadow-sm),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .clay-card:hover {
+    @apply scale-[1.02] shadow-lg;
+    box-shadow: 
+      var(--shadow-lg),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .clay-button {
+    @apply relative overflow-hidden rounded-xl font-semibold;
+    box-shadow: 
+      var(--shadow-sm),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .clay-button:hover {
+    @apply scale-[1.03] shadow-md;
+    box-shadow: 
+      var(--shadow-md),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px) scale(1.03);
+  }
+
+  .clay-button:active {
+    @apply scale-[0.98];
+    animation: tactilePress 0.15s ease-out;
+    transform: translateY(1px) scale(0.98);
+  }
+
+  .clay-input {
+    @apply backdrop-blur-sm border rounded-xl;
+    background-color: hsl(var(--card) / 0.8);
+    border-color: hsl(var(--border) / 0.7);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.08),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .clay-input:focus {
+    @apply ring-2 ring-primary/30;
+    border-color: hsl(var(--primary) / 0.6);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.08),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.2),
+      var(--glow-primary);
+    transform: translateY(-1px);
+  }
+
+  .clay-sidebar {
+    @apply backdrop-blur-md border-r;
+    background-color: hsl(var(--sidebar) / 0.9);
+    border-color: hsl(var(--sidebar-border) / 0.5);
+    box-shadow: 
+      4px 0 24px rgba(0, 0, 0, 0.1),
+      inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .clay-glass {
+    @apply backdrop-blur-lg border;
+    background-color: hsl(var(--card) / 0.7);
+    border-color: hsl(var(--border) / 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .clay-glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+
+  .clay-glow-success {
+    box-shadow: var(--glow-success);
+  }
+
+  .clay-glow-warning {
+    box-shadow: var(--glow-warning);
+  }
+
+  .clay-glow-info {
+    box-shadow: var(--glow-info);
+  }
+
+  .clay-glow-destructive {
+    box-shadow: var(--glow-destructive);
+  }
+
+  /* Modern Button Variants */
+  .btn-modern-primary {
+    @apply clay-button text-primary-foreground;
+    background-color: hsl(var(--primary));
+  }
+  .btn-modern-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  .btn-modern-secondary {
+    @apply clay-button text-secondary-foreground;
+    background-color: hsl(var(--secondary));
+  }
+  .btn-modern-secondary:hover {
+    background-color: hsl(var(--secondary) / 0.8);
+  }
+
+  .btn-modern-outline {
+    @apply clay-button border-2 text-primary;
+    background-color: transparent;
+    border-color: hsl(var(--primary));
+  }
+  .btn-modern-outline:hover {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .btn-modern-ghost {
+    @apply clay-button text-foreground;
+    background-color: transparent;
+  }
+  .btn-modern-ghost:hover {
+    background-color: hsl(var(--accent) / 0.5);
+  }
+
+  /* Modern Card Variants */
+  .card-modern-smooth {
+    @apply clay-card p-6;
+  }
+
+  .card-modern-glass {
+    @apply clay-glass p-6 rounded-2xl;
+  }
+
+  .card-modern-elevated {
+    @apply clay-card p-6 shadow-xl hover:shadow-2xl;
+  }
+
+  /* Modern Input Variants */
+  .input-modern-smooth {
+    @apply clay-input px-4 py-3 text-base;
+  }
+
+  .input-modern-glass {
+    @apply clay-glass px-4 py-3 text-base rounded-xl;
+  }
+
+  /* Modern Animations */
+  .animate-slide-in-from-left {
+    animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-slide-in-from-right {
+    animation: slideInFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-slide-in-from-bottom {
+    animation: slideInFromBottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-bounce-soft {
+    animation: bounceSoft 2s infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2s infinite;
+  }
+
+  .animate-float {
+    animation: floatSmooth 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glowSmooth 2s ease-in-out infinite;
+  }
+
+  /* Hover Effects - Linhas Suaves */
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+  .hover-glow:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hover-tactile {
+    @apply transition-all duration-200;
+  }
+  .hover-tactile:hover {
+    transform: scale(1.02);
+  }
+  .hover-tactile:active {
+    transform: scale(0.98);
+  }
+
+  /* Glass Effects */
+  .glass-modern-smooth {
+    @apply backdrop-blur-sm border;
+    background-color: hsl(var(--card) / 0.8);
+    border-color: hsl(var(--border) / 0.5);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-modern-strong {
+    @apply backdrop-blur-md border;
+    background-color: hsl(var(--card) / 0.9);
+    border-color: hsl(var(--border) / 0.6);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  /* Line Separators */
+  .line-modern-smooth {
+    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+
+  .line-modern-smooth-thick {
+    @apply h-0.5 bg-gradient-to-r from-transparent to-transparent;
+    background-image: linear-gradient(to right, transparent, hsl(var(--border) / 0.5), transparent);
+  }
+
+  /* Status Colors */
+  .text-success {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .text-warning {
+    @apply text-amber-600 dark:text-amber-400;
+  }
+
+  .text-info {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+
+  .bg-success {
+    @apply bg-green-100;
+    background-color: hsl(142 76% 80% / 0.2);
+  }
+  .dark .bg-success {
+    background-color: hsl(142 76% 80% / 0.2);
+  }
+
+  .bg-warning {
+    @apply bg-amber-100;
+    background-color: hsl(38 92% 80% / 0.2);
+  }
+  .dark .bg-warning {
+    background-color: hsl(38 92% 80% / 0.2);
+  }
+
+  .bg-info {
+    @apply bg-blue-100;
+    background-color: hsl(199 89% 80% / 0.2);
+  }
+  .dark .bg-info {
+    background-color: hsl(199 89% 80% / 0.2);
+  }
+
+  /* Mobile Optimizations */
+  .mobile-scrollable {
+    @apply overflow-y-auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-content {
+    @apply min-h-screen;
+  }
+
+  .mobile-login-container {
+    @apply min-h-screen flex items-center justify-center p-4;
+  }
+
+  .mobile-login-form {
+    @apply w-full max-w-md;
+  }
+
+  /* Transform GPU for better performance */
+  .transform-gpu {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Linhas Suaves e Responsividade Tátil */
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .tactile-feedback {
+    @apply smooth-transition;
+  }
+  .tactile-feedback:hover {
+    transform: translateY(-1px) scale(1.01);
+  }
+  .tactile-feedback:active {
+    transform: translateY(0) scale(0.99);
+  }
+
+  .soft-shadow {
+    box-shadow: var(--shadow-sm);
+  }
+  .soft-shadow:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .elevated-surface {
+    @apply smooth-transition;
+    box-shadow: var(--shadow-sm);
+  }
+  .elevated-surface:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply rounded-full;
+    background-color: hsl(var(--muted) / 0.3);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background-color: hsl(var(--border) / 0.6);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
   }
 
   @keyframes tactileLift {

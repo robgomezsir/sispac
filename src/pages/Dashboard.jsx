@@ -406,13 +406,13 @@ export default function Dashboard(){
             />
 
             {/* Controles modernos de busca e filtros */}
-            <div className="card-modern-smooth mb-6">
+            <div className="clay-card mb-6">
               <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   <div className="relative flex-1 max-w-md">
                     <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                     <Input 
-                      className="pl-10 h-10 input-modern-smooth" 
+                      className="pl-10 h-10 clay-input" 
                       placeholder="Buscar candidatos..." 
                       value={q} 
                       onChange={handleSearchChange}
@@ -588,7 +588,7 @@ export default function Dashboard(){
               </div>
             ) : (
               // Visualização em tabela moderna
-              <div className="card-modern-smooth overflow-hidden">
+              <div className="clay-card overflow-hidden">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>

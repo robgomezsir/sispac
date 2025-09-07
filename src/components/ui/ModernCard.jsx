@@ -9,17 +9,17 @@ export function ModernCard({
   interactive = false,
   ...props 
 }) {
-  const baseClasses = "card-modern-smooth"
+  const baseClasses = "clay-card"
   
   const variants = {
     default: "",
-    glass: "glass-modern-smooth",
-    dark: "card-modern-smooth-dark",
-    glassDark: "glass-modern-smooth-dark"
+    glass: "clay-glass",
+    elevated: "clay-card shadow-xl hover:shadow-2xl",
+    smooth: "card-modern-smooth"
   }
   
-  const interactiveClasses = interactive ? "cursor-pointer" : ""
-  const hoverClasses = hover ? "hover:shadow-xl hover:-translate-y-2" : ""
+  const interactiveClasses = interactive ? "cursor-pointer tactile-feedback" : ""
+  const hoverClasses = hover ? "elevated-surface" : ""
   
   return (
     <div 
@@ -28,6 +28,7 @@ export function ModernCard({
         variants[variant],
         interactiveClasses,
         hoverClasses,
+        "smooth-transition transform-gpu",
         className
       )}
       {...props}

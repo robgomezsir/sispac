@@ -1,25 +1,26 @@
 import * as React from "react"
-import { cva } from "class-variance-authority"
-import { cn } from "../../lib/utils"
+import { cva } from "class-variance-authority";
+
+import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:scale-105 transform-gpu shadow-sm hover:shadow-md",
+  "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-primary/30 bg-gradient-to-r from-primary/20 to-primary/10 text-primary hover:from-primary/30 hover:to-primary/20",
+          "border-transparent bg-primary text-primary-foreground shadow-md hover:shadow-lg clay-glow-primary",
         secondary:
-          "border-secondary/30 bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary-foreground hover:from-secondary/30 hover:to-secondary/20",
+          "border-transparent bg-secondary text-secondary-foreground shadow-md hover:shadow-lg hover:bg-secondary/80",
         destructive:
-          "border-destructive/30 bg-gradient-to-r from-destructive/20 to-destructive/10 text-destructive hover:from-destructive/30 hover:to-destructive/20",
+          "border-transparent bg-destructive text-destructive-foreground shadow-md hover:shadow-lg clay-glow-destructive",
+        outline: "text-foreground border-border hover:bg-accent/50",
         success:
-          "border-success/30 bg-gradient-to-r from-success/20 to-success/10 text-success hover:from-success/30 hover:to-success/20",
+          "border-transparent bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 shadow-md hover:shadow-lg clay-glow-success",
         warning:
-          "border-warning/30 bg-gradient-to-r from-warning/20 to-warning/10 text-warning hover:from-warning/30 hover:to-warning/20",
+          "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400 shadow-md hover:shadow-lg clay-glow-warning",
         info:
-          "border-info/30 bg-gradient-to-r from-info/20 to-info/10 text-info hover:from-info/30 hover:to-info/20",
-        outline: "text-foreground border-border/50 bg-background/50 hover:bg-accent/50",
+          "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 shadow-md hover:shadow-lg clay-glow-info",
       },
     },
     defaultVariants: {
@@ -28,10 +29,12 @@ const badgeVariants = cva(
   }
 )
 
-function Badge({ className, variant, ...props }) {
-  return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
-  )
+function Badge({
+  className,
+  variant,
+  ...props
+}) {
+  return (<div className={cn(badgeVariants({ variant }), className)} {...props} />);
 }
 
 export { Badge, badgeVariants }

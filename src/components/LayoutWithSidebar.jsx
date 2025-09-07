@@ -16,7 +16,7 @@ export function LayoutWithSidebar({ children }) {
     <>
       {/* Mobile Header */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border/50 p-4 glass-modern-smooth">
+        <div className="fixed top-0 left-0 right-0 z-50 clay-glass border-b border-border/50 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">

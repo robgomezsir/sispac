@@ -102,7 +102,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
   return (
     <div 
       className={cn(
-        "fixed left-0 top-0 z-50 h-screen w-80 bg-sidebar/95 backdrop-blur-md border-r-2 border-sidebar-border/50 transition-all duration-500 ease-out shadow-2xl glass-modern-smooth",
+        "fixed left-0 top-0 z-50 h-screen w-80 clay-sidebar transition-all duration-500 ease-out shadow-2xl",
         isMobile && !isOpen && "-translate-x-full opacity-0",
         isMobile && isOpen && "translate-x-0 opacity-100",
         !isMobile && "translate-x-0 opacity-100"
