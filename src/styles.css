@@ -4,38 +4,38 @@
 
 @layer base {
   :root {
-    --background: rgb(253, 253, 253);
-    --foreground: rgb(0, 0, 0);
-    --card: rgb(253, 253, 253);
-    --card-foreground: rgb(0, 0, 0);
-    --popover: rgb(252, 252, 252);
-    --popover-foreground: rgb(0, 0, 0);
-    --primary: rgb(112, 51, 255);
-    --primary-foreground: rgb(255, 255, 255);
-    --secondary: rgb(237, 240, 244);
-    --secondary-foreground: rgb(8, 8, 8);
-    --muted: rgb(245, 245, 245);
-    --muted-foreground: rgb(82, 82, 82);
-    --accent: rgb(226, 235, 255);
-    --accent-foreground: rgb(30, 105, 220);
-    --destructive: rgb(229, 75, 79);
-    --destructive-foreground: rgb(255, 255, 255);
-    --border: rgb(231, 231, 238);
-    --input: rgb(235, 235, 235);
-    --ring: rgb(0, 0, 0);
-    --chart-1: rgb(74, 200, 133);
-    --chart-2: rgb(112, 51, 255);
-    --chart-3: rgb(253, 130, 43);
-    --chart-4: rgb(50, 118, 228);
-    --chart-5: rgb(116, 116, 116);
-    --sidebar: rgb(245, 248, 251);
-    --sidebar-foreground: rgb(0, 0, 0);
-    --sidebar-primary: rgb(0, 0, 0);
-    --sidebar-primary-foreground: rgb(255, 255, 255);
-    --sidebar-accent: rgb(235, 235, 235);
-    --sidebar-accent-foreground: rgb(0, 0, 0);
-    --sidebar-border: rgb(235, 235, 235);
-    --sidebar-ring: rgb(0, 0, 0);
+    --background: #fdfdfd;
+    --foreground: #000000;
+    --card: #fdfdfd;
+    --card-foreground: #000000;
+    --popover: #fcfcfc;
+    --popover-foreground: #000000;
+    --primary: #7033ff;
+    --primary-foreground: #ffffff;
+    --secondary: #edf0f4;
+    --secondary-foreground: #080808;
+    --muted: #f5f5f5;
+    --muted-foreground: #525252;
+    --accent: #e2ebff;
+    --accent-foreground: #1e69dc;
+    --destructive: #e54b4f;
+    --destructive-foreground: #ffffff;
+    --border: #e7e7ee;
+    --input: #ebebeb;
+    --ring: #000000;
+    --chart-1: #4ac885;
+    --chart-2: #7033ff;
+    --chart-3: #fd822b;
+    --chart-4: #3276e4;
+    --chart-5: #747474;
+    --sidebar: #f5f8fb;
+    --sidebar-foreground: #000000;
+    --sidebar-primary: #000000;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #ebebeb;
+    --sidebar-accent-foreground: #000000;
+    --sidebar-border: #ebebeb;
+    --sidebar-ring: #000000;
     --font-sans: Plus Jakarta Sans, sans-serif;
     --font-serif: Lora, serif;
     --font-mono: IBM Plex Mono, monospace;
@@ -65,38 +65,38 @@
   }
 
   .dark {
-    --background: rgb(26, 27, 30);
-    --foreground: rgb(240, 240, 240);
-    --card: rgb(34, 35, 39);
-    --card-foreground: rgb(240, 240, 240);
-    --popover: rgb(34, 35, 39);
-    --popover-foreground: rgb(240, 240, 240);
-    --primary: rgb(140, 92, 255);
-    --primary-foreground: rgb(255, 255, 255);
-    --secondary: rgb(42, 44, 51);
-    --secondary-foreground: rgb(240, 240, 240);
-    --muted: rgb(42, 44, 51);
-    --muted-foreground: rgb(160, 160, 160);
-    --accent: rgb(30, 41, 59);
-    --accent-foreground: rgb(121, 192, 255);
-    --destructive: rgb(229, 75, 79);
-    --destructive-foreground: rgb(255, 255, 255);
-    --border: rgb(51, 53, 58);
-    --input: rgb(51, 53, 58);
-    --ring: rgb(140, 92, 255);
-    --chart-1: rgb(74, 222, 128);
-    --chart-2: rgb(140, 92, 255);
-    --chart-3: rgb(252, 165, 165);
-    --chart-4: rgb(89, 147, 244);
-    --chart-5: rgb(160, 160, 160);
-    --sidebar: rgb(22, 22, 24);
-    --sidebar-foreground: rgb(240, 240, 240);
-    --sidebar-primary: rgb(140, 92, 255);
-    --sidebar-primary-foreground: rgb(255, 255, 255);
-    --sidebar-accent: rgb(42, 44, 51);
-    --sidebar-accent-foreground: rgb(140, 92, 255);
-    --sidebar-border: rgb(51, 53, 58);
-    --sidebar-ring: rgb(140, 92, 255);
+    --background: #1a1b1e;
+    --foreground: #f0f0f0;
+    --card: #222327;
+    --card-foreground: #f0f0f0;
+    --popover: #222327;
+    --popover-foreground: #f0f0f0;
+    --primary: #8c5cff;
+    --primary-foreground: #ffffff;
+    --secondary: #2a2c33;
+    --secondary-foreground: #f0f0f0;
+    --muted: #2a2c33;
+    --muted-foreground: #a0a0a0;
+    --accent: #1e293b;
+    --accent-foreground: #79c0ff;
+    --destructive: #e54b4f;
+    --destructive-foreground: #ffffff;
+    --border: #33353a;
+    --input: #33353a;
+    --ring: #8c5cff;
+    --chart-1: #4ade80;
+    --chart-2: #8c5cff;
+    --chart-3: #fca5a5;
+    --chart-4: #5993f4;
+    --chart-5: #a0a0a0;
+    --sidebar: #161618;
+    --sidebar-foreground: #f0f0f0;
+    --sidebar-primary: #8c5cff;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #2a2c33;
+    --sidebar-accent-foreground: #8c5cff;
+    --sidebar-border: #33353a;
+    --sidebar-ring: #8c5cff;
     --font-sans: Plus Jakarta Sans, sans-serif;
     --font-serif: Lora, serif;
     --font-mono: IBM Plex Mono, monospace;
@@ -787,5 +787,300 @@
     flex: 0 1 auto;
     min-width: 200px;
     max-width: 300px;
+  }
+
+  /* === TEMA SUAVE COM LINHAS MODERNAS === */
+  
+  /* Cards modernos e responsivos */
+  .card-smooth {
+    @apply bg-card border border-border/30 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(231, 231, 238, 0.5);
+  }
+
+  .card-smooth:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(112, 51, 255, 0.1);
+  }
+
+  .card-smooth-dark {
+    @apply bg-card border border-border/30 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(51, 53, 58, 0.5);
+  }
+
+  .card-smooth-dark:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(140, 92, 255, 0.15);
+  }
+
+  /* Linhas modernas e suaves */
+  .line-modern {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 50%, transparent 100%);
+    margin: 1.5rem 0;
+  }
+
+  .line-modern-thick {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 20%, var(--accent) 50%, var(--primary) 80%, transparent 100%);
+    margin: 2rem 0;
+    border-radius: 1px;
+  }
+
+  .line-modern-vertical {
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, var(--border) 50%, transparent 100%);
+    margin: 0 1.5rem;
+  }
+
+  /* Botões modernos com hover suave */
+  .btn-smooth {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--primary) 0%, rgba(112, 51, 255, 0.9) 100%);
+    color: var(--primary-foreground);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-smooth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease-out;
+  }
+
+  .btn-smooth:hover {
+    @apply shadow-lg;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(112, 51, 255, 0.3);
+  }
+
+  .btn-smooth:hover::before {
+    left: 100%;
+  }
+
+  .btn-smooth:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  .btn-smooth-secondary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--secondary) 0%, rgba(237, 240, 244, 0.8) 100%);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+
+  .btn-smooth-secondary:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    border-color: var(--primary);
+    box-shadow: 0 6px 20px rgba(112, 51, 255, 0.15);
+  }
+
+  .btn-smooth-outline {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out;
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-smooth-outline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease-out;
+    z-index: -1;
+  }
+
+  .btn-smooth-outline:hover {
+    color: var(--primary-foreground);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(112, 51, 255, 0.25);
+  }
+
+  .btn-smooth-outline:hover::before {
+    width: 100%;
+  }
+
+  /* Áreas suaves e gradientes */
+  .area-smooth {
+    @apply rounded-2xl p-6 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border: 1px solid rgba(231, 231, 238, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .area-smooth:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  .area-smooth-dark {
+    @apply rounded-2xl p-6 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(51, 53, 58, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .area-smooth-dark:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  /* Gradientes suaves para backgrounds */
+  .bg-smooth-gradient {
+    background: linear-gradient(135deg, 
+      var(--background) 0%, 
+      rgba(112, 51, 255, 0.02) 25%, 
+      var(--background) 50%, 
+      rgba(226, 235, 255, 0.05) 75%, 
+      var(--background) 100%
+    );
+  }
+
+  .bg-smooth-gradient-dark {
+    background: linear-gradient(135deg, 
+      var(--background) 0%, 
+      rgba(140, 92, 255, 0.05) 25%, 
+      var(--background) 50%, 
+      rgba(30, 41, 59, 0.1) 75%, 
+      var(--background) 100%
+    );
+  }
+
+  /* Efeitos de glassmorphism suave */
+  .glass-smooth {
+    @apply rounded-2xl border border-white/20;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-smooth-dark {
+    @apply rounded-2xl border border-white/10;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Inputs modernos e suaves */
+  .input-smooth {
+    @apply px-4 py-3 rounded-xl border border-border/50 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.5) 100%);
+    backdrop-filter: blur(10px);
+  }
+
+  .input-smooth:focus {
+    @apply border-primary shadow-lg;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(112, 51, 255, 0.15);
+  }
+
+  .input-smooth:hover {
+    @apply border-primary/50;
+    transform: translateY(-1px);
+  }
+
+  /* Badges modernos e suaves */
+  .badge-smooth {
+    @apply px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--accent) 0%, rgba(226, 235, 255, 0.8) 100%);
+    color: var(--accent-foreground);
+    border: 1px solid rgba(30, 105, 220, 0.2);
+  }
+
+  .badge-smooth:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(30, 105, 220, 0.2);
+  }
+
+  /* Animações suaves para elementos */
+  .animate-smooth-in {
+    animation: smoothIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-smooth-out {
+    animation: smoothOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes smoothIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes smoothOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+  }
+
+  /* Responsividade aprimorada */
+  @media (max-width: 768px) {
+    .card-smooth,
+    .card-smooth-dark {
+      @apply p-4 rounded-xl;
+    }
+    
+    .btn-smooth,
+    .btn-smooth-secondary,
+    .btn-smooth-outline {
+      @apply px-4 py-2.5 text-sm;
+    }
+    
+    .area-smooth,
+    .area-smooth-dark {
+      @apply p-4 rounded-xl;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-smooth,
+    .card-smooth-dark {
+      @apply p-3 rounded-lg;
+    }
+    
+    .btn-smooth,
+    .btn-smooth-secondary,
+    .btn-smooth-outline {
+      @apply px-3 py-2 text-xs;
+    }
+    
+    .area-smooth,
+    .area-smooth-dark {
+      @apply p-3 rounded-lg;
+    }
   }
 }
