@@ -78,11 +78,3 @@ export {
   PastelAreaContent, 
   PastelAreaFooter 
 } from './PastelArea'
-export { 
-  ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent, 
-  ChartLegend, 
-  ChartLegendContent, 
-  ChartStyle 
-} from './chart.tsx'

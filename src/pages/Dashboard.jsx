@@ -47,11 +47,7 @@ import {
   Code,
   ArrowRight,
   FilterX,
-  BarChart4,
-  PieChart,
-  LineChart
 } from 'lucide-react'
-import { CandidatesChart } from '../components/CandidatesChart'
 import { cn } from '../lib/utils'
 import { 
   Button, 
@@ -391,11 +387,6 @@ export default function Dashboard(){
             value={stats.abaixo}
             icon={<TrendingDown size={20} className="text-muted-foreground" />}
           />
-        </div>
-
-        {/* Gráfico de evolução de candidatos */}
-        <div className="mb-8">
-          <CandidatesChart />
         </div>
 
         {/* Separador moderno e suave */}
