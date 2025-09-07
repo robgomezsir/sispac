@@ -4,6 +4,7 @@ import { Protected } from './components/Protected.jsx'
 import { AdminOnly } from './components/AdminOnly.jsx'
 import { LayoutWithSidebar } from './components/LayoutWithSidebar.jsx'
 import { SidebarProvider } from './contexts/SidebarContext.jsx'
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import PWAInstallPrompt from './components/PWAInstallPrompt.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import Home from './pages/Home.jsx'
@@ -82,9 +83,10 @@ export default function App(){
   ], [])
   
   return (
-    <SidebarProvider>
-      <div className="min-h-screen bg-background">
-        <Routes>
+    <ThemeProvider>
+      <SidebarProvider>
+        <div className="min-h-screen bg-background">
+          <Routes>
           {routes.map(({ path, element }) => {
             // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)
             const publicPages = ["/", "/form", "/request-reset", "/reset-password", "/auth/confirm", "/invite-callback", "/welcome", "/join", "/setup-password", "/complete-invite", "/debug"]
@@ -107,10 +109,11 @@ export default function App(){
               />
             )
           })}
-        </Routes>
-        <PWAInstallPrompt />
-        <OfflineIndicator />
-      </div>
-    </SidebarProvider>
+          </Routes>
+          <PWAInstallPrompt />
+          <OfflineIndicator />
+        </div>
+      </SidebarProvider>
+    </ThemeProvider>
   )
 }
