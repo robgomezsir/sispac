@@ -39,7 +39,7 @@ import {
   ChevronDown,
   FileText
 } from 'lucide-react'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 
 export default function FormularioNew(){
   const [searchParams] = useSearchParams()

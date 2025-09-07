@@ -24,7 +24,7 @@ import {
   Calendar,
   Clock
 } from 'lucide-react'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 
 export default function Configuracoes(){
   const { user, role } = useAuth()

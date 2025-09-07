@@ -49,7 +49,7 @@ import {
   FilterX,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 
 export default function Dashboard(){
   const { user, role } = useAuth()

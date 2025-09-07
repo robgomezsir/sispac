@@ -18,7 +18,7 @@ import {
   Award,
   Target
 } from 'lucide-react'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()

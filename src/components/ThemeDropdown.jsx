@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTheme } from '../contexts/ThemeContext.jsx'
 import { Sun, Moon, Monitor, ChevronDown, Check } from 'lucide-react'
-// Componente Button customizado será criado
+// Usando elemento HTML padrão temporariamente
 import { cn } from '../lib/utils'
 
 export function ThemeDropdown() {
@@ -72,7 +72,9 @@ export function ThemeDropdown() {
         ref={triggerRef}
         onClick={handleOpen}
         className={cn(
-          "btn btn-outline h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
+          "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
           "hover:bg-accent/50 text-muted-foreground hover:text-foreground",
           "border-border/50 hover:border-border",
           isOpen && "bg-accent/30 border-border"

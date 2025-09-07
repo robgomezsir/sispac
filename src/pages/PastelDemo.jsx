@@ -1,5 +1,5 @@
 import React from 'react'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 import { 
   Heart, 
   Star, 

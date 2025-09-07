@@ -27,7 +27,7 @@ import {
   Palette
 } from 'lucide-react'
 import { cn } from '../lib/utils'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 import { ThemeDropdown } from './ThemeDropdown.jsx'
 
 export function ModernSidebar({ isOpen = true, onClose }) {
@@ -141,7 +141,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
         </div>
         <div className="flex items-center space-x-2">
           {isMobile && onClose && (
-            <button className="btn btn-ghost h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300" onClick={onClose}>
+            <button className="h-10 w-10 rounded-xl hover:bg-sidebar-accent/20 hover:scale-110 transition-all duration-300" onClick={onClose}>
               <X size={18} className="text-sidebar-foreground/70" />
             </button>
           )}
@@ -174,7 +174,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
                   <span className="font-medium">{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">
+                  <span className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold transition-colors">
                     {item.badge}
                   </span>
                 )}
@@ -191,11 +191,11 @@ export function ModernSidebar({ isOpen = true, onClose }) {
             Ações Rápidas
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            <button className="btn btn-outline h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
+            <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 px-3">
               <Plus size={16} className="mr-2" />
               Novo
             </button>
-            <button className="btn btn-secondary h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
+            <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-secondary text-secondary-foreground hover:bg-secondary/80 h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 px-3">
               <Zap size={16} className="mr-2" />
               Relatório
             </button>
@@ -244,7 +244,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
         {/* Logout Button */}
         <button
           onClick={handleSignOut}
-          className="btn btn-ghost w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20 rounded-xl h-12 font-semibold hover:scale-105 transition-all duration-300"
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20 rounded-xl h-12 font-semibold hover:scale-105 transition-all duration-300 px-3"
         >
           <LogOut size={18} className="mr-3" />
           Sair

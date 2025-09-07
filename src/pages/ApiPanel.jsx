@@ -27,7 +27,7 @@ import {
   Info
 } from 'lucide-react'
 import { useState } from 'react'
-// Componentes customizados serão criados
+// Usando elementos HTML padrão temporariamente
 
 export default function ApiPanel(){
   const [copiedEndpoint, setCopiedEndpoint] = useState(null)
