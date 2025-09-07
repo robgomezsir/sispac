@@ -40,3 +40,11 @@ export {
   DropdownMenuSubTrigger, 
   DropdownMenuSubContent 
 } from './dropdown-menu'
+export { 
+  ModernCard, 
+  ModernCardHeader, 
+  ModernCardContent, 
+  ModernCardFooter, 
+  ModernStatCard, 
+  ModernActionCard 
+} from './ModernCard'

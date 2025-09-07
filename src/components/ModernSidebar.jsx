@@ -102,7 +102,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
   return (
     <div 
       className={cn(
-        "fixed left-0 top-0 z-50 h-screen w-80 bg-sidebar/95 backdrop-blur-md border-r-2 border-sidebar-border/50 transition-all duration-500 ease-out shadow-2xl",
+        "fixed left-0 top-0 z-50 h-screen w-80 bg-sidebar/95 backdrop-blur-md border-r-2 border-sidebar-border/50 transition-all duration-500 ease-out shadow-2xl glass-modern-smooth",
         isMobile && !isOpen && "-translate-x-full opacity-0",
         isMobile && isOpen && "translate-x-0 opacity-100",
         !isMobile && "translate-x-0 opacity-100"
@@ -182,11 +182,11 @@ export function ModernSidebar({ isOpen = true, onClose }) {
             Ações Rápidas
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
+            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 btn-modern-outline">
               <Plus size={16} className="mr-2" />
               Novo
             </Button>
-            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300">
+            <Button variant="outline" size="sm" className="h-12 text-xs rounded-xl hover:scale-105 transition-all duration-300 btn-modern-secondary">
               <Zap size={16} className="mr-2" />
               Relatório
             </Button>

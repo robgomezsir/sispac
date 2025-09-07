@@ -11,7 +11,7 @@
     --popover: #ccd0da;
     --popover-foreground: #4c4f69;
     --primary: #8839ef;
-    --primary-foreground: #1e1e2e;
+    --primary-foreground: #ffffff;
     --secondary: #ccd0da;
     --secondary-foreground: #4c4f69;
     --muted: #dce0e8;
@@ -19,7 +19,7 @@
     --accent: #04a5e5;
     --accent-foreground: #ffffff;
     --destructive: #d20f39;
-    --destructive-foreground: #1e1e2e;
+    --destructive-foreground: #ffffff;
     --border: #bcc0cc;
     --input: #ccd0da;
     --ring: #8839ef;
@@ -31,7 +31,7 @@
     --sidebar: #e6e9ef;
     --sidebar-foreground: #4c4f69;
     --sidebar-primary: #8839ef;
-    --sidebar-primary-foreground: #1e1e2e;
+    --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #04a5e5;
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: #bcc0cc;
@@ -79,7 +79,7 @@
     --muted-foreground: #a6adc8;
     --accent: #89dceb;
     --accent-foreground: #1e1e2e;
-    --destructive: #d20f39;
+    --destructive: #f38ba8;
     --destructive-foreground: #1e1e2e;
     --border: #313244;
     --input: #313244;
@@ -1047,39 +1047,468 @@
     }
   }
 
+  /* === NOVOS ESTILOS MODERNOS COM SHADCN === */
+  
+  /* Cartões modernos e responsivos com hover suave */
+  .card-modern-smooth {
+    @apply bg-card border border-border/30 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(231, 231, 238, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-modern-smooth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card-modern-smooth:hover {
+    @apply shadow-xl;
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(136, 57, 239, 0.15);
+  }
+
+  .card-modern-smooth:hover::before {
+    opacity: 1;
+  }
+
+  .card-modern-smooth-dark {
+    @apply bg-card border border-border/30 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(51, 53, 58, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-modern-smooth-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card-modern-smooth-dark:hover {
+    @apply shadow-xl;
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(203, 166, 247, 0.2);
+  }
+
+  .card-modern-smooth-dark:hover::before {
+    opacity: 1;
+  }
+
+  /* Botões modernos com hover suave e efeitos táteis */
+  .btn-modern-primary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out relative overflow-hidden;
+    background: linear-gradient(135deg, var(--primary) 0%, rgba(136, 57, 239, 0.9) 100%);
+    color: var(--primary-foreground);
+    border: 1px solid transparent;
+    position: relative;
+    transform: translateZ(0);
+  }
+
+  .btn-modern-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease-out;
+  }
+
+  .btn-modern-primary:hover {
+    @apply shadow-lg;
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(136, 57, 239, 0.3);
+  }
+
+  .btn-modern-primary:hover::before {
+    left: 100%;
+  }
+
+  .btn-modern-primary:active {
+    transform: translateY(0) scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+
+  .btn-modern-secondary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--secondary) 0%, rgba(237, 240, 244, 0.8) 100%);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-modern-secondary:hover {
+    @apply shadow-md;
+    transform: translateY(-1px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 6px 20px rgba(136, 57, 239, 0.15);
+  }
+
+  .btn-modern-outline {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out;
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-modern-outline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease-out;
+    z-index: -1;
+  }
+
+  .btn-modern-outline:hover {
+    color: var(--primary-foreground);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(136, 57, 239, 0.25);
+  }
+
+  .btn-modern-outline:hover::before {
+    width: 100%;
+  }
+
+  /* Inputs modernos e suaves */
+  .input-modern-smooth {
+    @apply px-4 py-3 rounded-xl border border-border/50 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.5) 100%);
+    backdrop-filter: blur(10px);
+    position: relative;
+  }
+
+  .input-modern-smooth:focus {
+    @apply border-primary shadow-lg;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(136, 57, 239, 0.15);
+  }
+
+  .input-modern-smooth:hover {
+    @apply border-primary/50;
+    transform: translateY(-1px);
+  }
+
+  /* Badges modernos e suaves */
+  .badge-modern-smooth {
+    @apply px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--accent) 0%, rgba(4, 165, 229, 0.8) 100%);
+    color: var(--accent-foreground);
+    border: 1px solid rgba(4, 165, 229, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .badge-modern-smooth:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(4, 165, 229, 0.2);
+  }
+
+  /* Áreas suaves com gradientes */
+  .area-modern-smooth {
+    @apply rounded-2xl p-6 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border: 1px solid rgba(231, 231, 238, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .area-modern-smooth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .area-modern-smooth:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  .area-modern-smooth:hover::before {
+    opacity: 0.05;
+  }
+
+  .area-modern-smooth-dark {
+    @apply rounded-2xl p-6 transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(51, 53, 58, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .area-modern-smooth-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .area-modern-smooth-dark:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  .area-modern-smooth-dark:hover::before {
+    opacity: 0.1;
+  }
+
+  /* Linhas modernas e suaves */
+  .line-modern-smooth {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 50%, transparent 100%);
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .line-modern-smooth::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .line-modern-smooth:hover::after {
+    opacity: 1;
+  }
+
+  .line-modern-smooth-thick {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 20%, var(--accent) 50%, var(--primary) 80%, transparent 100%);
+    margin: 2rem 0;
+    border-radius: 1px;
+    position: relative;
+  }
+
+  .line-modern-smooth-thick::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .line-modern-smooth-thick:hover::after {
+    opacity: 1;
+  }
+
+  /* Efeitos de glassmorphism suave */
+  .glass-modern-smooth {
+    @apply rounded-2xl border border-white/20;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-modern-smooth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glass-modern-smooth:hover::before {
+    opacity: 1;
+  }
+
+  .glass-modern-smooth-dark {
+    @apply rounded-2xl border border-white/10;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-modern-smooth-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glass-modern-smooth-dark:hover::before {
+    opacity: 1;
+  }
+
+  /* Animações suaves para elementos */
+  .animate-smooth-in {
+    animation: smoothIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-smooth-out {
+    animation: smoothOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-float-smooth {
+    animation: floatSmooth 4s ease-in-out infinite;
+  }
+
+  .animate-pulse-smooth {
+    animation: pulseSmooth 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow-smooth {
+    animation: glowSmooth 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes smoothIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes smoothOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+  }
+
+  @keyframes floatSmooth {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-10px) rotate(0.5deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(0deg);
+    }
+    75% {
+      transform: translateY(-10px) rotate(-0.5deg);
+    }
+  }
+
+  @keyframes pulseSmooth {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes glowSmooth {
+    from {
+      box-shadow: 0 0 20px rgba(136, 57, 239, 0.2);
+    }
+    to {
+      box-shadow: 0 0 30px rgba(136, 57, 239, 0.4);
+    }
+  }
+
   /* Responsividade aprimorada */
   @media (max-width: 768px) {
-    .card-smooth,
-    .card-smooth-dark {
+    .card-modern-smooth,
+    .card-modern-smooth-dark {
       @apply p-4 rounded-xl;
     }
     
-    .btn-smooth,
-    .btn-smooth-secondary,
-    .btn-smooth-outline {
+    .btn-modern-primary,
+    .btn-modern-secondary,
+    .btn-modern-outline {
       @apply px-4 py-2.5 text-sm;
     }
     
-    .area-smooth,
-    .area-smooth-dark {
+    .area-modern-smooth,
+    .area-modern-smooth-dark {
       @apply p-4 rounded-xl;
     }
   }
 
   @media (max-width: 480px) {
-    .card-smooth,
-    .card-smooth-dark {
+    .card-modern-smooth,
+    .card-modern-smooth-dark {
       @apply p-3 rounded-lg;
     }
     
-    .btn-smooth,
-    .btn-smooth-secondary,
-    .btn-smooth-outline {
+    .btn-modern-primary,
+    .btn-modern-secondary,
+    .btn-modern-outline {
       @apply px-3 py-2 text-xs;
     }
     
-    .area-smooth,
-    .area-smooth-dark {
+    .area-modern-smooth,
+    .area-modern-smooth-dark {
       @apply p-3 rounded-lg;
     }
   }

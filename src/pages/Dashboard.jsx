@@ -81,7 +81,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuCheckboxItem
+  DropdownMenuCheckboxItem,
+  ModernCard,
+  ModernCardHeader,
+  ModernCardContent,
+  ModernCardFooter,
+  ModernStatCard,
+  ModernActionCard
 } from '../components/ui'
 
 export default function Dashboard(){
@@ -345,7 +351,7 @@ export default function Dashboard(){
             <Button 
               onClick={load}
               disabled={loading}
-              className="btn-primary-modern"
+              className="btn-modern-primary"
             >
               <RefreshCw size={16} className={cn("mr-2", loading && "animate-spin")} />
               Atualizar
@@ -355,60 +361,40 @@ export default function Dashboard(){
 
                         {/* Estatísticas modernas e compactas */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                  <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Total</p>
-                        <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-                      </div>
-                      <Users size={20} className="text-primary group-hover:scale-110 transition-transform duration-200" />
-                    </div>
-                  </div>
+                  <ModernStatCard
+                    title="Total"
+                    value={stats.total}
+                    icon={<Users size={20} className="text-primary" />}
+                  />
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Superaram</p>
-                <p className="text-2xl font-bold text-success">{stats.superou}</p>
-              </div>
-              <Star size={20} className="text-success group-hover:scale-110 transition-transform duration-200" />
-            </div>
-          </div>
+          <ModernStatCard
+            title="Superaram"
+            value={stats.superou}
+            icon={<Star size={20} className="text-success" />}
+          />
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Acima</p>
-                <p className="text-2xl font-bold text-info">{stats.acima}</p>
-              </div>
-              <TrendingUp size={20} className="text-info group-hover:scale-110 transition-transform duration-200" />
-            </div>
-          </div>
+          <ModernStatCard
+            title="Acima"
+            value={stats.acima}
+            icon={<TrendingUp size={20} className="text-info" />}
+          />
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Dentro</p>
-                <p className="text-2xl font-bold text-warning">{stats.dentro}</p>
-              </div>
-              <Target size={20} className="text-warning group-hover:scale-110 transition-transform duration-200" />
-            </div>
-          </div>
+          <ModernStatCard
+            title="Dentro"
+            value={stats.dentro}
+            icon={<Target size={20} className="text-warning" />}
+          />
           
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-1 hover:scale-105">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Abaixo</p>
-                <p className="text-2xl font-bold text-muted-foreground">{stats.abaixo}</p>
-              </div>
-              <TrendingDown size={20} className="text-muted-foreground group-hover:scale-110 transition-transform duration-200" />
-            </div>
-          </div>
+          <ModernStatCard
+            title="Abaixo"
+            value={stats.abaixo}
+            icon={<TrendingDown size={20} className="text-muted-foreground" />}
+          />
         </div>
 
-        {/* Separador minimalista */}
+        {/* Separador moderno e suave */}
         <div className="w-full mb-8">
-          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+          <div className="line-modern-smooth-thick"></div>
         </div>
 
         {/* Conteúdo principal */}
@@ -420,13 +406,13 @@ export default function Dashboard(){
             />
 
             {/* Controles modernos de busca e filtros */}
-            <div className="bg-card border border-border/50 rounded-xl p-6 mb-6">
+            <div className="card-modern-smooth mb-6">
               <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   <div className="relative flex-1 max-w-md">
                     <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                     <Input 
-                      className="pl-10 h-10" 
+                      className="pl-10 h-10 input-modern-smooth" 
                       placeholder="Buscar candidatos..." 
                       value={q} 
                       onChange={handleSearchChange}
@@ -462,7 +448,7 @@ export default function Dashboard(){
                   <Button 
                     onClick={openExportModal}
                     disabled={filtered.length === 0}
-                    className="btn-primary-modern"
+                    className="btn-modern-primary"
                   >
                     <Download size={16} className="mr-2" />
                     Exportar
@@ -534,72 +520,75 @@ export default function Dashboard(){
               // Visualização em cartões moderna e compacta
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {sortedData.map((row, index) => (
-                  <div 
+                  <ModernCard 
                     key={row.id} 
-                    className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group transform-gpu hover:scale-105"
+                    interactive={true}
+                    className="group"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-                          {row.name}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-1 ml-2">
-                        {getStatusIcon(row.status)}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Pontuação</span>
-                        <span className={`text-lg font-bold ${getStatusColor(row.status)}`}>
-                          {row.score}
-                        </span>
+                    <ModernCardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                            {row.name}
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-1 ml-2">
+                          {getStatusIcon(row.status)}
+                        </div>
                       </div>
                       
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Data</span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                        </span>
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Pontuação</span>
+                          <span className={`text-lg font-bold ${getStatusColor(row.status)}`}>
+                            {row.score}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Data</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(row.created_at).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setCurrent(row)}
-                        className="flex-1 h-8 text-xs hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200"
-                      >
-                        <Eye size={14} className="mr-1" />
-                        Ver
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => exportOne(row)}
-                        className="flex-1 h-8 text-xs hover:bg-success/10 hover:text-success hover:border-success/20 transition-all duration-200"
-                      >
-                        <Download size={14} className="mr-1" />
-                        Download
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleDeleteCandidate(row)}
-                        className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
-                      >
-                        <Trash2 size={14} className="mr-1" />
-                        Excluir
-                      </Button>
-                    </div>
-                  </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setCurrent(row)}
+                          className="flex-1 h-8 text-xs btn-modern-outline"
+                        >
+                          <Eye size={14} className="mr-1" />
+                          Ver
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => exportOne(row)}
+                          className="flex-1 h-8 text-xs btn-modern-secondary"
+                        >
+                          <Download size={14} className="mr-1" />
+                          Download
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleDeleteCandidate(row)}
+                          className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
+                        >
+                          <Trash2 size={14} className="mr-1" />
+                          Excluir
+                        </Button>
+                      </div>
+                    </ModernCardContent>
+                  </ModernCard>
                 ))}
               </div>
             ) : (
               // Visualização em tabela moderna
-              <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+              <div className="card-modern-smooth overflow-hidden">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -637,7 +626,7 @@ export default function Dashboard(){
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => setCurrent(row)}
-                                className="h-8 px-3 hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200"
+                                className="h-8 px-3 btn-modern-outline"
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
@@ -646,7 +635,7 @@ export default function Dashboard(){
                                 variant="outline" 
                                 size="sm"
                                 onClick={() => exportOne(row)}
-                                className="h-8 px-3 hover:bg-success/10 hover:text-success hover:border-success/20 transition-all duration-200"
+                                className="h-8 px-3 btn-modern-secondary"
                               >
                                 <Download size={14} className="mr-1" />
                                 Download
@@ -752,7 +741,7 @@ export default function Dashboard(){
                     <Button
                       onClick={exportAll}
                       disabled={columnsToExport.length === 0}
-                      className="btn-primary-modern px-6"
+                      className="btn-modern-primary px-6"
                     >
                       <Download size={16} className="mr-2" />
                       Exportar
@@ -892,16 +881,12 @@ function CandidateDetails({ id }){
   return (
     <div className="space-y-6">
       {/* Informações Básicas */}
-      <Card className="card-modern">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-              <User size={20} className="text-primary" />
-            </div>
-            Informações do Candidato
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <ModernCard>
+        <ModernCardHeader
+          icon={<User size={20} className="text-primary" />}
+          title="Informações do Candidato"
+        />
+        <ModernCardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium text-muted-foreground">Nome</Label>
@@ -924,21 +909,17 @@ function CandidateDetails({ id }){
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </ModernCardContent>
+      </ModernCard>
 
       {/* Pontuação */}
       {details.score !== undefined && (
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center border border-success/20">
-                <Target size={20} className="text-success" />
-              </div>
-              Pontuação Final
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <ModernCard>
+          <ModernCardHeader
+            icon={<Target size={20} className="text-success" />}
+            title="Pontuação Final"
+          />
+          <ModernCardContent>
             <div className="text-center">
               <div className="text-6xl font-bold text-success mb-2">{details.score}</div>
               <div className="text-muted-foreground">pontos de 100</div>
@@ -949,22 +930,18 @@ function CandidateDetails({ id }){
                  </div>
                )}
             </div>
-          </CardContent>
-        </Card>
+          </ModernCardContent>
+        </ModernCard>
       )}
 
       {/* Análise de Perfil */}
       {finalStatusProfile && (
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
-                <BarChart3 size={20} className="text-info" />
-              </div>
-              Análise de Perfil Comportamental
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <ModernCard>
+          <ModernCardHeader
+            icon={<BarChart3 size={20} className="text-info" />}
+            title="Análise de Perfil Comportamental"
+          />
+          <ModernCardContent className="space-y-6">
             {/* Perfil */}
             <div className="space-y-3">
               <h4 className="text-lg font-semibold text-foreground">Perfil</h4>
@@ -1007,22 +984,18 @@ function CandidateDetails({ id }){
               <h4 className="text-lg font-semibold text-foreground">Recomendações</h4>
               <p className="text-muted-foreground leading-relaxed">{finalStatusProfile.recomendacoes}</p>
             </div>
-          </CardContent>
-        </Card>
+          </ModernCardContent>
+        </ModernCard>
       )}
 
       {/* Respostas */}
       {details.answers && (
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20">
-                <FileText size={20} className="text-warning" />
-              </div>
-              Respostas do Questionário
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <ModernCard>
+          <ModernCardHeader
+            icon={<FileText size={20} className="text-warning" />}
+            title="Respostas do Questionário"
+          />
+          <ModernCardContent>
             <div className="space-y-4">
               {Object.entries(details.answers).map(([questionId, answers]) => (
                 <div key={questionId} className="p-4 bg-gradient-to-r from-info/10 to-info/5 rounded-xl border border-info/20">
@@ -1035,22 +1008,18 @@ function CandidateDetails({ id }){
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </ModernCardContent>
+        </ModernCard>
       )}
 
       {/* Resultados Detalhados por Questão */}
       {results.length > 0 && (
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-info/20 to-info/10 rounded-xl flex items-center justify-center border border-info/20">
-                <BarChart3 size={20} className="text-info" />
-              </div>
-              Análise Detalhada por Questão
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <ModernCard>
+          <ModernCardHeader
+            icon={<BarChart3 size={20} className="text-info" />}
+            title="Análise Detalhada por Questão"
+          />
+          <ModernCardContent>
             <div className="space-y-4">
               {results.map((result, index) => (
                 <div key={result.id} className="p-4 bg-gradient-to-r from-warning/10 to-warning/5 rounded-xl border border-warning/20">
@@ -1091,22 +1060,18 @@ function CandidateDetails({ id }){
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </ModernCardContent>
+        </ModernCard>
       )}
 
       {/* Dados Brutos (para debug) */}
       {process.env.NODE_ENV === 'development' && (
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-warning/20 to-warning/10 rounded-xl flex items-center justify-center border border-warning/20">
-                <Code size={20} className="text-warning" />
-              </div>
-              Dados Brutos (Dev)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <ModernCard>
+          <ModernCardHeader
+            icon={<Code size={20} className="text-warning" />}
+            title="Dados Brutos (Dev)"
+          />
+          <ModernCardContent>
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium mb-2">📊 Status dos Dados:</h4>
@@ -1134,8 +1099,8 @@ function CandidateDetails({ id }){
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </ModernCardContent>
+        </ModernCard>
       )}
 
 

@@ -74,7 +74,7 @@ export function ThemeDropdown() {
         size="sm"
         onClick={handleOpen}
         className={cn(
-          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px]",
+          "h-8 px-3 transition-all duration-200 justify-between min-w-[100px] btn-modern-outline",
           "hover:bg-accent/50 text-muted-foreground hover:text-foreground",
           "border-border/50 hover:border-border",
           isOpen && "bg-accent/30 border-border"
@@ -98,7 +98,7 @@ export function ThemeDropdown() {
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute top-full right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg z-50",
+            "absolute top-full right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 glass-modern-smooth",
             "transition-all duration-200 ease-out",
             isAnimating 
               ? "opacity-0 scale-95 translate-y-[-8px]" 
