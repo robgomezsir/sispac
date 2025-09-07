@@ -48,3 +48,33 @@ export {
   ModernStatCard, 
   ModernActionCard 
 } from './ModernCard'
+export { 
+  PastelCard, 
+  PastelCardHeader, 
+  PastelCardContent, 
+  PastelCardFooter, 
+  PastelCardTitle, 
+  PastelCardDescription 
+} from './PastelCard'
+export { PastelButton, pastelButtonVariants } from './PastelButton'
+export { Alert, AlertDescription, AlertTitle } from './alert'
+export { Skeleton } from './skeleton'
+export { Switch } from './switch'
+export { 
+  Sheet, 
+  SheetClose, 
+  SheetContent, 
+  SheetDescription, 
+  SheetFooter, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetTrigger 
+} from './sheet'
+export { PastelSeparator } from './PastelSeparator'
+export { 
+  PastelArea, 
+  PastelAreaHeader, 
+  PastelAreaTitle, 
+  PastelAreaContent, 
+  PastelAreaFooter 
+} from './PastelArea'

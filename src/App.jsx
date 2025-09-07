@@ -17,6 +17,7 @@ import AuthDebug from './components/AuthDebug.jsx'
 import RequestPasswordReset from './pages/RequestPasswordReset.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import AuthCallback from './pages/AuthCallback.jsx'
+import PastelDemo from './pages/PastelDemo.jsx'
 
 // Componente App principal otimizado
 export default function App(){
@@ -43,6 +44,10 @@ export default function App(){
     { 
       path: "/debug", 
       element: <AuthDebug /> 
+    },
+    { 
+      path: "/pastel-demo", 
+      element: <PastelDemo /> 
     },
     { 
       path: "/request-reset", 
@@ -85,7 +90,7 @@ export default function App(){
   return (
     <ThemeProvider>
       <SidebarProvider>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
           <Routes>
           {routes.map(({ path, element }) => {
             // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)

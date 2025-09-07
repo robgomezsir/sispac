@@ -23,7 +23,8 @@ import {
   ArrowLeft,
   Menu,
   X,
-  Globe
+  Globe,
+  Palette
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Button, Badge, Separator } from './ui'
@@ -94,6 +95,13 @@ export function ModernSidebar({ isOpen = true, onClose }) {
       path: '/integracao-gupy',
       badge: null,
       adminOnly: true
+    },
+    {
+      label: 'Demo Pastel',
+      icon: Palette,
+      path: '/pastel-demo',
+      badge: 'Novo',
+      adminOnly: false
     }
   ]
 
@@ -102,7 +110,8 @@ export function ModernSidebar({ isOpen = true, onClose }) {
   return (
     <div 
       className={cn(
-        "fixed left-0 top-0 z-50 h-screen w-80 clay-sidebar transition-all duration-500 ease-out shadow-2xl",
+        "fixed left-0 top-0 z-50 h-screen w-80 transition-all duration-500 ease-out shadow-2xl",
+        "bg-gradient-to-b from-sidebar/95 to-sidebar/90 backdrop-blur-md border-r border-sidebar-border/50",
         isMobile && !isOpen && "-translate-x-full opacity-0",
         isMobile && isOpen && "translate-x-0 opacity-100",
         !isMobile && "translate-x-0 opacity-100"
@@ -117,7 +126,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-sidebar-border/50 bg-gradient-to-r from-sidebar-accent/10 to-transparent">
+      <div className="flex items-center justify-between p-6 border-b border-sidebar-border/30 bg-gradient-to-r from-sidebar-accent/20 to-transparent backdrop-blur-sm">
         <div className="flex items-center space-x-4">
           <div className="relative group">
             <div className="w-12 h-12 bg-gradient-to-br from-sidebar-primary/20 to-sidebar-primary/10 rounded-2xl flex items-center justify-center border-2 border-sidebar-primary/20 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
@@ -153,10 +162,10 @@ export function ModernSidebar({ isOpen = true, onClose }) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 group transform-gpu hover:scale-105",
+                  "flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 group tactile-feedback",
                   active 
-                    ? "bg-gradient-to-r from-sidebar-primary/20 to-sidebar-primary/10 text-sidebar-primary border-2 border-sidebar-primary/30 shadow-lg hover:shadow-xl" 
-                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20 hover:border-sidebar-accent/30 border-2 border-transparent hover:shadow-md"
+                    ? "bg-gradient-to-r from-sidebar-primary/30 to-sidebar-primary/20 text-sidebar-primary border-2 border-sidebar-primary/40 shadow-lg hover:shadow-xl backdrop-blur-sm" 
+                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/30 hover:border-sidebar-accent/40 border-2 border-transparent hover:shadow-md backdrop-blur-sm"
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -197,7 +206,7 @@ export function ModernSidebar({ isOpen = true, onClose }) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-sidebar-border/50 p-6 space-y-4 bg-gradient-to-t from-sidebar-accent/5 to-transparent">
+      <div className="border-t border-sidebar-border/30 p-6 space-y-4 bg-gradient-to-t from-sidebar-accent/10 to-transparent backdrop-blur-sm">
         {/* Theme Selector */}
         <div className="flex items-center justify-between p-3 rounded-xl bg-sidebar-accent/10 border border-sidebar-accent/20">
           <span className="text-sm font-semibold text-sidebar-foreground/80">Tema</span>

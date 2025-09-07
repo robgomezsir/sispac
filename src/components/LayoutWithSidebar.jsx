@@ -16,7 +16,7 @@ export function LayoutWithSidebar({ children }) {
     <>
       {/* Mobile Header */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 z-50 clay-glass border-b border-border/50 p-4">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/30 p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center">
@@ -41,7 +41,7 @@ export function LayoutWithSidebar({ children }) {
       
       {/* Main content area */}
       <div 
-        className="min-h-screen bg-background transition-all duration-300 ease-in-out"
+        className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 transition-all duration-300 ease-in-out"
         style={{
           marginLeft: isMobile ? '0' : '20rem',
           paddingTop: isMobile ? '4rem' : '0', // Espaço para header mobile
@@ -57,7 +57,7 @@ export function LayoutWithSidebar({ children }) {
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-all duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
