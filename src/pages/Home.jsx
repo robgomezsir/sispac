@@ -18,7 +18,11 @@ import {
   Award,
   Target
 } from 'lucide-react'
-// Usando elementos HTML padrão temporariamente
+import { Button } from '../components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
+import { Badge } from '../components/ui/badge'
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()
@@ -109,7 +113,7 @@ export default function Home(){
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-auto p-4 mobile-scrollable mobile-login-container bg-gradient-to-br from-background via-background to-accent/5">
       <div className="w-full max-w-7xl relative z-10 py-8 mobile-content">
-        <div className="grid lg:grid-cols-2 gap-8 items-center min-h-0">
+        <div className="grid lg:grid-cols-2 gap-8 items-center min-h-0 mobile-padding">
           {/* Lado esquerdo - Informações do sistema */}
           <div className="text-center lg:text-left space-y-6 animate-slide-in-from-left order-2 lg:order-1">
             {/* Logo e título */}
@@ -123,13 +127,13 @@ export default function Home(){
                   />
                 </div>
                 <div className="space-y-3">
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent mobile-text">
                     SisPAC
                   </h1>
-                  <p className="text-lg md:text-xl text-muted-foreground font-semibold leading-relaxed">
+                  <p className="text-lg md:text-xl text-muted-foreground font-semibold leading-relaxed mobile-text">
                     Sistema Propósito de Avaliação Comportamental
                   </p>
-                  <p className="text-base text-muted-foreground/80 leading-relaxed">
+                  <p className="text-base text-muted-foreground/80 leading-relaxed mobile-text">
                     Plataforma moderna para avaliação e análise comportamental de candidatos
                   </p>
                 </div>
@@ -192,76 +196,75 @@ export default function Home(){
           </div>
 
           {/* Lado direito - Formulário de login */}
-          <div className="animate-slide-in-from-right order-1 lg:order-2 mobile-login-form">
-            <div variant="modern" className="max-w-md mx-auto hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 clay-glow-primary rounded-lg border bg-card text-card-foreground shadow-sm">
-              <div className="text-center space-y-4 pb-6 rounded-lg border bg-card text-card-foreground shadow-sm">
+          <div className="animate-slide-in-from-right order-1 lg:order-2 mobile-login-form mobile-card">
+            <Card className="max-w-md mx-auto hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 hover-glow">
+              <CardHeader className="text-center space-y-4 pb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20 shadow-lg group">
                   <Lock size={40} className="text-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold rounded-lg border bg-card text-card-foreground shadow-sm">Acesso ao Sistema</h3>
-                  <p className="text-base text-muted-foreground/80 rounded-lg border bg-card text-card-foreground shadow-sm">
+                  <CardTitle className="text-2xl font-bold">Acesso ao Sistema</CardTitle>
+                  <CardDescription className="text-base">
                     Faça login para acessar o painel administrativo
-                  </p>
+                  </CardDescription>
                 </div>
-              </div>
+              </CardHeader>
               
-              <div className="pb-6 rounded-lg border bg-card text-card-foreground shadow-sm">
+              <CardContent className="pb-6">
                 <form onSubmit={onSubmit} className="space-y-5">
                   <div className="space-y-3">
-                    <label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <Label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Mail size={16} className="text-primary" />
                       Email
-                    </label>
+                    </Label>
                     <div className="relative">
-                      <input 
+                      <Input 
                         id="email"
                         type="email"
                         value={email} 
-                        onChange={e = className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"> setEmail(e.target.value)} 
+                        onChange={(e) => setEmail(e.target.value)} 
                         required
                         placeholder="seu@email.com"
-                        variant="modern"
-                        className="h-12 text-base pl-12 pr-4"
+                        className="h-12 text-base pl-12 pr-4 mobile-input"
                       />
                       <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                     </div>
                   </div>
                   
                   <div className="space-y-3">
-                    <label htmlFor="password" className="text-sm font-semibold text-foreground flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <Label htmlFor="password" className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Lock size={16} className="text-primary" />
                       Senha
-                    </label>
+                    </Label>
                     <div className="relative">
-                      <input 
+                      <Input 
                         id="password"
                         type={showPassword ? "text" : "password"}
                         value={password} 
-                        onChange={e = className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"> setPassword(e.target.value)} 
+                        onChange={(e) => setPassword(e.target.value)} 
                         required
                         placeholder="••••••••"
-                        variant="modern"
-                        className="h-12 text-base pl-12 pr-12"
+                        className="h-12 text-base pl-12 pr-12 mobile-input"
                       />
                       <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-110"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
                       >
                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   
-                  <button 
+                  <Button 
                     type="submit"
-                    variant="default"
                     size="lg"
-                    className="w-full h-12 text-base font-semibold mt-4 group" 
+                    className="w-full h-12 text-base font-semibold mt-4 group mobile-button" 
                     disabled={loading}
-                   className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+                  >
                     {loading ? (
                       <div className="flex items-center gap-3">
                         <div className="w-6 h-6 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
@@ -274,28 +277,26 @@ export default function Home(){
                         <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
                       </div>
                     )}
-                  </button>
+                  </Button>
                 </form>
-              </div>
 
-
-
-              {/* Exibir erros de formulário com design moderno */}
-              {err && (
-                <div className="px-6 pb-6">
-                  <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl text-sm backdrop-blur-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
-                        <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                {/* Exibir erros de formulário com design moderno */}
+                {err && (
+                  <div className="mt-4">
+                    <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl text-sm backdrop-blur-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
+                          <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <span className="font-medium">{err}</span>
                       </div>
-                      <span className="font-medium">{err}</span>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Footer com informações adicionais */}
             <div className="text-center mt-6 space-y-1">

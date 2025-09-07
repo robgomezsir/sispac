@@ -5,6 +5,7 @@ import { AdminOnly } from './components/AdminOnly.jsx'
 import { LayoutWithSidebar } from './components/LayoutWithSidebar.jsx'
 import { SidebarProvider } from './contexts/SidebarContext.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import PWAInstallPrompt from './components/PWAInstallPrompt.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import Home from './pages/Home.jsx'
@@ -88,37 +89,39 @@ export default function App(){
   ], [])
   
   return (
-    <ThemeProvider>
-      <SidebarProvider>
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-          <Routes>
-          {routes.map(({ path, element }) => {
-            // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)
-            const publicPages = ["/", "/form", "/request-reset", "/reset-password", "/auth/confirm", "/invite-callback", "/welcome", "/join", "/setup-password", "/complete-invite", "/debug"]
-            if (publicPages.includes(path)) {
+    <ErrorBoundary>
+      <ThemeProvider>
+        <SidebarProvider>
+          <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+            <Routes>
+            {routes.map(({ path, element }) => {
+              // Não mostrar sidebar em páginas públicas (Home, Formulário, Auth)
+              const publicPages = ["/", "/form", "/request-reset", "/reset-password", "/auth/confirm", "/invite-callback", "/welcome", "/join", "/setup-password", "/complete-invite", "/debug"]
+              if (publicPages.includes(path)) {
+                return (
+                  <Route key={path} path={path} element={element} />
+                )
+              }
+              
+              // Para outras páginas, mostrar com sidebar
               return (
-                <Route key={path} path={path} element={element} />
+                <Route 
+                  key={path} 
+                  path={path} 
+                  element={
+                    <LayoutWithSidebar>
+                      {element}
+                    </LayoutWithSidebar>
+                  } 
+                />
               )
-            }
-            
-            // Para outras páginas, mostrar com sidebar
-            return (
-              <Route 
-                key={path} 
-                path={path} 
-                element={
-                  <LayoutWithSidebar>
-                    {element}
-                  </LayoutWithSidebar>
-                } 
-              />
-            )
-          })}
-          </Routes>
-          <PWAInstallPrompt />
-          <OfflineIndicator />
-        </div>
-      </SidebarProvider>
-    </ThemeProvider>
+            })}
+            </Routes>
+            <PWAInstallPrompt />
+            <OfflineIndicator />
+          </div>
+        </SidebarProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }

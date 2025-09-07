@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ModernSidebar } from './ModernSidebar.jsx'
 import { useSidebar } from '../contexts/SidebarContext.jsx'
 import { Menu, X } from 'lucide-react'
-// Usando elemento HTML padrão temporariamente
+import { Button } from './ui/button'
 
 export function LayoutWithSidebar({ children }) {
   const { isMobile } = useSidebar()
@@ -24,12 +24,14 @@ export function LayoutWithSidebar({ children }) {
               </div>
               <h1 className="font-semibold text-foreground">SisPAC</h1>
             </div>
-            <button
+            <Button
               onClick={toggleSidebar}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
             >
               {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
-            </button>
+            </Button>
           </div>
         </div>
       )}

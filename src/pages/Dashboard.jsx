@@ -312,8 +312,7 @@ export default function Dashboard(){
             <button 
               onClick={load}
               disabled={loading}
-              className="btn-modern-primary"
-             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+              className="btn-modern-primary inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
               <RefreshCw size={16} className={cn("mr-2", loading && "animate-spin")} />
               Atualizar
             </button>
@@ -409,8 +408,7 @@ export default function Dashboard(){
                   <button 
                     onClick={openExportModal}
                     disabled={filtered.length === 0}
-                    className="btn-modern-primary"
-                   className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+                    className="btn-modern-primary inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
                     <Download size={16} className="mr-2" />
                     Exportar
                   </button>
@@ -701,8 +699,7 @@ export default function Dashboard(){
                     <button
                       onClick={exportAll}
                       disabled={columnsToExport.length === 0}
-                      className="btn-modern-primary px-6"
-                     className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
+                      className="btn-modern-primary px-6 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
                       <Download size={16} className="mr-2" />
                       Exportar
                     </button>

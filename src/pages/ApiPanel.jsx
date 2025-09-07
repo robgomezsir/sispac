@@ -336,13 +336,11 @@ export default function ApiPanel(){
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-4">
                                 <span 
-                                  variant={endpoint.method === 'GET' ? 'default' : 'secondary'}
-                                  className={`${
+                                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
                                     endpoint.method === 'GET' 
                                       ? 'bg-success/20 text-success border-success/30' 
                                       : 'bg-warning/20 text-warning border-warning/30'
-                                  }`}
-                                 className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                                  }`}>
                                   {endpoint.method}
                                 </span>
                                 <code className="text-lg font-mono font-semibold text-foreground">
@@ -456,7 +454,7 @@ export default function ApiPanel(){
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     {scoringSystem.classification.map((item, index) => (
-                      <div key={index} className={`border-${item.color}/20 bg-${item.color}/5`} className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div key={index} className={`rounded-lg border bg-card text-card-foreground shadow-sm border-${item.color}/20 bg-${item.color}/5`}>
                         <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                           <div className="flex items-center justify-between">
                             <div>
@@ -464,9 +462,7 @@ export default function ApiPanel(){
                               <div className="text-xs text-muted-foreground">Score: {item.range}</div>
                             </div>
                             <span 
-                              variant="outline" 
-                              className={`border-${item.color}/30 text-${item.color}`}
-                             className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-${item.color}/30 text-${item.color}`}>
                               {item.range}
                             </span>
                           </div>

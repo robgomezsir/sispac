@@ -1,3 +1,11 @@
+// Componentes shadcn/ui
+export { Button, buttonVariants } from './button'
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card'
+export { Input } from './input'
+export { Label } from './label'
+export { Badge, badgeVariants } from './badge'
+export { Separator } from './separator'
+
 // Componentes customizados do SisPAC
 export { 
   ModernCard, 
@@ -28,11 +36,3 @@ export {
   PastelAreaContent, 
   PastelAreaFooter 
 } from './PastelArea'
-
-// Componentes básicos temporariamente desabilitados
-// export { Button } from './Button'
-// export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './Card'
-// export { Input } from './Input'
-// export { Label } from './Label'
-// export { Badge } from './Badge'
-// export { Separator } from './Separator'
