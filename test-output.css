@@ -555,50 +555,50 @@ video {
 }
 
 :root {
-  --background: #eff1f5;
-  --foreground: #4c4f69;
-  --card: #ffffff;
-  --card-foreground: #4c4f69;
-  --popover: #ccd0da;
-  --popover-foreground: #4c4f69;
-  --primary: #8839ef;
-  --primary-foreground: #ffffff;
-  --secondary: #ccd0da;
-  --secondary-foreground: #4c4f69;
-  --muted: #dce0e8;
-  --muted-foreground: #6c6f85;
-  --accent: #04a5e5;
-  --accent-foreground: #ffffff;
-  --destructive: #d20f39;
-  --destructive-foreground: #ffffff;
-  --border: #bcc0cc;
-  --input: #ccd0da;
-  --ring: #8839ef;
-  --chart-1: #8839ef;
-  --chart-2: #04a5e5;
-  --chart-3: #40a02b;
-  --chart-4: #fe640b;
-  --chart-5: #dc8a78;
-  --sidebar: #e6e9ef;
-  --sidebar-foreground: #4c4f69;
-  --sidebar-primary: #8839ef;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #04a5e5;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #bcc0cc;
-  --sidebar-ring: #8839ef;
-  --font-sans: Montserrat, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Fira Code, monospace;
-  --radius: 0.35rem;
-  --shadow-2xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
-  --shadow-xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
-  --shadow-sm: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
-  --shadow: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
-  --shadow-md: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 2px 4px -1px hsl(240 30% 25% / 0.12);
-  --shadow-lg: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 4px 6px -1px hsl(240 30% 25% / 0.12);
-  --shadow-xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 8px 10px -1px hsl(240 30% 25% / 0.12);
-  --shadow-2xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.30);
+  --background: 210.0000 40.0000% 98.0392%;
+  --foreground: 217.2414 32.5843% 17.4510%;
+  --card: 0 0% 100%;
+  --card-foreground: 217.2414 32.5843% 17.4510%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 217.2414 32.5843% 17.4510%;
+  --primary: 238.7324 83.5294% 66.6667%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 13.0435% 90.9804%;
+  --secondary-foreground: 216.9231 19.1176% 26.6667%;
+  --muted: 220.0000 14.2857% 95.8824%;
+  --muted-foreground: 220 8.9362% 46.0784%;
+  --accent: 226.4516 100% 93.9216%;
+  --accent-foreground: 216.9231 19.1176% 26.6667%;
+  --destructive: 0 84.2365% 60.1961%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 216.0000 12.1951% 83.9216%;
+  --input: 216.0000 12.1951% 83.9216%;
+  --ring: 238.7324 83.5294% 66.6667%;
+  --chart-1: 238.7324 83.5294% 66.6667%;
+  --chart-2: 243.3962 75.3555% 58.6275%;
+  --chart-3: 244.5205 57.9365% 50.5882%;
+  --chart-4: 243.6522 54.5024% 41.3725%;
+  --chart-5: 242.1687 47.4286% 34.3137%;
+  --sidebar: 220.0000 14.2857% 95.8824%;
+  --sidebar-foreground: 217.2414 32.5843% 17.4510%;
+  --sidebar-primary: 238.7324 83.5294% 66.6667%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 226.4516 100% 93.9216%;
+  --sidebar-accent-foreground: 216.9231 19.1176% 26.6667%;
+  --sidebar-border: 216.0000 12.1951% 83.9216%;
+  --sidebar-ring: 238.7324 83.5294% 66.6667%;
+  --font-sans: Inter, sans-serif;
+  --font-serif: Merriweather, serif;
+  --font-mono: JetBrains Mono, monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+  --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+  --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+  --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+  --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+  --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+  --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
   /* Cores de sucesso, aviso e info - Tons pastéis */
@@ -614,38 +614,38 @@ video {
 }
 
 .dark {
-  --background: #181825;
-  --foreground: #cdd6f4;
-  --card: #1e1e2e;
-  --card-foreground: #cdd6f4;
-  --popover: #45475a;
-  --popover-foreground: #cdd6f4;
-  --primary: #cba6f7;
-  --primary-foreground: #1e1e2e;
-  --secondary: #585b70;
-  --secondary-foreground: #cdd6f4;
-  --muted: #292c3c;
-  --muted-foreground: #a6adc8;
-  --accent: #89dceb;
-  --accent-foreground: #1e1e2e;
-  --destructive: #f38ba8;
-  --destructive-foreground: #1e1e2e;
-  --border: #313244;
-  --input: #313244;
-  --ring: #cba6f7;
-  --chart-1: #cba6f7;
-  --chart-2: #89dceb;
-  --chart-3: #a6e3a1;
-  --chart-4: #fab387;
-  --chart-5: #f5e0dc;
-  --sidebar: #11111b;
-  --sidebar-foreground: #cdd6f4;
-  --sidebar-primary: #cba6f7;
-  --sidebar-primary-foreground: #1e1e2e;
-  --sidebar-accent: #89dceb;
-  --sidebar-accent-foreground: #1e1e2e;
-  --sidebar-border: #45475a;
-  --sidebar-ring: #cba6f7;
+  --background: 222.2222 47.3684% 11.1765%;
+  --foreground: 214.2857 31.8182% 91.3725%;
+  --card: 217.2414 32.5843% 17.4510%;
+  --card-foreground: 214.2857 31.8182% 91.3725%;
+  --popover: 217.2414 32.5843% 17.4510%;
+  --popover-foreground: 214.2857 31.8182% 91.3725%;
+  --primary: 234.4538 89.4737% 73.9216%;
+  --primary-foreground: 222.2222 47.3684% 11.1765%;
+  --secondary: 217.7778 23.0769% 22.9412%;
+  --secondary-foreground: 216.0000 12.1951% 83.9216%;
+  --muted: 217.2414 32.5843% 17.4510%;
+  --muted-foreground: 217.8947 10.6145% 64.9020%;
+  --accent: 216.9231 19.1176% 26.6667%;
+  --accent-foreground: 216.0000 12.1951% 83.9216%;
+  --destructive: 0 84.2365% 60.1961%;
+  --destructive-foreground: 222.2222 47.3684% 11.1765%;
+  --border: 215 13.7931% 34.1176%;
+  --input: 215 13.7931% 34.1176%;
+  --ring: 234.4538 89.4737% 73.9216%;
+  --chart-1: 234.4538 89.4737% 73.9216%;
+  --chart-2: 238.7324 83.5294% 66.6667%;
+  --chart-3: 243.3962 75.3555% 58.6275%;
+  --chart-4: 244.5205 57.9365% 50.5882%;
+  --chart-5: 243.6522 54.5024% 41.3725%;
+  --sidebar: 217.2414 32.5843% 17.4510%;
+  --sidebar-foreground: 214.2857 31.8182% 91.3725%;
+  --sidebar-primary: 234.4538 89.4737% 73.9216%;
+  --sidebar-primary-foreground: 222.2222 47.3684% 11.1765%;
+  --sidebar-accent: 216.9231 19.1176% 26.6667%;
+  --sidebar-accent-foreground: 216.0000 12.1951% 83.9216%;
+  --sidebar-border: 215 13.7931% 34.1176%;
+  --sidebar-ring: 234.4538 89.4737% 73.9216%;
 }
 
 * {
@@ -797,6 +797,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .card-modern-smooth:hover {
@@ -845,6 +846,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .card-modern-smooth-dark:hover {
@@ -879,6 +881,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .btn-modern-primary:hover {
@@ -924,6 +927,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .btn-modern-secondary:hover {
@@ -950,6 +954,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .btn-modern-outline:hover {
@@ -985,6 +990,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .input-modern-smooth::-moz-placeholder {
@@ -1025,6 +1031,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .line-modern-smooth:hover {
@@ -1045,6 +1052,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .line-modern-smooth-thick:hover {
@@ -1067,6 +1075,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .glass-modern-smooth:hover {
@@ -1089,6 +1098,7 @@ html.dark {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  animation-duration: 300ms;
 }
 
 .glass-modern-smooth-dark:hover {
@@ -3424,6 +3434,66 @@ html.dark {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
+@keyframes enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
+  }
+}
+
+@keyframes exit {
+  to {
+    opacity: var(--tw-exit-opacity, 1);
+    transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
+  }
+}
+
+.animate-in {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+}
+
+.fade-in-0 {
+  --tw-enter-opacity: 0;
+}
+
+.zoom-in-95 {
+  --tw-enter-scale: .95;
+}
+
+.slide-in-from-top-2 {
+  --tw-enter-translate-y: -0.5rem;
+}
+
+.duration-150 {
+  animation-duration: 150ms;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+.duration-500 {
+  animation-duration: 500ms;
+}
+
+.ease-in-out {
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ease-out {
+  animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
 .file\:border-0::file-selector-button {
   border-width: 0px;
 }
@@ -3898,6 +3968,58 @@ html.dark {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.data-\[state\=open\]\:animate-in[data-state="open"] {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+}
+
+.data-\[state\=closed\]\:animate-out[data-state="closed"] {
+  animation-name: exit;
+  animation-duration: 150ms;
+  --tw-exit-opacity: initial;
+  --tw-exit-scale: initial;
+  --tw-exit-rotate: initial;
+  --tw-exit-translate-x: initial;
+  --tw-exit-translate-y: initial;
+}
+
+.data-\[state\=closed\]\:fade-out-0[data-state="closed"] {
+  --tw-exit-opacity: 0;
+}
+
+.data-\[state\=open\]\:fade-in-0[data-state="open"] {
+  --tw-enter-opacity: 0;
+}
+
+.data-\[state\=closed\]\:zoom-out-95[data-state="closed"] {
+  --tw-exit-scale: .95;
+}
+
+.data-\[state\=open\]\:zoom-in-95[data-state="open"] {
+  --tw-enter-scale: .95;
+}
+
+.data-\[side\=bottom\]\:slide-in-from-top-2[data-side="bottom"] {
+  --tw-enter-translate-y: -0.5rem;
+}
+
+.data-\[side\=left\]\:slide-in-from-right-2[data-side="left"] {
+  --tw-enter-translate-x: 0.5rem;
+}
+
+.data-\[side\=right\]\:slide-in-from-left-2[data-side="right"] {
+  --tw-enter-translate-x: -0.5rem;
+}
+
+.data-\[side\=top\]\:slide-in-from-bottom-2[data-side="top"] {
+  --tw-enter-translate-y: 0.5rem;
 }
 
 .data-\[variant\=destructive\]\:focus\:bg-destructive\/10:focus[data-variant="destructive"] {
