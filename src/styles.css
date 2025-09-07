@@ -282,14 +282,6 @@
     }
   }
 
-  @keyframes tactileLift {
-    0% {
-      transform: translateY(0) scale(1);
-    }
-    100% {
-      transform: translateY(-1px) scale(1.01);
-    }
-  }
 
   /* Claymorphism Components - Linhas Suaves */
   .clay-card {
@@ -440,10 +432,6 @@
     @apply clay-card p-6 shadow-xl hover:shadow-2xl;
   }
 
-  /* Modern Input Variants */
-  .input-modern-smooth {
-    @apply clay-input px-4 py-3 text-base;
-  }
 
   .input-modern-glass {
     @apply clay-glass px-4 py-3 text-base rounded-xl;
@@ -676,56 +664,6 @@
     }
   }
 
-  /* Cartões modernos e responsivos com feedback tátil */
-  .card-modern-smooth {
-    @apply bg-card border border-border/60 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden cursor-pointer;
-    /* Feedback tátil */
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow;
-  }
-
-  .card-modern-smooth:hover {
-    @apply -translate-y-2 scale-[1.02] shadow-2xl;
-    transform: translateY(-8px) scale(1.02);
-  }
-
-  .card-modern-smooth:active {
-    @apply scale-[0.98] shadow-lg;
-    transform: translateY(-4px) scale(0.98);
-  }
-
-  .card-modern-smooth::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .card-modern-smooth:hover::before {
-    opacity: 1;
-  }
-
-  .card-modern-smooth::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.05), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  .card-modern-smooth:hover::after {
-    opacity: 1;
-  }
 
   .card-modern-smooth-dark {
     @apply bg-card/95 backdrop-blur-sm border border-border/70 rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden cursor-pointer;
@@ -741,73 +679,6 @@
   .card-modern-smooth-dark:active {
     @apply scale-[0.98] shadow-lg;
     transform: translateY(-4px) scale(0.98);
-  }
-
-  /* Botões modernos com feedback tátil aprimorado */
-  .btn-modern-primary {
-    @apply bg-primary text-primary-foreground border border-primary/20 rounded-xl px-4 py-3 font-medium transition-all duration-200 relative overflow-hidden cursor-pointer;
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow;
-    touch-action: manipulation;
-  }
-
-  .btn-modern-primary:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px) scale(1.02);
-  }
-
-  .btn-modern-primary:active {
-    @apply shadow-md;
-    transform: translateY(0) scale(0.98);
-  }
-
-  .btn-modern-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s ease;
-  }
-
-  .btn-modern-primary:hover::before {
-    left: 100%;
-  }
-
-  .btn-modern-secondary {
-    @apply bg-secondary text-secondary-foreground border border-secondary/30 rounded-xl px-4 py-3 font-medium transition-all duration-200 cursor-pointer;
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow;
-    touch-action: manipulation;
-  }
-
-  .btn-modern-secondary:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px) scale(1.02);
-  }
-
-  .btn-modern-secondary:active {
-    @apply shadow-md;
-    transform: translateY(0) scale(0.98);
-  }
-
-  .btn-modern-outline {
-    @apply bg-transparent text-foreground border border-border rounded-xl px-4 py-3 font-medium transition-all duration-200 cursor-pointer;
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow, background-color;
-    touch-action: manipulation;
-  }
-
-  .btn-modern-outline:hover {
-    @apply bg-primary/10 border-primary/50 shadow-lg;
-    transform: translateY(-2px) scale(1.02);
-  }
-
-  .btn-modern-outline:active {
-    @apply bg-primary/20 shadow-md;
-    transform: translateY(0) scale(0.98);
   }
 
   /* Inputs modernos com feedback tátil */
@@ -873,14 +744,6 @@
     transform: translateY(-1px) scale(0.99);
   }
 
-  /* Linhas modernas */
-  .line-modern-smooth {
-    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 hover:via-primary/50;
-  }
-
-  .line-modern-smooth-thick {
-    @apply h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full transition-all duration-300 hover:via-primary/60;
-  }
 
   /* Seções e containers responsivos */
   .section-modern {
@@ -939,10 +802,6 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   }
 
-  /* Efeito glassmorphism */
-  .glass-modern-smooth {
-    @apply bg-card/80 backdrop-blur-md border border-border/50 rounded-xl shadow-lg transition-all duration-300 hover:bg-card/90 hover:shadow-xl;
-  }
 
   .glass-modern-smooth-dark {
     @apply bg-card/90 backdrop-blur-lg border border-border/60 rounded-xl shadow-xl transition-all duration-300 hover:bg-card/95 hover:shadow-2xl;
@@ -987,38 +846,6 @@
     background-size: 200% 100%;
   }
 
-  /* Classes de feedback tátil */
-  .tactile-feedback {
-    @apply transition-all duration-200 ease-out;
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow;
-  }
-
-  .tactile-feedback:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px) scale(1.02);
-  }
-
-  .tactile-feedback:active {
-    @apply shadow-md;
-    transform: translateY(0) scale(0.98);
-  }
-
-  .tactile-feedback-strong {
-    @apply transition-all duration-150 ease-out;
-    transform: translateY(0) scale(1);
-    will-change: transform, box-shadow;
-  }
-
-  .tactile-feedback-strong:hover {
-    @apply shadow-xl;
-    transform: translateY(-4px) scale(1.05);
-  }
-
-  .tactile-feedback-strong:active {
-    @apply shadow-lg;
-    transform: translateY(-1px) scale(0.95);
-  }
 
   /* Responsividade aprimorada para mobile */
   @media (max-width: 1024px) {
