@@ -299,8 +299,8 @@ export default function ApiPanel(){
           {/* Aba: Endpoints */}
           <TabsContent value="endpoints" className="space-y-6">
             {/* Informações de Segurança Rápida */}
-            <Card className="border-warning/20 bg-warning/5">
-              <CardContent className="p-6">
+            <div className="border-warning/20 bg-warning/5 rounded-lg border bg-card text-card-foreground shadow-sm">
+              <div className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle size={20} className="text-warning" />
                   <h3 className="font-semibold text-warning">Autenticação Obrigatória</h3>
@@ -311,8 +311,8 @@ export default function ApiPanel(){
                 <code className="text-xs bg-muted/50 px-2 py-1 rounded">
                   Authorization: Bearer YOUR_API_KEY
                 </code>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Endpoints por categoria */}
             <div className="space-y-8">
@@ -331,30 +331,30 @@ export default function ApiPanel(){
                     {endpoints
                       .filter(endpoint => endpoint.category === category)
                       .map((endpoint, index) => (
-                        <Card key={index} className="border-border/50 hover:border-primary/30 transition-colors">
-                          <CardContent className="p-6">
+                        <div key={index} className="border-border/50 hover:border-primary/30 transition-colors rounded-lg border bg-card text-card-foreground shadow-sm">
+                          <div className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-4">
-                                <Badge 
+                                <span 
                                   variant={endpoint.method === 'GET' ? 'default' : 'secondary'}
                                   className={`${
                                     endpoint.method === 'GET' 
                                       ? 'bg-success/20 text-success border-success/30' 
                                       : 'bg-warning/20 text-warning border-warning/30'
                                   }`}
-                                >
+                                 className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                                   {endpoint.method}
-                                </Badge>
+                                </span>
                                 <code className="text-lg font-mono font-semibold text-foreground">
                                   {endpoint.path}
                                 </code>
                                 <endpoint.icon size={20} className="text-muted-foreground" />
                               </div>
                               
-                              <Button
+                              <button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => copyToClipboard(endpoint.example, endpoint.path)}
+                                onClick={() => setViewMode('cards')}
                                 className="flex items-center gap-2"
                               >
                                 {copiedEndpoint === endpoint.path ? (
@@ -363,7 +363,7 @@ export default function ApiPanel(){
                                   <Copy size={16} />
                                 )}
                                 {copiedEndpoint === endpoint.path ? 'Copiado!' : 'Copiar'}
-                              </Button>
+                              </button>
                             </div>
                             
                             <p className="text-muted-foreground mb-4">{endpoint.description}</p>
@@ -389,8 +389,8 @@ export default function ApiPanel(){
                                 </pre>
                               </div>
                             </div>
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </div>
                       ))}
                   </div>
                 </div>
@@ -400,17 +400,17 @@ export default function ApiPanel(){
 
           {/* Aba: Sistema de Pontuação */}
           <TabsContent value="scoring" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
                   <Target size={24} className="text-primary" />
                   Sistema de Avaliação Comportamental
-                </CardTitle>
-                <CardDescription>
+                </h3>
+                <p className="rounded-lg border bg-card text-card-foreground shadow-sm">
                   Como funciona o sistema de pontuação e classificação dos candidatos
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                </p>
+              </div>
+              <div className="space-y-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                 {/* Categorias de perguntas */}
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -419,13 +419,13 @@ export default function ApiPanel(){
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     {scoringSystem.categories.map((category, index) => (
-                      <Card key={index} className="border-border/50">
-                        <CardContent className="p-4">
+                      <div key={index} className="border-border/50 rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                           <div className="space-y-3">
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
+                              <span variant="outline" className="text-xs inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                                 Questão {category.id}
-                              </Badge>
+                              </span>
                               <span className="text-sm font-medium text-muted-foreground">
                                 {category.maxChoices} escolhas
                               </span>
@@ -440,13 +440,13 @@ export default function ApiPanel(){
                               ))}
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                <Separator />
+                <div  />
 
                 {/* Classificação */}
                 <div>
@@ -456,55 +456,55 @@ export default function ApiPanel(){
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     {scoringSystem.classification.map((item, index) => (
-                      <Card key={index} className={`border-${item.color}/20 bg-${item.color}/5`}>
-                        <CardContent className="p-4">
+                      <div key={index} className={`border-${item.color}/20 bg-${item.color}/5`} className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                           <div className="flex items-center justify-between">
                             <div>
                               <div className="font-semibold text-sm">{item.status}</div>
                               <div className="text-xs text-muted-foreground">Score: {item.range}</div>
                             </div>
-                            <Badge 
+                            <span 
                               variant="outline" 
                               className={`border-${item.color}/30 text-${item.color}`}
-                            >
+                             className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                               {item.range}
-                            </Badge>
+                            </span>
                           </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Aba: Integração Gupy */}
           <TabsContent value="gupy" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
                   <Globe size={24} className="text-primary" />
                   Integração com Gupy
-                </CardTitle>
-                <CardDescription>
+                </h3>
+                <p className="rounded-lg border bg-card text-card-foreground shadow-sm">
                   Como integrar o SisPAC com a plataforma Gupy para sincronização automática de candidatos
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                </p>
+              </div>
+              <div className="space-y-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                 {/* Webhook */}
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Zap size={20} className="text-primary" />
                     Webhook de Integração
                   </h3>
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardContent className="p-4">
+                  <div className="border-primary/20 bg-primary/5 rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs">
+                          <span variant="outline" className="text-xs inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                             {gupyIntegration.webhook.method}
-                          </Badge>
+                          </span>
                           <code className="text-sm font-mono">{gupyIntegration.webhook.url}</code>
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -519,11 +519,11 @@ export default function ApiPanel(){
                           </pre>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
 
-                <Separator />
+                <div  />
 
                 {/* Sincronização */}
                 <div>
@@ -532,8 +532,8 @@ export default function ApiPanel(){
                     Sincronização de Dados
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
+                    <div className="border-border/50 rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
                             <Clock size={16} className="text-info" />
@@ -543,11 +543,11 @@ export default function ApiPanel(){
                             {gupyIntegration.sync.frequency}
                           </p>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                     
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
+                    <div className="border-border/50 rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
                             <Database size={16} className="text-info" />
@@ -561,12 +561,12 @@ export default function ApiPanel(){
                             ))}
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <Separator />
+                <div  />
 
                 {/* Sistema de Tokens */}
                 <div>
@@ -574,8 +574,8 @@ export default function ApiPanel(){
                     <Shield size={20} className="text-primary" />
                     Sistema de Tokens de Acesso
                   </h3>
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardContent className="p-4">
+                  <div className="border-primary/20 bg-primary/5 rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                       <div className="space-y-3">
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
@@ -606,11 +606,11 @@ export default function ApiPanel(){
                           </code>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
 
-                <Separator />
+                <div  />
 
                 {/* Fluxo de integração */}
                 <div>
@@ -637,23 +637,23 @@ export default function ApiPanel(){
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Aba: Segurança */}
           <TabsContent value="security" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
                   <Shield size={24} className="text-primary" />
                   Segurança e Autenticação
-                </CardTitle>
-                <CardDescription>
+                </h3>
+                <p className="rounded-lg border bg-card text-card-foreground shadow-sm">
                   Configurações de segurança e autenticação da API
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                </p>
+              </div>
+              <div className="space-y-6 rounded-lg border bg-card text-card-foreground shadow-sm">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -676,7 +676,7 @@ export default function ApiPanel(){
                   </div>
                 </div>
 
-                <Separator />
+                <div  />
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -684,8 +684,8 @@ export default function ApiPanel(){
                     Informações Importantes
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
+                    <div className="border-border/50 rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
                             <CheckCircle2 size={16} className="text-success" />
@@ -695,11 +695,11 @@ export default function ApiPanel(){
                             Todos os endpoints retornam dados no formato JSON com estrutura padronizada e códigos de status HTTP apropriados.
                           </p>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                     
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
+                    <div className="border-border/50 rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
                             <BarChart3 size={16} className="text-info" />
@@ -709,12 +709,12 @@ export default function ApiPanel(){
                             A API possui limites de requisições por minuto para garantir estabilidade e performance do sistema.
                           </p>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

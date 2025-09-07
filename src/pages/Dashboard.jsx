@@ -309,14 +309,14 @@ export default function Dashboard(){
             <p className="text-muted-foreground">Gerencie e visualize os resultados dos testes comportamentais</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button 
+            <button 
               onClick={load}
               disabled={loading}
               className="btn-modern-primary"
-            >
+             className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
               <RefreshCw size={16} className={cn("mr-2", loading && "animate-spin")} />
               Atualizar
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -372,8 +372,8 @@ export default function Dashboard(){
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   <div className="relative flex-1 max-w-md">
                     <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                    <Input 
-                      className="pl-10 h-10 clay-input" 
+                    <input 
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 h-10 clay-input" 
                       placeholder="Buscar candidatos..." 
                       value={q} 
                       onChange={handleSearchChange}
@@ -381,7 +381,7 @@ export default function Dashboard(){
                   </div>
                   
                   <div className="flex rounded-lg border border-border/50 overflow-hidden">
-                    <Button
+                    <button
                       variant={viewMode === 'cards' ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setViewMode('cards')}
@@ -389,16 +389,16 @@ export default function Dashboard(){
                     >
                       <FileText size={16} className="mr-2" />
                       Cartões
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       variant={viewMode === 'table' ? 'default' : 'ghost'}
                       size="sm"
-                      onClick={() => setViewMode('table')}
+                      onClick={() => setViewMode('cards')}
                       className="rounded-l-none"
                     >
                       <BarChart3 size={16} className="mr-2" />
                       Tabela
-                    </Button>
+                    </button>
                   </div>
                 </div>
                 
@@ -406,14 +406,14 @@ export default function Dashboard(){
                   <div className="text-sm text-muted-foreground">
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''}
                   </div>
-                  <Button 
+                  <button 
                     onClick={openExportModal}
                     disabled={filtered.length === 0}
                     className="btn-modern-primary"
-                  >
+                   className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
                     <Download size={16} className="mr-2" />
                     Exportar
-                  </Button>
+                  </button>
                 </div>
               </div>
               
@@ -457,8 +457,7 @@ export default function Dashboard(){
                     : 'Nenhum candidato cadastrado no sistema'}
                 </div>
                 {(q || Object.values(advancedFilters).some(v => v !== '')) && (
-                  <Button 
-                    variant="outline" 
+                  <button 
                     onClick={() => {
                       setQ('')
                       setAdvancedFilters({
@@ -470,11 +469,11 @@ export default function Dashboard(){
                         sortBy: 'created_at'
                       })
                     }}
-                    className="mt-4 btn-secondary-modern"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground mt-4 btn-secondary-modern"
                   >
                     <FilterX size={16} className="mr-2" />
                     Limpar Filtros
-                  </Button>
+                  </button>
                 )}
               </div>
             ) : viewMode === 'cards' ? (
@@ -515,33 +514,33 @@ export default function Dashboard(){
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        <Button 
+                        <button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setCurrent(row)}
+                          onClick={() => setViewMode('cards')}
                           className="flex-1 h-8 text-xs btn-modern-outline"
                         >
                           <Eye size={14} className="mr-1" />
                           Ver
-                        </Button>
-                        <Button 
+                        </button>
+                        <button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => exportOne(row)}
+                          onClick={() => setViewMode('cards')}
                           className="flex-1 h-8 text-xs btn-modern-secondary"
                         >
                           <Download size={14} className="mr-1" />
                           Download
-                        </Button>
-                        <Button 
+                        </button>
+                        <button 
                           variant="outline" 
                           size="sm" 
-                          onClick={() => handleDeleteCandidate(row)}
+                          onClick={() => setViewMode('cards')}
                           className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                         >
                           <Trash2 size={14} className="mr-1" />
                           Excluir
-                        </Button>
+                        </button>
                       </div>
                     </ModernCardContent>
                   </ModernCard>
@@ -583,33 +582,33 @@ export default function Dashboard(){
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <Button 
+                              <button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => setCurrent(row)}
+                                onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 btn-modern-outline"
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
-                              </Button>
-                              <Button 
+                              </button>
+                              <button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => exportOne(row)}
+                                onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 btn-modern-secondary"
                               >
                                 <Download size={14} className="mr-1" />
                                 Download
-                              </Button>
-                              <Button 
+                              </button>
+                              <button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => handleDeleteCandidate(row)}
+                                onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                               >
                                 <Trash2 size={14} className="mr-1" />
                                 Excluir
-                              </Button>
+                              </button>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -654,9 +653,9 @@ export default function Dashboard(){
 
               <div className="space-y-4">
                 <div>
-                  <Label className="text-sm font-medium text-foreground mb-3 block">
+                  <label className="text-sm font-medium text-foreground mb-3 block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Colunas para exportar:
-                  </Label>
+                  </label>
                   <div className="space-y-2 max-h-64 overflow-y-auto border border-border/50 rounded-xl p-4">
                     {[
                       {value: 'id', label: 'ID'},
@@ -692,21 +691,21 @@ export default function Dashboard(){
                     {filtered.length} candidato{filtered.length !== 1 ? 's' : ''} será{filtered.length !== 1 ? 'ão' : ''} exportado{filtered.length !== 1 ? 's' : ''}
                   </div>
                   <div className="flex gap-3">
-                    <Button
+                    <button
                       variant="outline"
-                      onClick={() => setShowExportModal(false)}
+                      onClick={() => setViewMode('cards')}
                       className="px-6"
                     >
                       Cancelar
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       onClick={exportAll}
                       disabled={columnsToExport.length === 0}
                       className="btn-modern-primary px-6"
-                    >
+                     className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
                       <Download size={16} className="mr-2" />
                       Exportar
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -850,21 +849,21 @@ function CandidateDetails({ id }){
         <ModernCardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Nome</Label>
+              <label className="text-sm font-medium text-muted-foreground text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome</label>
               <div className="text-foreground font-medium">{details.name}</div>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+              <label className="text-sm font-medium text-muted-foreground text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
               <div className="text-foreground font-medium">{details.email}</div>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Data de Criação</Label>
+              <label className="text-sm font-medium text-muted-foreground text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data de Criação</label>
               <div className="text-foreground font-medium">
                 {new Date(details.created_at).toLocaleDateString('pt-BR')}
               </div>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+              <label className="text-sm font-medium text-muted-foreground text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Status</label>
               <div className="flex items-center gap-2">
                 {getStatusBadge(details.status)}
               </div>
@@ -989,13 +988,13 @@ function CandidateDetails({ id }){
                       Questão {result.question_id}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
+                      <span variant="outline" className="text-xs inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                         {result.score_question || 0} pts
-                      </Badge>
+                      </span>
                       {result.is_correct && (
-                        <Badge variant="secondary" className="text-xs bg-success/20 text-success">
+                        <span variant="secondary" className="text-xs bg-success/20 text-success inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                           ✓ Correta
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>

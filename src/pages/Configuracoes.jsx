@@ -741,11 +741,11 @@ export default function Configuracoes(){
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button
+                <button
                   onClick={loadUsers}
                   disabled={usersLoading}
                   className="btn-info-modern px-4 py-2"
-                >
+                 className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50">
                   {usersLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-info-foreground/30 border-t-info-foreground rounded-full animate-spin" />
@@ -757,16 +757,16 @@ export default function Configuracoes(){
                       <span>Atualizar</span>
                     </div>
                   )}
-                </Button>
-                <Button
-                  onClick={() => setUsersExpanded(!usersExpanded)}
+                </button>
+                <button
+                  onClick={() => setViewMode('cards')}
                   className="btn-secondary-modern px-4 py-2"
                 >
                   <div className="flex items-center gap-2">
                     <ChevronDown size={16} className={`transition-transform duration-300 ${usersExpanded ? 'rotate-180' : ''}`} />
                     <span>{usersExpanded ? 'Ocultar' : 'Mostrar'}</span>
                   </div>
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -810,12 +810,12 @@ export default function Configuracoes(){
                               </p>
                             </div>
                             <div className="ml-2">
-                              <Badge 
+                              <span 
                                 variant={user.role === 'admin' ? 'default' : 'secondary'}
                                 className={user.role === 'admin' ? 'bg-primary/20 text-primary border-primary/30' : ''}
-                              >
+                               className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                                 {user.role === 'admin' ? 'Admin' : 'RH'}
-                              </Badge>
+                              </span>
                             </div>
                           </div>
                           

@@ -29,184 +29,143 @@ export default function PastelDemo() {
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card 1 - Default */}
-          <Card variant="modern" interactive className="hover:shadow-2xl">
-            <CardHeader>
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-2xl transition-shadow">
+            <div className="flex flex-col space-y-1.5 p-6">
               <div className="flex items-center space-x-2">
                 <Heart className="h-5 w-5 text-primary" />
-                <CardTitle>Card Moderno</CardTitle>
+                <h3 className="text-2xl font-semibold leading-none tracking-tight">Card Moderno</h3>
               </div>
-              <CardDescription>
+              <p className="text-sm text-muted-foreground">
                 Um cartão com design pastel suave e feedback tátil.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <p className="text-sm text-muted-foreground">
                 Este cartão demonstra o design pastel com gradientes suaves e 
                 efeitos de hover responsivos.
               </p>
-            </CardContent>
-            <CardFooter>
-              <Button size="sm" variant="default">
+            </div>
+            <div className="flex items-center p-6 pt-0">
+              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">
                 Explorar
-              </Button>
-            </CardFooter>
-          </Card>
+              </button>
+            </div>
+          </div>
 
           {/* Card 2 - Success */}
-          <Card variant="pastel" interactive className="hover:shadow-2xl">
-            <CardHeader>
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-2xl transition-shadow">
+            <div className="flex flex-col space-y-1.5 p-6">
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-success" />
-                <CardTitle>Card Pastel</CardTitle>
+                <h3 className="text-2xl font-semibold leading-none tracking-tight">Card Pastel</h3>
               </div>
-              <CardDescription>
+              <p className="text-sm text-muted-foreground">
                 Design com tons verdes pastéis harmoniosos.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <p className="text-sm text-muted-foreground">
                 Perfeito para indicar ações bem-sucedidas ou status positivos.
               </p>
-            </CardContent>
-            <CardFooter>
-              <Button size="sm" variant="success">
+            </div>
+            <div className="flex items-center p-6 pt-0">
+              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 rounded-md px-3">
                 Confirmar
-              </Button>
-            </CardFooter>
-          </Card>
+              </button>
+            </div>
+          </div>
 
           {/* Card 3 - Glass */}
-          <Card variant="glass" interactive className="hover:shadow-2xl">
-            <CardHeader>
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-2xl transition-shadow">
+            <div className="flex flex-col space-y-1.5 p-6">
               <div className="flex items-center space-x-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <CardTitle>Card Glass</CardTitle>
+                <h3 className="text-2xl font-semibold leading-none tracking-tight">Card Glass</h3>
               </div>
-              <CardDescription>
+              <p className="text-sm text-muted-foreground">
                 Efeito glassmorphism com backdrop blur.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <p className="text-sm text-muted-foreground">
                 Design moderno com transparência e efeitos de vidro.
               </p>
-            </CardContent>
-            <CardFooter>
-              <Button size="sm" variant="glass">
+            </div>
+            <div className="flex items-center p-6 pt-0">
+              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
                 Visualizar
-              </Button>
-            </CardFooter>
-          </Card>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Separator */}
-        <Separator className="my-8" />
+        <div className="my-8 h-px bg-border w-full" />
 
         {/* Areas Section */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-center">Áreas Delimitadas</h2>
-          
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-2">Áreas de Conteúdo</h2>
+            <p className="text-muted-foreground">
+              Demonstração de diferentes layouts e espaçamentos
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Area 1 */}
-            <Card variant="modern" interactive className="hover:shadow-2xl">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-2xl transition-shadow">
+              <div className="flex flex-col space-y-1.5 p-6">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2">
                   <Zap className="h-5 w-5 text-info" />
                   <span>Área Informativa</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-6 pt-0">
                 <p className="text-sm text-muted-foreground mb-4">
                   Esta área demonstra como as delimitações suaves funcionam 
-                  com tons pastéis.
+                  em diferentes contextos.
                 </p>
                 <div className="space-y-2">
-                  <Input placeholder="Digite algo..." variant="modern" />
+                  <input 
+                    placeholder="Digite algo..." 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
                   <div className="flex space-x-2">
-                    <Badge variant="secondary">Tag 1</Badge>
-                    <Badge variant="outline">Tag 2</Badge>
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80">Tag 1</span>
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80">Tag 2</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Area 2 */}
-            <Card variant="pastel" interactive className="hover:shadow-2xl">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Star className="h-5 w-5 text-warning" />
-                  <span>Área de Aviso</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-2xl transition-shadow">
+              <div className="flex flex-col space-y-1.5 p-6">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2">
+                  <Palette className="h-5 w-5 text-warning" />
+                  <span>Paleta de Cores</span>
+                </h3>
+              </div>
+              <div className="p-6 pt-0">
                 <p className="text-sm text-muted-foreground mb-4">
-                  Tons amarelos pastéis para chamar atenção sem ser agressivo.
+                  Explore nossa paleta de cores pastéis cuidadosamente selecionadas.
                 </p>
-                <div className="space-y-2">
-                  <Input placeholder="Campo de entrada..." variant="glass" />
-                  <div className="flex space-x-2">
-                    <Badge variant="secondary">Importante</Badge>
-                    <Badge variant="outline">Urgente</Badge>
-                  </div>
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="h-12 rounded-lg bg-primary/20 border border-primary/30"></div>
+                  <div className="h-12 rounded-lg bg-secondary/20 border border-secondary/30"></div>
+                  <div className="h-12 rounded-lg bg-accent/20 border border-accent/30"></div>
+                  <div className="h-12 rounded-lg bg-muted/20 border border-muted/30"></div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Buttons Section */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-center">Botões Pastéis</h2>
-          
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="default">
-              <Palette className="h-4 w-4" />
-              Padrão
-            </Button>
-            <Button variant="success">
-              <Shield className="h-4 w-4" />
-              Sucesso
-            </Button>
-            <Button variant="warning">
-              <Star className="h-4 w-4" />
-              Aviso
-            </Button>
-            <Button variant="info">
-              <Zap className="h-4 w-4" />
-              Info
-            </Button>
-            <Button variant="glass">
-              <Sparkles className="h-4 w-4" />
-              Glass
-            </Button>
-            <Button variant="outline">
-              <Sun className="h-4 w-4" />
-              Outline
-            </Button>
-            <Button variant="pastel">
-              <Moon className="h-4 w-4" />
-              Pastel
-            </Button>
-          </div>
-        </div>
-
-        {/* Theme Demo */}
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold">Tema Claro/Escuro</h2>
+        {/* Footer */}
+        <div className="text-center py-8">
           <p className="text-muted-foreground">
-            Os componentes se adaptam automaticamente aos temas claro e escuro 
-            com cores pastéis harmoniosas.
+            Design system moderno com foco em acessibilidade e usabilidade
           </p>
-          <div className="flex justify-center space-x-4">
-            <div className="flex items-center space-x-2 p-3 rounded-xl bg-sun/10 border border-sun/20">
-              <Sun className="h-5 w-5 text-yellow-500" />
-              <span className="text-sm font-medium">Tema Claro</span>
-            </div>
-            <div className="flex items-center space-x-2 p-3 rounded-xl bg-moon/10 border border-moon/20">
-              <Moon className="h-5 w-5 text-blue-500" />
-              <span className="text-sm font-medium">Tema Escuro</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
