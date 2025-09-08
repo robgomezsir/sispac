@@ -19,7 +19,6 @@
     "setup:dev": "echo 'Configurando ambiente de desenvolvimento...' && npm run dev:open"
   },
   "dependencies": {
-    "@getbrevo/brevo": "^3.0.1",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-separator": "^1.1.7",
     "@supabase/supabase-js": "^2.45.4",
