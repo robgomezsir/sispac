@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
-// Componente Card customizado será criado
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 import { 
   Lock, 
   CheckCircle, 

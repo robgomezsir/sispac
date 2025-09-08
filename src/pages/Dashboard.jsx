@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
 import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
-import StatusProfileStats from '../components/StatusProfileStats.jsx'
 
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'

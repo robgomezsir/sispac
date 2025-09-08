@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-// Componentes customizados serão criados
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 import { 
   Settings, 
   Webhook, 

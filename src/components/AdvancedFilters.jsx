@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '../lib/utils'
-// Componentes customizados serão criados
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 
 export function AdvancedFilters({ 
   filters, 
