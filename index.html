@@ -66,9 +66,11 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     
-    <!-- PWA Installation Script -->
+    <!-- PWA Installation Script - Temporariamente desabilitado para debug -->
     <script>
-      // Registrar Service Worker
+      // Service Worker temporariamente desabilitado para debug
+      console.log('🔧 [DEBUG] Service Worker desabilitado para debug');
+      /*
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
@@ -80,6 +82,7 @@
             });
         });
       }
+      */
       
       // Detectar se a aplicação foi instalada
       window.addEventListener('beforeinstallprompt', (e) => {
