@@ -340,10 +340,18 @@ function useProvideAuth(){
         }
         
         // Redirecionar para dashboard após login bem-sucedido
+        console.log("🔍 [useAuth] Verificando redirecionamento...")
+        console.log("🔍 [useAuth] location.pathname:", location.pathname)
+        console.log("🔍 [useAuth] hasRedirected.current:", hasRedirected.current)
+        
         if (location.pathname === '/' && !hasRedirected.current) {
           console.log("🚀 [useAuth] Redirecionando usuário para dashboard...")
           hasRedirected.current = true
           navigate('/dashboard', { replace: true })
+        } else if (location.pathname !== '/') {
+          console.log("🔍 [useAuth] Usuário já está em uma página diferente da raiz:", location.pathname)
+        } else if (hasRedirected.current) {
+          console.log("🔍 [useAuth] Redirecionamento já foi executado anteriormente")
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
@@ -374,7 +382,7 @@ function useProvideAuth(){
         authSubscription.current.unsubscribe()
       }
     }
-  }, [])
+  }, [navigate, location])
 
   // Função para finalizar convite e permitir login normal
   const finalizeInvite = React.useCallback(async (userData, accessToken, refreshToken) => {

@@ -43,8 +43,15 @@ export default function Home(){
     console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
   }, [user, isLoading, loading, authError])
 
-  // O redirecionamento é agora gerenciado pelo useAuth
-  // Removido para evitar conflitos de redirecionamento
+  // Redirecionamento de backup após login bem-sucedido
+  useEffect(() => {
+    if (user && !isLoading && !loading) {
+      console.log("🚀 [Home] Usuário logado detectado, redirecionando para dashboard...")
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, 100) // Pequeno delay para garantir que o estado foi atualizado
+    }
+  }, [user, isLoading, loading, navigate])
 
   async function onSubmit(e){
     e.preventDefault()
