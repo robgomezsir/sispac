@@ -18,7 +18,7 @@ import {
   Award,
   Target
 } from 'lucide-react'
-import { Button } from '../components/ui/button.jsx'
+import { Button } from '../components/ui/button.js'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card.jsx'
 import { Input } from '../components/ui/input.jsx'
 import { Label } from '../components/ui/label.jsx'
