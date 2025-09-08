@@ -23,6 +23,7 @@ build/
 secrets/
 credentials/
 CONFIGURACAO_SEGURA.md
+CONFIGURACAO_SEGURA_ATUALIZADA.md
 CONFIGURAR_ENV.md
 *.env.backup
 *.env.local.backup
