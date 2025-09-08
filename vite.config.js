@@ -11,6 +11,7 @@ export default defineConfig({
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     mainFields: ['module', 'jsnext:main', 'jsnext'],
+    conditions: ['import', 'module', 'browser', 'default'],
   },
   build: {
     target: 'es2015',
@@ -42,4 +43,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js']
+  }
 })

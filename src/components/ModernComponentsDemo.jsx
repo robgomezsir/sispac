@@ -6,7 +6,7 @@ import {
   ModernCardFooter, 
   ModernStatCard, 
   ModernActionCard 
-} from './ui/ModernCard'
+} from '@/components/ui/ModernCard'
 // Componente Button customizado será criado
 import { 
   Users, 
