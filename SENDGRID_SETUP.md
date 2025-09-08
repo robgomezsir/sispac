@@ -31,8 +31,8 @@ Este documento explica como configurar o SendGrid para envio automático de emai
 
 ## 4. Configurar Variáveis de Ambiente
 
-### No Vercel (Produção):
-1. Acesse o dashboard do Vercel
+### Em Produção:
+1. Acesse o dashboard da plataforma de deploy
 2. Vá para **Settings > Environment Variables**
 3. Adicione as variáveis:
    - `SENDGRID_API_KEY`: Sua API Key do SendGrid
@@ -53,7 +53,7 @@ Após configurar, teste o envio de email:
 1. Acesse o Dashboard
 2. Adicione um novo candidato
 3. Verifique se o email foi enviado
-4. Consulte os logs no console do Vercel
+4. Consulte os logs no console da plataforma
 
 ## 6. Monitoramento
 
@@ -62,7 +62,7 @@ Após configurar, teste o envio de email:
 - Visualize estatísticas de envio, bounces, etc.
 
 ### Logs da Aplicação:
-- Console do Vercel mostra logs detalhados
+- Console da plataforma mostra logs detalhados
 - Tabela `email_logs` no Supabase registra todos os envios
 
 ## 7. Troubleshooting

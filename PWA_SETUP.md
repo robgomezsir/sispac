@@ -40,7 +40,7 @@ O SisPAC agora é uma **Progressive Web App (PWA)** que permite instalação dir
 ### Arquivos Modificados
 - `index.html` - Adicionadas meta tags e scripts PWA
 - `src/App.jsx` - Integração dos componentes PWA
-- `vercel.json` - Headers específicos para PWA
+- Arquivo de configuração de deploy - Headers específicos para PWA
 
 ## Como Testar
 

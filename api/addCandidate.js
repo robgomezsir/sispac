@@ -260,7 +260,7 @@ export default async function handler(req, res){
     }
     
     // Criar link de acesso - sempre usar URL principal
-    const baseUrl = 'https://sispac.vercel.app'
+    const baseUrl = 'https://sispac.app'
     const accessLink = `${baseUrl}/form?token=${accessToken}`
     
     console.log('✅ Candidato criado com sucesso:', { email: newCandidate[0].email, token: accessToken })

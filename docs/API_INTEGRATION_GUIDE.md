@@ -416,7 +416,7 @@ candidates = client.get_candidates()
 Para dúvidas ou suporte técnico:
 
 1. Consulte a documentação interativa no Painel de API
-2. Verifique os logs da aplicação no Vercel
+2. Verifique os logs da aplicação na plataforma de deploy
 3. Entre em contato com a equipe de desenvolvimento
 
 ## Changelog

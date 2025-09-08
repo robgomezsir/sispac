@@ -380,7 +380,7 @@ export default function IntegracaoGupy() {
                       type="password"
                       value={config.apiKey}
                       onChange={(e) => setConfig(prev => ({ ...prev, apiKey: e.target.value }))}
-                      placeholder="Sua chave de API do Vercel"
+                      placeholder="Sua chave de API"
                     />
                     <p className="text-sm text-gray-500 mt-1">
                       Chave para autenticação das requisições
