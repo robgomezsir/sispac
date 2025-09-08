@@ -1,5 +1,5 @@
 // Service Worker para SisPAC PWA
-const CACHE_VERSION = '3.0.0';
+const CACHE_VERSION = '4.0.0';
 const STATIC_CACHE = `sispac-static-v${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `sispac-dynamic-v${CACHE_VERSION}`;
 
@@ -47,17 +47,16 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
+        // Limpar TODOS os caches antigos para forçar atualização
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-              console.log('🗑️ [SW] Removendo cache antigo:', cacheName);
-              return caches.delete(cacheName);
-            }
+            console.log('🗑️ [SW] Removendo cache antigo:', cacheName);
+            return caches.delete(cacheName);
           })
         );
       })
       .then(() => {
-        console.log('✅ [SW] Service Worker ativado');
+        console.log('✅ [SW] Service Worker ativado - Cache limpo');
         return self.clients.claim();
       })
   );
