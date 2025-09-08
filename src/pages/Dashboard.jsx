@@ -155,25 +155,66 @@ export default function Dashboard(){
     if (loading) return // Evitar múltiplas chamadas simultâneas
     
     setLoading(true)
+    setError(null) // Limpar erro anterior
     
     try {
+      console.log("🔍 [Dashboard] Iniciando carregamento de dados...")
+      
       // Obter token de sessão atual
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      if (sessionError) {
+        console.error("❌ [Dashboard] Erro ao obter sessão:", sessionError)
+        throw new Error(`Erro de autenticação: ${sessionError.message}`)
+      }
       
       if (!session?.access_token) {
-        throw new Error('Sessão expirada. Faça login novamente.')
+        console.warn("⚠️ [Dashboard] Nenhuma sessão ativa encontrada")
+        // Tentar obter usuário atual para verificar se está logado
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        
+        if (userError || !user) {
+          console.log("🔍 [Dashboard] Usuário não autenticado, redirecionando para login...")
+          // Redirecionar para login se não estiver autenticado
+          window.location.href = '/'
+          return
+        } else {
+          console.log("🔍 [Dashboard] Usuário autenticado mas sem sessão ativa, tentando refresh...")
+          // Tentar refresh da sessão
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
+          
+          if (refreshError || !refreshData.session?.access_token) {
+            throw new Error('Sessão expirada. Faça login novamente.')
+          }
+          
+          // Usar o novo token
+          session.access_token = refreshData.session.access_token
+        }
       }
+      
+      console.log("✅ [Dashboard] Token de sessão obtido com sucesso")
       
       // Usar a API que inclui o perfil comportamental
       const res = await fetch('/api/candidates', {
         headers: { 
-          'Authorization': `Bearer ${session.access_token}`
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
         }
       })
       
       if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.error || 'Erro ao carregar dados')
+        const errorText = await res.text()
+        let errorMessage = 'Erro ao carregar dados'
+        
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData.error || errorMessage
+        } catch {
+          errorMessage = errorText || `HTTP ${res.status}: ${res.statusText}`
+        }
+        
+        console.error("❌ [Dashboard] Erro na API:", errorMessage)
+        throw new Error(errorMessage)
       }
       
       const data = await res.json()
@@ -182,10 +223,23 @@ export default function Dashboard(){
       console.log("🔍 [Dashboard] Primeiro registro:", data?.[0])
       setRows(data || [])
       setInitialLoad(true)
-      setError(null) // Limpar erro anterior
+      setError(null)
     } catch (err) {
       console.error("❌ [Dashboard] Exceção ao carregar dados:", err)
-      setError(`Erro inesperado: ${err.message}`)
+      
+      // Tratar diferentes tipos de erro
+      if (err.message.includes('Sessão expirada') || err.message.includes('token')) {
+        setError('Sessão expirada. Faça login novamente.')
+        // Redirecionar para login após 2 segundos
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
+      } else if (err.message.includes('network') || err.message.includes('fetch')) {
+        setError('Erro de conexão. Verifique sua internet e tente novamente.')
+      } else {
+        setError(`Erro inesperado: ${err.message}`)
+      }
+      
       setRows([])
     } finally {
       setLoading(false)
@@ -259,12 +313,26 @@ export default function Dashboard(){
 
     try {
       setLoading(true)
+      console.log("🔍 [Dashboard] Removendo candidato:", candidate.name)
       
       // Obter token de sessão atual
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      if (sessionError) {
+        console.error("❌ [Dashboard] Erro ao obter sessão para remoção:", sessionError)
+        throw new Error(`Erro de autenticação: ${sessionError.message}`)
+      }
       
       if (!session?.access_token) {
-        throw new Error('Sessão expirada. Faça login novamente.')
+        console.warn("⚠️ [Dashboard] Nenhuma sessão ativa para remoção")
+        // Tentar refresh da sessão
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
+        
+        if (refreshError || !refreshData.session?.access_token) {
+          throw new Error('Sessão expirada. Faça login novamente.')
+        }
+        
+        session.access_token = refreshData.session.access_token
       }
       
       const res = await fetch('/api/deleteCandidate', {
@@ -286,14 +354,19 @@ export default function Dashboard(){
       setRows(prevRows => prevRows.filter(r => r.id !== candidate.id))
       
       // Mostrar mensagem de sucesso
-      console.log(`Candidato "${candidate.name}" removido com sucesso!`)
-      
-      // Opcional: mostrar uma notificação mais elegante
-      // Você pode implementar um sistema de notificações toast aqui
+      console.log(`✅ [Dashboard] Candidato "${candidate.name}" removido com sucesso!`)
       
     } catch (error) {
-      console.error('Erro ao remover candidato:', error)
-      alert(`Erro ao remover candidato: ${error.message}`)
+      console.error('❌ [Dashboard] Erro ao remover candidato:', error)
+      
+      if (error.message.includes('Sessão expirada') || error.message.includes('token')) {
+        alert('Sessão expirada. Faça login novamente.')
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
+      } else {
+        alert(`Erro ao remover candidato: ${error.message}`)
+      }
     } finally {
       setLoading(false)
     }
