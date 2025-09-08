@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
+import { Badge } from '../ui/badge.jsx'
 
 export function AdvancedFilters({ 
   filters, 
