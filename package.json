@@ -16,8 +16,7 @@
     "test": "echo \"(optional) add testing framework\"",
     "format": "echo \"(optional) add prettier\"",
     "clean": "rm -rf dist node_modules/.vite",
-    "setup:dev": "echo 'Configurando ambiente de desenvolvimento...' && npm run dev:open",
-    "vercel-build": "npm run build"
+    "setup:dev": "echo 'Configurando ambiente de desenvolvimento...' && npm run dev:open"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
