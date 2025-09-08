@@ -43,7 +43,7 @@ const validateToken = (token) => {
 }
 
 // Criar cliente com chave anônima para operações básicas
-export const supabase = createClient(supabaseUrl || 'https://vpdwqaktdglneoitmcnj.supabase.co', supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyOTE2MDMsImV4cCI6MjA3Mjg2NzYwM30.qmI4fUxpkZbCU9Ua5M35N3gDU7PAE0eaOMs2vFBjQow', {
+export const supabase = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNzQ3NjUsImV4cCI6MjA3MTc1MDc2NX0.a1EoCpinPFQqBd_ZYOT7n7iViH3NCwIzldzcBLlvfNo', {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -97,7 +97,7 @@ if (import.meta.env.DEV) {
 }
 
 // Criar cliente com chave de serviço para operações que precisam contornar RLS
-export const supabaseAdmin = createClient(supabaseUrl || 'https://vpdwqaktdglneoitmcnj.supabase.co', supabaseServiceKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzI5MTYwMywiZXhwIjoyMDcyODY3NjAzfQ.PiPcE-H2I1Zmn2l_aL-TNaG8sRk2qO1NpQP433MxAdQ', {
+export const supabaseAdmin = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseServiceKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjE3NDc2NSwiZXhwIjoyMDcxNzUwNzY1fQ.PzB6anXBL41uxSGg9GppVhoZGMVRvBqtWYfSVzGOBXQ', {
   auth: {
     autoRefreshToken: false,
     persistSession: false
