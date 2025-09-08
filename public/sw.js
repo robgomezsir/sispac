@@ -172,11 +172,16 @@ async function networkFirst(request, cacheName) {
     
     return networkResponse;
   } catch (error) {
-    console.log('🌐 [SW] Rede indisponível, tentando cache:', request.url);
+    // Reduzir logs de erro para evitar spam no console
+    if (request.url.includes('localhost') || request.url.includes('127.0.0.1')) {
+      console.log('🌐 [SW] Rede indisponível, tentando cache:', request.url);
+    }
     
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
-      console.log('📦 [SW] Cache hit (fallback):', request.url);
+      if (request.url.includes('localhost') || request.url.includes('127.0.0.1')) {
+        console.log('📦 [SW] Cache hit (fallback):', request.url);
+      }
       return cachedResponse;
     }
     
