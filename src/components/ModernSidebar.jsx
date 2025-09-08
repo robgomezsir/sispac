@@ -27,9 +27,9 @@ import {
   Palette
 } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { Button } from './ui/button.jsx'
-import { Badge } from './ui/badge.jsx'
-import { Separator } from './ui/separator.jsx'
+import { Button } from '../ui/button.jsx'
+import { Badge } from '../ui/badge.jsx'
+import { Separator } from '../ui/separator.jsx'
 import { ThemeDropdown } from './ThemeDropdown.jsx'
 
 export function ModernSidebar({ isOpen = true, onClose }) {

@@ -1,10 +1,10 @@
 import * as React from "react"
-import { cn } from "../../lib/utils"
+import { cn } from "../lib/utils"
 
-const PastelArea = React.forwardRef(({ 
+const PastelCard = React.forwardRef(({ 
   className, 
-  variant = "default",
-  interactive = false,
+  variant = "default", 
+  interactive = false, 
   glow = false,
   children, 
   ...props 
@@ -15,7 +15,7 @@ const PastelArea = React.forwardRef(({
     <div
       ref={ref}
       className={cn(
-        "relative overflow-hidden rounded-2xl border transition-all duration-500 ease-out",
+        "group relative overflow-hidden rounded-2xl border transition-all duration-500 ease-out",
         "bg-gradient-to-br from-card/95 to-card/90 backdrop-blur-sm",
         "border-border/60 shadow-lg",
         interactive && "cursor-pointer tactile-feedback-strong",
@@ -26,7 +26,6 @@ const PastelArea = React.forwardRef(({
         variant === "success" && "border-success/30 bg-success/5",
         variant === "warning" && "border-warning/30 bg-warning/5",
         variant === "info" && "border-info/30 bg-info/5",
-        variant === "muted" && "bg-muted/50 border-muted/60",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -48,50 +47,56 @@ const PastelArea = React.forwardRef(({
       )}
       
       {/* Content */}
-      <div className="relative z-10 p-6">
+      <div className="relative z-10">
         {children}
       </div>
     </div>
   )
 })
-PastelArea.displayName = "PastelArea"
+PastelCard.displayName = "PastelCard"
 
-const PastelAreaHeader = React.forwardRef(({ className, ...props }, ref) => (
+const PastelCardHeader = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center justify-between mb-4", className)}
+    className={cn("flex flex-col space-y-2 p-6 pb-4", className)}
     {...props} />
 ))
-PastelAreaHeader.displayName = "PastelAreaHeader"
+PastelCardHeader.displayName = "PastelCardHeader"
 
-const PastelAreaTitle = React.forwardRef(({ className, ...props }, ref) => (
+const PastelCardTitle = React.forwardRef(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-lg font-semibold text-card-foreground", className)}
+    className={cn("text-lg font-semibold leading-tight tracking-tight text-card-foreground", className)}
     {...props} />
 ))
-PastelAreaTitle.displayName = "PastelAreaTitle"
+PastelCardTitle.displayName = "PastelCardTitle"
 
-const PastelAreaContent = React.forwardRef(({ className, ...props }, ref) => (
+const PastelCardDescription = React.forwardRef(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground leading-relaxed", className)}
+    {...props} />
+))
+PastelCardDescription.displayName = "PastelCardDescription"
+
+const PastelCardContent = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+PastelCardContent.displayName = "PastelCardContent"
+
+const PastelCardFooter = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("space-y-4", className)}
+    className={cn("flex items-center justify-between p-6 pt-4 border-t border-border/30", className)}
     {...props} />
 ))
-PastelAreaContent.displayName = "PastelAreaContent"
-
-const PastelAreaFooter = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center justify-between pt-4 border-t border-border/30", className)}
-    {...props} />
-))
-PastelAreaFooter.displayName = "PastelAreaFooter"
+PastelCardFooter.displayName = "PastelCardFooter"
 
 export { 
-  PastelArea, 
-  PastelAreaHeader, 
-  PastelAreaTitle, 
-  PastelAreaContent, 
-  PastelAreaFooter 
+  PastelCard, 
+  PastelCardHeader, 
+  PastelCardFooter, 
+  PastelCardTitle, 
+  PastelCardDescription, 
+  PastelCardContent 
 }

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "../../lib/utils"
+import { cn } from "../lib/utils"
 
 // Função para gerar classes de variantes
 const getVariantClasses = (variant, size) => {
