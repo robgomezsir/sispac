@@ -18,7 +18,11 @@ import {
   Award,
   Target
 } from 'lucide-react'
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label, Badge } from '../components/ui'
+import { Button } from '../components/ui/button.jsx'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card.jsx'
+import { Input } from '../components/ui/input.jsx'
+import { Label } from '../components/ui/label.jsx'
+import { Badge } from '../components/ui/badge.jsx'
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()

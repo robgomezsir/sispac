@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ModernSidebar } from './ModernSidebar.jsx'
 import { useSidebar } from '../contexts/SidebarContext.jsx'
 import { Menu, X } from 'lucide-react'
-import { Button } from './ui'
+import { Button } from './ui/button.jsx'
 
 export function LayoutWithSidebar({ children }) {
   const { isMobile } = useSidebar()
