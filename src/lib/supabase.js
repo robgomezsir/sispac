@@ -1,23 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
+import { validateEnvironment, displayValidationErrors } from './env-validator.js'
 
-// Configuração com fallback para desenvolvimento
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vpdwqaktdglneoitmcnj.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyOTE2MDMsImV4cCI6MjA3Mjg2NzYwM30.qmI4fUxpkZbCU9Ua5M35N3gDU7PAE0eaOMs2vFBjQow'
+// Configuração com validação obrigatória
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
-// Validação das variáveis de ambiente
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ [Supabase] Variáveis de ambiente não configuradas!')
+// Validação rigorosa das variáveis de ambiente
+const validation = validateEnvironment()
+if (!validation.valid) {
+  displayValidationErrors(validation)
   
-  // Em produção, mostrar erro mais amigável
-  if (!import.meta.env.DEV) {
-    document.body.innerHTML = `
-      <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
-        <h1>Erro de Configuração</h1>
-        <p>As variáveis de ambiente do Supabase não estão configuradas.</p>
-        <p>Entre em contato com o administrador do sistema.</p>
-      </div>
-    `
+  // Em desenvolvimento, mostrar erro detalhado
+  if (import.meta.env.DEV) {
+    throw new Error(`❌ [Supabase] Configuração inválida:\n${validation.errors.join('\n')}`)
   }
 }
 

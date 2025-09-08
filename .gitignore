@@ -15,6 +15,20 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
+
+# API Keys and secrets
+*.key
+*.pem
+secrets/
+credentials/
+CONFIGURACAO_SEGURA.md
+CONFIGURAR_ENV.md
+*.env.backup
+*.env.local.backup
+
+# Vercel
+.vercel
 
 # IDE files
 .vscode/
