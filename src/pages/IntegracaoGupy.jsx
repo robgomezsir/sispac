@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 import { Badge } from '../ui/badge.jsx'
+import { Button } from '../ui/button.jsx'
 import { 
   Settings, 
   Webhook, 

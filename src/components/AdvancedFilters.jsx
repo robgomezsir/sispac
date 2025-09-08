@@ -3,6 +3,7 @@ import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 import { Badge } from '../ui/badge.jsx'
+import { Button } from '../ui/button.jsx'
 
 export function AdvancedFilters({ 
   filters, 

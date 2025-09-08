@@ -7,7 +7,7 @@ import {
   ModernStatCard, 
   ModernActionCard 
 } from '../ui/ModernCard'
-// Componente Button customizado será criado
+import { Button } from '../ui/button.jsx'
 import { 
   Users, 
   Star, 

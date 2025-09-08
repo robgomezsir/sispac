@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth.jsx'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
+import { Button } from '../ui/button.jsx'
 
 export default function AuthDebug() {
   const { user, role, isLoading, signIn, authError, isInvitePending, needsPasswordReset } = useAuth()
