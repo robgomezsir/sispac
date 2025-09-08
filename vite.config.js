@@ -10,6 +10,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    mainFields: ['module', 'jsnext:main', 'jsnext'],
   },
   build: {
     target: 'es2015',
