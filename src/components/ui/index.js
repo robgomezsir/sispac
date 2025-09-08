@@ -14,7 +14,7 @@ export {
   ModernCardFooter, 
   ModernStatCard, 
   ModernActionCard 
-} from './ModernCard'
+} from './ModernCard.jsx'
 
 export { 
   PastelCard, 
@@ -23,11 +23,11 @@ export {
   PastelCardFooter, 
   PastelCardTitle, 
   PastelCardDescription 
-} from './PastelCard'
+} from './PastelCard.jsx'
 
-export { PastelButton } from './PastelButton'
+export { PastelButton } from './PastelButton.jsx'
 
-export { PastelSeparator } from './PastelSeparator'
+export { PastelSeparator } from './PastelSeparator.jsx'
 
 export { 
   PastelArea, 
@@ -35,4 +35,4 @@ export {
   PastelAreaTitle, 
   PastelAreaContent, 
   PastelAreaFooter 
-} from './PastelArea'
+} from './PastelArea.jsx'

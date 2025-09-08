@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci",
+  "framework": "vite",
   "rewrites": [
     {
       "source": "/((?!assets|manifest.json|sw.js|favicon.ico|logo.*\\.png).*)",
