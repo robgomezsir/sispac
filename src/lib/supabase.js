@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Configuração com fallback para desenvolvimento
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zibuyabpsvgulvigvdtb.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNzQ3NjUsImV4cCI6MjA3MTc1MDc2NX0.a1EoCpinPFQqBd_ZYOT7n7iViH3NCwIzldzcBLlvfNo'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vpdwqaktdglneoitmcnj.supabase.co'
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyOTE2MDMsImV4cCI6MjA3Mjg2NzYwM30.qmI4fUxpkZbCU9Ua5M35N3gDU7PAE0eaOMs2vFBjQow'
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
 // Validação das variáveis de ambiente

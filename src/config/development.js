@@ -7,7 +7,7 @@ export const devConfig = {
   
   // Supabase (desenvolvimento)
   supabase: {
-    url: import.meta.env.VITE_SUPABASE_URL || 'https://zibuyabpsvgulvigvdtb.supabase.co',
+    url: import.meta.env.VITE_SUPABASE_URL || 'https://vpdwqaktdglneoitmcnj.supabase.co',
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     serviceKey: import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY,
     debug: true
