@@ -68,7 +68,8 @@
     
     <!-- PWA Installation Script -->
     <script>
-      // Registrar Service Worker
+      // Registrar Service Worker - Temporariamente desabilitado
+      /*
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
@@ -80,6 +81,7 @@
             });
         });
       }
+      */
       
       // Detectar se a aplicação foi instalada
       window.addEventListener('beforeinstallprompt', (e) => {
