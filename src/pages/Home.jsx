@@ -16,13 +16,15 @@ import {
   ArrowRight,
   Star,
   Award,
-  Target
+  Target,
+  Wifi
 } from 'lucide-react'
 import { Button } from '../ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx'
 import { Input } from '../ui/input.jsx'
 import { Label } from '../ui/label.jsx'
 import { Badge } from '../ui/badge.jsx'
+import ConnectivityDiagnostic from '../components/ConnectivityDiagnostic.jsx'
 
 export default function Home(){
   const { user, signIn, isLoading, authError, clearError, retryConnection } = useAuth()
@@ -31,6 +33,7 @@ export default function Home(){
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState(null)
+  const [showDiagnostic, setShowDiagnostic] = useState(false)
   const navigate = useNavigate()
   const hasRedirected = useRef(false)
 
@@ -58,14 +61,29 @@ export default function Home(){
       setEmail('')
       setPassword('')
       
-      // REDIRECIONAMENTO FORÇADO IMEDIATO
-      console.log("🚀 [Home] REDIRECIONANDO FORÇADAMENTE PARA DASHBOARD...")
-      window.location.href = '/dashboard'
+      // O redirecionamento será gerenciado pelo useAuth
+      console.log("✅ [Home] Login bem-sucedido, aguardando redirecionamento...")
       
     }catch(e){
       console.error("❌ [Home] Erro no login:", e)
       console.error("❌ [Home] Mensagem de erro:", e.message)
-      setErr(e.message)
+      
+      // Tratar erros específicos com mensagens mais amigáveis
+      let errorMessage = e.message
+      
+      if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+        errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.'
+      } else if (e.message.includes('conectividade')) {
+        errorMessage = 'Erro de conectividade. Verifique sua conexão com a internet.'
+      } else if (e.message.includes('Invalid login credentials')) {
+        errorMessage = 'Email ou senha incorretos. Verifique suas credenciais.'
+      } else if (e.message.includes('Email not confirmed')) {
+        errorMessage = 'Email não confirmado. Verifique sua caixa de entrada.'
+      } else if (e.message.includes('Too many requests')) {
+        errorMessage = 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.'
+      }
+      
+      setErr(errorMessage)
     }finally{ 
       setLoading(false)
       console.log("🔐 [Home] Processo de login finalizado")
@@ -284,13 +302,29 @@ export default function Home(){
                 {err && (
                   <div className="mt-4">
                     <div className="w-full p-4 bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 text-destructive rounded-2xl text-sm backdrop-blur-sm">
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
-                          <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 bg-destructive/20 rounded-full flex items-center justify-center">
+                            <svg className="h-4 w-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <span className="font-medium">{err}</span>
                         </div>
-                        <span className="font-medium">{err}</span>
+                        {(err.includes('conexão') || err.includes('conectividade') || err.includes('internet')) && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setErr(null)
+                              window.location.reload()
+                            }}
+                            className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                          >
+                            Tentar Novamente
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -299,17 +333,35 @@ export default function Home(){
             </Card>
 
             {/* Footer com informações adicionais */}
-            <div className="text-center mt-6 space-y-1">
-              <p className="text-sm text-muted-foreground/80">
-                © 2024 SisPAC - Sistema de Avaliação Comportamental
-              </p>
-              <p className="text-xs text-muted-foreground/60">
-                Desenvolvido com ❤️ para facilitar a avaliação de candidatos
-              </p>
+            <div className="text-center mt-6 space-y-3">
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDiagnostic(true)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Wifi className="w-4 h-4 mr-1" />
+                  Diagnóstico de Conectividade
+                </Button>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground/80">
+                  © 2024 SisPAC - Sistema de Avaliação Comportamental
+                </p>
+                <p className="text-xs text-muted-foreground/60">
+                  Desenvolvido com ❤️ para facilitar a avaliação de candidatos
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Modal de Diagnóstico */}
+      {showDiagnostic && (
+        <ConnectivityDiagnostic onClose={() => setShowDiagnostic(false)} />
+      )}
     </div>
   )
 }

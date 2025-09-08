@@ -52,7 +52,10 @@ export const supabase = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdt
     storageKey: 'sispac-auth-token',
     // Configurações adicionais para melhorar a estabilidade
     flowType: 'pkce',
-    debug: import.meta.env.DEV
+    debug: import.meta.env.DEV,
+    // Configurações de retry para melhorar conectividade
+    retryDelay: 1000,
+    maxRetries: 3
   },
   // Configurações adicionais para produção
   realtime: {
@@ -119,9 +122,41 @@ export const clearInvalidTokens = async () => {
   }
 }
 
+// Função para testar conectividade básica
+export const testConnectivity = async () => {
+  try {
+    // Teste simples de conectividade com timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 segundos timeout
+    
+    const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+      method: 'HEAD',
+      signal: controller.signal,
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`
+      }
+    })
+    
+    clearTimeout(timeoutId)
+    return response.ok
+  } catch (error) {
+    console.warn('⚠️ [Supabase] Erro de conectividade:', error.message)
+    return false
+  }
+}
+
 // Função para verificar saúde da conexão
 export const checkSupabaseHealth = async () => {
   try {
+    // Primeiro testar conectividade básica
+    const isConnected = await testConnectivity()
+    if (!isConnected) {
+      console.warn('⚠️ [Supabase] Sem conectividade básica')
+      return false
+    }
+    
+    // Depois testar query específica
     const { data, error } = await supabase.from('profiles').select('count').limit(1)
     if (error) {
       console.warn('⚠️ [Supabase] Erro ao verificar saúde:', error)

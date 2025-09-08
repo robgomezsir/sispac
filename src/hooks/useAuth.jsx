@@ -1,5 +1,5 @@
 import React from 'react'
-import { supabase, clearInvalidTokens, checkSupabaseHealth } from '../lib/supabase'
+import { supabase, clearInvalidTokens, checkSupabaseHealth, testConnectivity } from '../lib/supabase'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { clearAuthCache, checkCacheHealth } from '../lib/cache-cleaner.js'
 
@@ -285,12 +285,6 @@ function useProvideAuth(){
           const adminRole = 'admin'
           roleCache.current.set(session.user.id, adminRole)
           setRole(adminRole)
-          
-          // Redirecionar imediatamente para admin
-          console.log("🚀 [useAuth] Redirecionando admin para dashboard...")
-          hasRedirected.current = true
-          navigate('/dashboard', { replace: true })
-          return
         }
 
         // Verificar se o usuário precisa redefinir a senha
@@ -343,6 +337,13 @@ function useProvideAuth(){
           const defaultRole = 'rh'
           roleCache.current.set(session.user.id, defaultRole)
           setRole(defaultRole)
+        }
+        
+        // Redirecionar para dashboard após login bem-sucedido
+        if (location.pathname === '/' && !hasRedirected.current) {
+          console.log("🚀 [useAuth] Redirecionando usuário para dashboard...")
+          hasRedirected.current = true
+          navigate('/dashboard', { replace: true })
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
@@ -490,11 +491,29 @@ function useProvideAuth(){
     try {
       console.log('🔐 [useAuth] Iniciando login para:', email)
       
+      // Testar conectividade antes do login
+      const isConnected = await testConnectivity()
+      if (!isConnected) {
+        throw new Error('Erro de conectividade. Verifique sua conexão com a internet.')
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       
       if (error) {
         console.error("❌ [useAuth] Erro no login:", error.message)
-        throw error
+        
+        // Tratar erros específicos
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Email ou senha incorretos.')
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Email não confirmado. Verifique sua caixa de entrada.')
+        } else if (error.message.includes('Too many requests')) {
+          throw new Error('Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.')
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          throw new Error('Erro de conexão. Verifique sua internet e tente novamente.')
+        } else {
+          throw new Error(error.message || 'Erro desconhecido no login.')
+        }
       }
       
       console.log('✅ [useAuth] Login bem-sucedido para:', email)

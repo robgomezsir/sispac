@@ -49,6 +49,7 @@ import {
   FilterX,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
+import { ModernCard, ModernCardContent, ModernCardHeader, ModernStatCard } from '../ui/ModernCard.jsx'
 // Usando elementos HTML padrão temporariamente
 
 export default function Dashboard(){
@@ -548,41 +549,39 @@ export default function Dashboard(){
               // Visualização em tabela moderna
               <div className="clay-card overflow-hidden">
                 <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-b border-border/50">
-                        <TableHead className="font-semibold">Nome</TableHead>
-                        <TableHead className="font-semibold">Email</TableHead>
-                        <TableHead className="font-semibold">Pontuação</TableHead>
-                        <TableHead className="font-semibold">Status</TableHead>
-                        <TableHead className="font-semibold">Data</TableHead>
-                        <TableHead className="font-semibold">Ações</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border/50">
+                        <th className="text-left p-4 font-semibold">Nome</th>
+                        <th className="text-left p-4 font-semibold">Email</th>
+                        <th className="text-left p-4 font-semibold">Pontuação</th>
+                        <th className="text-left p-4 font-semibold">Status</th>
+                        <th className="text-left p-4 font-semibold">Data</th>
+                        <th className="text-left p-4 font-semibold">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
                       {sortedData.map(row => (
-                        <TableRow key={row.id} className="hover:bg-primary/5 transition-all duration-200 border-b border-border/30 hover:shadow-sm transform-gpu">
-                          <TableCell className="font-medium">{row.name}</TableCell>
-                          <TableCell className="text-muted-foreground">{row.email}</TableCell>
-                          <TableCell>
+                        <tr key={row.id} className="hover:bg-primary/5 transition-all duration-200 border-b border-border/30 hover:shadow-sm transform-gpu">
+                          <td className="p-4 font-medium">{row.name}</td>
+                          <td className="p-4 text-muted-foreground">{row.email}</td>
+                          <td className="p-4">
                             <span className={`font-bold ${getStatusColor(row.status)}`}>
                               {row.score}
                             </span>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="p-4">
                             <div className="flex items-center gap-2">
                               {getStatusIcon(row.status)}
                               {getStatusBadge(row.status)}
                             </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
+                          </td>
+                          <td className="p-4 text-muted-foreground">
                             {new Date(row.created_at).toLocaleDateString('pt-BR')}
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="p-4">
                             <div className="flex items-center gap-2">
                               <button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 btn-modern-outline"
                               >
@@ -590,8 +589,6 @@ export default function Dashboard(){
                                 Ver
                               </button>
                               <button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 btn-modern-secondary"
                               >
@@ -599,8 +596,6 @@ export default function Dashboard(){
                                 Download
                               </button>
                               <button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setViewMode('cards')}
                                 className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                               >
@@ -608,11 +603,11 @@ export default function Dashboard(){
                                 Excluir
                               </button>
                             </div>
-                          </TableCell>
-                        </TableRow>
+                          </td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
