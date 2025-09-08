@@ -47,7 +47,7 @@ export default function ApiPanel(){
       description: 'Lista todos os candidatos com perfil comportamental completo',
       category: 'Candidatos',
       icon: Users,
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidates',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.app.com/api/candidates',
       response: {
         status: 200,
         data: [
@@ -77,7 +77,7 @@ export default function ApiPanel(){
       description: 'Detalhes completos de um candidato específico',
       category: 'Candidatos',
       icon: User,
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.vercel.app/api/candidate/123',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://your-domain.app.com/api/candidate/123',
       response: {
         status: 200,
         data: {
@@ -102,7 +102,7 @@ export default function ApiPanel(){
       description: 'Remove um candidato do sistema (por ID, email ou nome)',
       category: 'Gestão',
       icon: Trash2,
-      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"email": "candidato@email.com"}\' https://your-domain.vercel.app/api/deleteCandidate',
+      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"email": "candidato@email.com"}\' https://your-domain.app.com/api/deleteCandidate',
       response: {
         status: 200,
         data: {
@@ -122,7 +122,7 @@ export default function ApiPanel(){
       description: 'Cria um novo usuário do sistema (RH ou Admin)',
       category: 'Gestão',
       icon: Plus,
-      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"name": "Novo Usuário", "email": "usuario@empresa.com", "role": "rh"}\' https://your-domain.vercel.app/api/addUser',
+      example: 'curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d \'{"name": "Novo Usuário", "email": "usuario@empresa.com", "role": "rh"}\' https://your-domain.app.com/api/addUser',
       response: {
         status: 200,
         data: {
@@ -140,7 +140,7 @@ export default function ApiPanel(){
       description: 'Webhook para receber candidatos da plataforma Gupy com token de acesso único',
       category: 'Integração',
       icon: Globe,
-      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"candidate_id": "12345", "name": "João Silva", "email": "joao@email.com", "job_id": "vaga-001"}\' https://your-domain.vercel.app/api/gupy-webhook',
+      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"candidate_id": "12345", "name": "João Silva", "email": "joao@email.com", "job_id": "vaga-001"}\' https://your-domain.app.com/api/gupy-webhook',
       response: {
         status: 200,
         data: {
@@ -155,7 +155,7 @@ export default function ApiPanel(){
             status: "PENDENTE_TESTE",
             access_token: "sispac_abc123def456..."
           },
-          access_link: "https://your-domain.vercel.app/form?token=sispac_abc123def456...",
+          access_link: "https://your-domain.app.com/form?token=sispac_abc123def456...",
           next_steps: [
             "Candidato receberá link único para teste comportamental",
             "Link expira em 24 horas por segurança",
@@ -171,7 +171,7 @@ export default function ApiPanel(){
       description: 'Valida token de acesso único para o formulário',
       category: 'Integração',
       icon: Shield,
-      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"token": "sispac_abc123def456..."}\' https://your-domain.vercel.app/api/validate-token',
+      example: 'curl -X POST -H "Content-Type: application/json" -d \'{"token": "sispac_abc123def456..."}\' https://your-domain.app.com/api/validate-token',
       response: {
         status: 200,
         data: {
@@ -237,7 +237,7 @@ export default function ApiPanel(){
   // Integração com Gupy
   const gupyIntegration = {
     webhook: {
-      url: "https://your-domain.vercel.app/api/gupy-webhook",
+      url: "https://your-domain.app.com/api/gupy-webhook",
       method: "POST",
       description: "Endpoint para receber dados de candidatos da Gupy",
       payload: {
@@ -306,7 +306,7 @@ export default function ApiPanel(){
                   <h3 className="font-semibold text-warning">Autenticação Obrigatória</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Todos os endpoints requerem autenticação via Bearer Token. Configure sua chave de API nas variáveis do Vercel.
+                  Todos os endpoints requerem autenticação via Bearer Token. Configure sua chave de API nas variáveis do projeto.
                 </p>
                 <code className="text-xs bg-muted/50 px-2 py-1 rounded">
                   Authorization: Bearer YOUR_API_KEY
@@ -598,7 +598,7 @@ export default function ApiPanel(){
                             Exemplo de link gerado:
                           </div>
                           <code className="text-xs font-mono text-foreground break-all">
-                            https://your-domain.vercel.app/form?token=sispac_abc123def456...
+                            https://your-domain.app.com/form?token=sispac_abc123def456...
                           </code>
                         </div>
                       </div>
@@ -657,7 +657,7 @@ export default function ApiPanel(){
                       <span className="font-medium">Chave de API</span>
                     </div>
                     <p className="text-muted-foreground text-sm">
-                      Configure a variável <code className="bg-muted/50 px-2 py-1 rounded text-xs">VERCEL_API_KEY</code> nas variáveis do projeto Vercel.
+                      Configure a variável <code className="bg-muted/50 px-2 py-1 rounded text-xs">API_KEY</code> nas variáveis do projeto.
                     </p>
                   </div>
                   

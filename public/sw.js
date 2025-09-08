@@ -88,7 +88,7 @@ self.addEventListener('fetch', (event) => {
   // Ignorar requisições para domínios externos não confiáveis
   if (url.hostname !== location.hostname && 
       !url.hostname.includes('supabase.co') &&
-      !url.hostname.includes('vercel.app')) {
+      !url.hostname.includes('app.com')) {
     return;
   }
   

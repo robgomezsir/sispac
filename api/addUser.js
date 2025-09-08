@@ -193,7 +193,7 @@ export default async function handler(req, res) {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}" 
+              <a href="${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'app.com') || 'https://sispac.app'}" 
                  style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                 🚀 Acessar SisPAC
               </a>
@@ -210,7 +210,7 @@ export default async function handler(req, res) {
       `
       
       // Enviar e-mail usando nossa API
-      const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'vercel.app') || 'https://sispac.vercel.app'}/api/send-email`, {
+      const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'app.com') || 'https://sispac.app'}/api/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

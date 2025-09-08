@@ -3,7 +3,7 @@
 ## Pré-requisitos
 - Node 18+
 - Conta no Supabase com projeto criado
-- (Opcional) Vercel para deploy
+- (Opcional) Plataforma de deploy
 
 ## Variáveis de ambiente
 Crie um arquivo `.env` na raiz com:
@@ -12,11 +12,11 @@ VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
 VITE_SUPABASE_ANON_KEY=sua_chave_anonima_aqui
 ```
 
-Para as APIs (serverless) na Vercel, configure no painel de variáveis do projeto:
+Para as APIs (serverless), configure no painel de variáveis do projeto:
 - `VITE_SUPABASE_URL` (igual ao de cima)
 - `VITE_SUPABASE_ANON_KEY` (igual ao de cima)
 - `SUPABASE_SERVICE_ROLE` (NÃO EXPONHA NO FRONTEND)
-- `VERCEL_API_KEY` (chave privada para autorizar chamadas às rotas /api)
+- `API_KEY` (chave privada para autorizar chamadas às rotas /api)
 
 ## Supabase - Tabelas
 Execute o SQL em `supabase.sql` no seu projeto para criar as tabelas.
@@ -34,10 +34,10 @@ npm run preview
 ```
 
 ## Deploy
-### Vercel (Recomendado)
-1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente no painel do Vercel
-3. O arquivo `vercel.json` já está configurado para SPA
+### Deploy (Recomendado)
+1. Conecte seu repositório à plataforma de deploy
+2. Configure as variáveis de ambiente no painel do projeto
+3. Configure roteamento para SPA (Single Page Application)
 
 ### Outros provedores
 - Certifique-se de que o roteamento SPA está configurado

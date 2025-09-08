@@ -151,7 +151,7 @@ export default async function handler(req, res){
     console.log('✅ [gupy-webhook] Candidato criado com sucesso:', newCandidate)
     
     // Gerar link de acesso único - sempre usar URL principal
-    const baseUrl = 'https://sispac.vercel.app'
+    const baseUrl = 'https://sispac.app'
     const accessLink = createAccessLink(baseUrl, accessToken)
     
     logTokenAction('ACCESS_LINK_CREATED', accessToken, { 

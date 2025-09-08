@@ -14,9 +14,9 @@ Authorization: Bearer YOUR_API_KEY
 
 ### Configuração da Chave de API
 
-1. Acesse o painel do Vercel
+1. Acesse o painel da plataforma de deploy
 2. Vá para Settings > Environment Variables
-3. Adicione a variável `VERCEL_API_KEY` com sua chave de API
+3. Adicione a variável `API_KEY` com sua chave de API
 4. Faça o redeploy da aplicação
 
 ## Endpoints Disponíveis
@@ -30,7 +30,7 @@ Retorna todos os candidatos com perfil comportamental completo.
 **Exemplo de Requisição:**
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-     https://your-domain.vercel.app/api/candidates
+     https://your-domain.com/api/candidates
 ```
 
 **Resposta:**
@@ -65,7 +65,7 @@ Retorna detalhes completos de um candidato específico.
 **Exemplo de Requisição:**
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-     https://your-domain.vercel.app/api/candidate/123
+     https://your-domain.app.com/api/candidate/123
 ```
 
 **Resposta:**
@@ -98,7 +98,7 @@ curl -X POST \
      -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"email": "candidato@email.com"}' \
-     https://your-domain.vercel.app/api/deleteCandidate
+     https://your-domain.app.com/api/deleteCandidate
 ```
 
 **Resposta:**
@@ -126,7 +126,7 @@ curl -X POST \
      -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"name": "Novo Usuário", "email": "usuario@empresa.com", "role": "rh"}' \
-     https://your-domain.vercel.app/api/addUser
+     https://your-domain.app.com/api/addUser
 ```
 
 **Resposta:**
@@ -157,7 +157,7 @@ curl -X POST \
        "job_id": "vaga-001",
        "application_date": "2024-01-15T10:30:00Z"
      }' \
-     https://your-domain.vercel.app/api/gupy-webhook
+     https://your-domain.app.com/api/gupy-webhook
 ```
 
 **Resposta:**
@@ -174,7 +174,7 @@ curl -X POST \
     "status": "PENDENTE_TESTE",
     "access_token": "sispac_abc123def456..."
   },
-  "access_link": "https://your-domain.vercel.app/form?token=sispac_abc123def456...",
+  "access_link": "https://your-domain.app.com/form?token=sispac_abc123def456...",
   "next_steps": [
     "Candidato receberá link único para teste comportamental",
     "Link expira em 24 horas por segurança",
@@ -195,7 +195,7 @@ Valida token de acesso único para o formulário.
 curl -X POST \
      -H "Content-Type: application/json" \
      -d '{"token": "sispac_abc123def456..."}' \
-     https://your-domain.vercel.app/api/validate-token
+     https://your-domain.app.com/api/validate-token
 ```
 
 **Resposta:**
@@ -282,7 +282,7 @@ O SisPAC implementa um sistema de tokens de acesso único para garantir seguran�
 ### Configuração do Webhook
 
 1. Acesse as configurações da Gupy
-2. Configure o webhook para: `https://your-domain.vercel.app/api/gupy-webhook`
+2. Configure o webhook para: `https://your-domain.app.com/api/gupy-webhook`
 3. Método: POST
 4. Headers: `Content-Type: application/json`
 
@@ -350,7 +350,7 @@ Todas as respostas de erro seguem o formato:
 const axios = require('axios');
 
 const apiClient = axios.create({
-  baseURL: 'https://your-domain.vercel.app/api',
+  baseURL: 'https://your-domain.app.com/api',
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY',
     'Content-Type': 'application/json'
@@ -407,7 +407,7 @@ class SisPACClient:
         return response.json()
 
 # Uso
-client = SisPACClient('https://your-domain.vercel.app', 'YOUR_API_KEY')
+client = SisPACClient('https://your-domain.app.com', 'YOUR_API_KEY')
 candidates = client.get_candidates()
 ```
 

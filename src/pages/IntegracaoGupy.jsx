@@ -366,7 +366,7 @@ export default function IntegracaoGupy() {
                       id="webhookUrl"
                       value={config.webhookUrl}
                       onChange={(e) => setConfig(prev => ({ ...prev, webhookUrl: e.target.value }))}
-                      placeholder="https://sua-app.vercel.app/api/gupy-webhook"
+                      placeholder="https://sua-app.app.com/api/gupy-webhook"
                     />
                     <p className="text-sm text-gray-500 mt-1">
                       URL que a Gupy usará para enviar dados dos candidatos
@@ -393,7 +393,7 @@ export default function IntegracaoGupy() {
                       id="baseUrl"
                       value={config.baseUrl}
                       onChange={(e) => setConfig(prev => ({ ...prev, baseUrl: e.target.value }))}
-                      placeholder="https://sua-app.vercel.app"
+                      placeholder="https://sua-app.app.com"
                     />
                     <p className="text-sm text-gray-500 mt-1">
                       URL base para gerar links de acesso
