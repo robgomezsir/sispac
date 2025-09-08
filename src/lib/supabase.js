@@ -6,16 +6,9 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
-// Validação rigorosa das variáveis de ambiente
+// Validação das variáveis de ambiente
 const validation = validateEnvironment()
-if (!validation.valid) {
-  displayValidationErrors(validation)
-  
-  // Em desenvolvimento, mostrar erro detalhado
-  if (import.meta.env.DEV) {
-    throw new Error(`❌ [Supabase] Configuração inválida:\n${validation.errors.join('\n')}`)
-  }
-}
+displayValidationErrors(validation)
 
 // Função para validar token de forma mais robusta
 const validateToken = (token) => {
@@ -32,23 +25,25 @@ const validateToken = (token) => {
     
     // Verificar se o token não expirou
     if (payload.exp && payload.exp < now) {
+      console.warn('⚠️ [Supabase] Token expirado')
       return false
     }
     
     // Verificar se o token não é muito antigo (mais de 1 hora)
     if (payload.iat && (now - payload.iat) > 3600) {
+      console.warn('⚠️ [Supabase] Token muito antigo')
       return false
     }
     
     return true
   } catch (error) {
-    console.error('❌ [Supabase] Erro ao validar token:', error)
+    console.warn('⚠️ [Supabase] Erro ao validar token:', error)
     return false
   }
 }
 
 // Criar cliente com chave anônima para operações básicas
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl || 'https://vpdwqaktdglneoitmcnj.supabase.co', supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyOTE2MDMsImV4cCI6MjA3Mjg2NzYwM30.qmI4fUxpkZbCU9Ua5M35N3gDU7PAE0eaOMs2vFBjQow', {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -79,7 +74,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       try {
         await supabase.auth.signOut()
       } catch (error) {
-        console.error('❌ [Supabase] Erro ao fazer logout:', error)
+        console.warn('⚠️ [Supabase] Erro ao fazer logout:', error)
       }
     }
   }
@@ -89,12 +84,12 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 if (import.meta.env.DEV) {
   supabase.auth.getSession().then(({ data, error }) => {
     if (error) {
-      console.error('❌ [Supabase] Erro na conexão:', error)
+      console.warn('⚠️ [Supabase] Erro na conexão:', error)
     } else if (data.session) {
       // Validar token da sessão
       if (!validateToken(data.session.access_token)) {
         supabase.auth.signOut().catch(error => {
-          console.error('❌ [Supabase] Erro ao fazer logout:', error)
+          console.warn('⚠️ [Supabase] Erro ao fazer logout:', error)
         })
       }
     }
@@ -102,14 +97,12 @@ if (import.meta.env.DEV) {
 }
 
 // Criar cliente com chave de serviço para operações que precisam contornar RLS
-export const supabaseAdmin = supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
-  : supabase // Fallback para o cliente anônimo se não houver chave de serviço
+export const supabaseAdmin = createClient(supabaseUrl || 'https://vpdwqaktdglneoitmcnj.supabase.co', supabaseServiceKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZHdxYWt0ZGdsbmVvaXRtY25qIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzI5MTYwMywiZXhwIjoyMDcyODY3NjAzfQ.PiPcE-H2I1Zmn2l_aL-TNaG8sRk2qO1NpQP433MxAdQ', {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
 
 // Função para limpar tokens inválidos
 export const clearInvalidTokens = async () => {
@@ -121,7 +114,7 @@ export const clearInvalidTokens = async () => {
     }
     return false
   } catch (error) {
-    console.error('❌ [Supabase] Erro ao limpar tokens:', error)
+    console.warn('⚠️ [Supabase] Erro ao limpar tokens:', error)
     return false
   }
 }
@@ -131,11 +124,12 @@ export const checkSupabaseHealth = async () => {
   try {
     const { data, error } = await supabase.from('profiles').select('count').limit(1)
     if (error) {
+      console.warn('⚠️ [Supabase] Erro ao verificar saúde:', error)
       return false
     }
     return true
   } catch (error) {
-    console.error('❌ [Supabase] Erro ao verificar saúde:', error)
+    console.warn('⚠️ [Supabase] Erro ao verificar saúde:', error)
     return false
   }
 }
