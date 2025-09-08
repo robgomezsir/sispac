@@ -104,9 +104,6 @@ export function ThemeDropdown() {
               ? "opacity-0 scale-95 translate-y-[-8px]" 
               : "opacity-100 scale-100 translate-y-0"
           )}
-          style={{
-            animation: isAnimating ? 'none' : 'dropdownIn 0.2s ease-out'
-          }}
         >
           {/* Header */}
           <div className="px-3 py-2 border-b border-border/50">
@@ -194,18 +191,6 @@ export function ThemeDropdown() {
         />
       )}
 
-      <style jsx>{`
-        @keyframes dropdownIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-      `}</style>
     </div>
   )
 }

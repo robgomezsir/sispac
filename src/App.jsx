@@ -26,6 +26,7 @@ export default function App(){
   const routes = useMemo(() => [
     { path: "/", element: <Home /> },
     { path: "/form", element: <Formulario /> },
+    { path: "/candidate-access", element: <Formulario /> },
     { 
       path: "/dashboard", 
       element: <Protected><Dashboard /></Protected> 

@@ -3,6 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { computeScore, classify } from '../utils/scoring'
 import { questions } from '../data/questions'
 import { supabase } from '../lib/supabase'
+import { validateCandidateToken } from '../api/validate-token'
+import { Progress } from '../ui/progress'
 import { 
   CheckCircle, 
   ChevronLeft, 
@@ -69,44 +71,36 @@ export default function FormularioNew(){
         setTokenValid(true)
         return
       }
-      setTokenValidating(true)
-      setTokenError(null)
       
+      // Validar token usando o novo sistema
       try {
-        const response = await fetch('/api/validate-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token })
-        })
-        
-        const data = await response.json()
-        
-        if (response.ok && data.valid) {
+        const validation = await validateCandidateToken(token)
+        if (validation.valid) {
+          console.log('✅ [Formulario] Token válido:', token)
           setTokenValid(true)
-          setCandidateData(data.candidate)
-          
-          // Preencher dados do candidato se disponíveis
-          if (data.candidate.name) {
-            setNome(data.candidate.name)
-          }
-          if (data.candidate.email) {
-            setEmail(data.candidate.email)
-          }
+          setCandidateData({
+            id: validation.candidate.id,
+            name: validation.candidate.name,
+            email: validation.candidate.email,
+            status: 'PENDENTE_TESTE'
+          })
+          setNome(validation.candidate.name)
+          setEmail(validation.candidate.email)
+          return
         } else {
-          setTokenError(data.message || 'Token inválido')
+          console.log('❌ [Formulario] Token inválido:', validation.error)
           setTokenValid(false)
+          setTokenError(validation.error)
+          return
         }
       } catch (error) {
-        setTokenError('Erro ao validar token. Tente novamente.')
+        console.error('❌ [Formulario] Erro na validação do token:', error)
         setTokenValid(false)
-      } finally {
-        setTokenValidating(false)
+        setTokenError('Erro na validação do token')
+        return
       }
+      // Token validado acima, não precisa fazer mais nada
     }
-    
-    validateToken()
   }, [searchParams])
 
   // Auto-scroll para o topo quando mudar de pergunta

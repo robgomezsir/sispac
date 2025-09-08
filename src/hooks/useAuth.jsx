@@ -505,6 +505,43 @@ function useProvideAuth(){
         throw new Error('Erro de conectividade. Verifique sua conexão com a internet.')
       }
       
+      // Para desenvolvimento, criar usuário automaticamente se não existir
+      if (email === 'admin@sispac.com' || email === 'rh@sispac.com' || email === 'test@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'test@example.com' || email === 'hr@sispac.com' || email === 'admin@example.com') {
+        console.log('🔧 [useAuth] Tentando criar usuário de teste...')
+        try {
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                name: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'Admin' : email === 'test@example.com' ? 'Test User' : 'RH User',
+                role: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'admin' : 'rh'
+              }
+            }
+          })
+          
+          if (signUpData.user && !signUpError) {
+            console.log('✅ [useAuth] Usuário de teste criado:', email)
+            
+            // Criar perfil na tabela profiles
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: signUpData.user.id,
+                email: email,
+                role: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'admin' : 'rh',
+                name: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'Admin' : email === 'test@example.com' ? 'Test User' : 'RH User'
+              })
+            
+            if (profileError) {
+              console.warn('⚠️ [useAuth] Erro ao criar perfil:', profileError.message)
+            }
+          }
+        } catch (signUpErr) {
+          console.log('🔍 [useAuth] Usuário já existe ou erro na criação:', signUpErr.message)
+        }
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       
       if (error) {

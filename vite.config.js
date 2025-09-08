@@ -6,6 +6,31 @@ export default defineConfig({
   build: {
     outDir: 'dist'
   },
+  server: {
+    proxy: {
+      // Redirecionar APIs para o backend
+      '/auth': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false
+      },
+      '/form': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false
+      },
+      '/dashboard': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false
+      },
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  },
   define: {
     // Garantir que as variáveis de ambiente sejam acessíveis
     'import.meta.env.VITE_SUPABASE_URL': JSON.stringify('https://zibuyabpsvgulvigvdtb.supabase.co'),

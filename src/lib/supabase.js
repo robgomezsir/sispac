@@ -52,7 +52,7 @@ export const supabase = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdt
     storageKey: 'sispac-auth-token',
     // Configurações adicionais para melhorar a estabilidade
     flowType: 'pkce',
-    debug: import.meta.env.DEV,
+    debug: false, // Desabilitar debug para reduzir warnings
     // Configurações de retry para melhorar conectividade
     retryDelay: 1000,
     maxRetries: 3
