@@ -210,6 +210,9 @@ export default async function handler(req, res) {
       `
       
       // Enviar e-mail usando nossa API
+      // Envio de email desabilitado
+      console.log('📧 [addUserSimple] Email de boas-vindas gerado (envio desabilitado)')
+      /*
       const emailResponse = await fetch(`${process.env.VITE_SUPABASE_URL?.replace('supabase.co', 'app.com') || 'https://sispac.app'}/api/send-email`, {
         method: 'POST',
         headers: {
@@ -225,13 +228,7 @@ export default async function handler(req, res) {
       const emailResult = await emailResponse.json()
       const emailError = !emailResponse.ok ? emailResult : null
       
-      if (emailError) {
-        console.error('❌ [addUserSimple] Erro ao enviar e-mail:', emailError)
-        // Não falhar a criação do usuário se o e-mail falhar
-        console.log('⚠️ [addUserSimple] Usuário criado, mas e-mail não foi enviado')
-      } else {
-        console.log('✅ [addUserSimple] E-mail de boas-vindas enviado com sucesso')
-      }
+      */
       
     } catch (emailError) {
       console.error('❌ [addUserSimple] Erro ao enviar e-mail:', emailError)

@@ -1,8 +1,5 @@
 import { getSupabaseAdmin, assertAuth, ok, fail } from './_utils.js'
-import sgMail from '@sendgrid/mail'
-
-// Configurar SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+// Envio de email removido - funcionalidade desabilitada
 
 // Função para gerar template de email de convite
 function generateInviteEmailTemplate(name, accessLink) {
@@ -185,17 +182,8 @@ export default async function handler(req, res){
         
         const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
         
-        // Enviar email diretamente via SendGrid
-        const msg = {
-          to: email.trim().toLowerCase(),
-          from: process.env.SENDGRID_FROM_EMAIL || 'noreply@sispac.com',
-          subject: emailTemplate.subject,
-          text: emailTemplate.text,
-          html: emailTemplate.html
-        }
-        
-        const response = await sgMail.send(msg)
-        console.log('✅ [addCandidate] Email enviado com sucesso via SendGrid:', response[0].statusCode)
+        // Envio de email desabilitado
+        console.log('📧 [addCandidate] Email de convite gerado (envio desabilitado):', accessLink)
         
       } catch (emailError) {
         console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
@@ -271,17 +259,8 @@ export default async function handler(req, res){
       
       const emailTemplate = generateInviteEmailTemplate(name.trim(), accessLink)
       
-      // Enviar email diretamente via SendGrid
-      const msg = {
-        to: email.trim().toLowerCase(),
-        from: process.env.SENDGRID_FROM_EMAIL || 'noreply@sispac.com',
-        subject: emailTemplate.subject,
-        text: emailTemplate.text,
-        html: emailTemplate.html
-      }
-      
-      const response = await sgMail.send(msg)
-      console.log('✅ [addCandidate] Email enviado com sucesso via SendGrid:', response[0].statusCode)
+      // Envio de email desabilitado
+      console.log('📧 [addCandidate] Email de convite gerado (envio desabilitado):', accessLink)
       
     } catch (emailError) {
       console.error('⚠️ [addCandidate] Erro ao enviar email:', emailError)
