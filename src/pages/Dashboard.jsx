@@ -238,7 +238,7 @@ export default function Dashboard(){
       hasLoaded.current = true
       load()
     }
-  }, [user?.id, loading]) // Incluir loading para evitar carregamento duplo
+  }, [user?.id]) // Remover loading da dependência para evitar loops
 
   // Funções de export otimizadas
   const openExportModal = useCallback(() => {

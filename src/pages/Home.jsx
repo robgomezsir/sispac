@@ -43,7 +43,7 @@ export default function Home(){
       console.log('🔍 [Home] Componente Home renderizado')
       console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
     }
-  }, [user?.id, isLoading, loading, authError]) // Usar user?.id em vez de user
+  }, [user?.id, isLoading]) // Reduzir dependências para evitar re-renders
 
   // Redirecionamento de backup após login bem-sucedido
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function Home(){
         navigate('/dashboard', { replace: true })
       }, 100) // Pequeno delay para garantir que o estado foi atualizado
     }
-  }, [user?.id, isLoading, loading, navigate]) // Usar user?.id em vez de user
+  }, [user?.id, isLoading, navigate]) // Reduzir dependências para evitar re-renders
 
   async function onSubmit(e){
     e.preventDefault()

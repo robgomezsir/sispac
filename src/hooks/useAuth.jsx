@@ -295,7 +295,7 @@ function useProvideAuth(){
         authSubscription.current.unsubscribe()
       }
     }
-  }, [navigate, location])
+  }, [navigate, location.pathname])
 
   // Função para finalizar convite e permitir login normal
   const finalizeInvite = React.useCallback(async (userData, accessToken, refreshToken) => {
@@ -405,7 +405,7 @@ function useProvideAuth(){
     if (isInitialized && user && role && !isLoading && !isInvitePending && location.pathname === '/') {
       navigate('/dashboard', { replace: true })
     }
-  }, [isInitialized, user?.id, role, isLoading, isInvitePending, navigate, location.pathname]) // Usar user?.id em vez de user
+  }, [isInitialized, user?.id, role, isLoading, navigate, location.pathname]) // Remover isInvitePending para evitar loops
 
   const signIn = React.useCallback(async (email, password) => {
     try {
