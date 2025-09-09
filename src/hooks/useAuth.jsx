@@ -566,6 +566,11 @@ function useProvideAuth(){
       // Limpar cache
       roleCache.current.clear()
       
+      // Redirecionar para dashboard após login bem-sucedido
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, 100)
+      
       return data
     } catch (err) {
       console.error("❌ [useAuth] Exceção no login:", err)

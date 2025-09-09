@@ -6,7 +6,7 @@ import { AdvancedFilters } from '../components/AdvancedFilters.jsx'
 
 import { useDebounce } from '../hooks/useDebounce.js'
 import { useAuth } from '../hooks/useAuth.jsx'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getStatusProfile } from '../config/statusProfiles.js'
 import { classify } from '../utils/scoring.js'
 import { getStatusBadge, getStatusIcon, getStatusColor } from '../utils/statusUtils.jsx'
@@ -52,13 +52,39 @@ import { ModernCard, ModernCardContent, ModernCardHeader, ModernStatCard } from 
 // Usando elementos HTML padrão temporariamente
 
 export default function Dashboard(){
-  const { user, role } = useAuth()
+  const { user, role, isLoading } = useAuth()
+  const navigate = useNavigate()
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(false)
   const [initialLoad, setInitialLoad] = useState(false)
   const [error, setError] = useState(null)
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
+
+  // Verificação de segurança - redirecionar se não autenticado
+  useEffect(() => {
+    if (!isLoading && !user) {
+      console.log('🔒 [Dashboard] Usuário não autenticado, redirecionando...')
+      navigate('/', { replace: true })
+    }
+  }, [user, isLoading, navigate])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </div>
+          <div className="text-muted-foreground">Verificando autenticação...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null // Será redirecionado pelo useEffect
+  }
   
 
 
