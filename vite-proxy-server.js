@@ -225,19 +225,44 @@ app.get('/dashboard', async (req, res) => {
 // GET /api/candidates
 app.get('/api/candidates', async (req, res) => {
   try {
+    // Verificar se há token de autorização
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token de autorização necessário'
+      })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    
+    // Verificar se o token é válido no Supabase
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      console.error('Erro de autenticação:', authError)
+      return res.status(401).json({
+        success: false,
+        error: 'Token inválido ou expirado'
+      })
+    }
+
+    console.log('✅ Usuário autenticado:', user.email)
+
     const { data, error } = await supabase
       .from('candidates')
       .select('*')
       .order('created_at', { ascending: false })
 
     if (error) {
+      console.error('Erro ao buscar candidatos:', error)
       throw error
     }
 
-    res.json({
-      success: true,
-      candidates: data || []
-    })
+    console.log('✅ Candidatos encontrados:', data?.length || 0)
+    
+    // Retornar array diretamente para compatibilidade com o Dashboard
+    res.json(data || [])
   } catch (error) {
     console.error('Erro ao listar candidatos:', error)
     res.status(500).json({
@@ -345,15 +370,182 @@ app.delete('/api/candidate/:id', async (req, res) => {
   }
 })
 
+// ===== APIs DE GESTÃO =====
+
+// POST /api/addUser
+app.post('/api/addUser', async (req, res) => {
+  try {
+    // Verificar se há token de autorização
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token de autorização necessário'
+      })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    
+    // Verificar se o token é válido no Supabase
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      console.error('Erro de autenticação:', authError)
+      return res.status(401).json({
+        success: false,
+        error: 'Token inválido ou expirado'
+      })
+    }
+
+    console.log('✅ Usuário autenticado para criação:', user.email)
+
+    const { name, email, role } = req.body
+    
+    if (!name || !email || !role) {
+      return res.status(400).json({
+        success: false,
+        error: 'Nome, email e role são obrigatórios'
+      })
+    }
+
+    // Criar usuário no Supabase Auth usando signUp
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password: '123456', // Senha temporária
+      options: {
+        data: {
+          name,
+          role,
+          temporary_password: true
+        }
+      }
+    })
+
+    if (signUpError) {
+      console.error('Erro ao criar usuário no auth:', signUpError)
+      throw signUpError
+    }
+
+    if (!authData.user) {
+      throw new Error('Falha ao criar usuário')
+    }
+
+    console.log('✅ Usuário criado no auth:', authData.user.email)
+
+    // Criar perfil na tabela profiles
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: authData.user.id,
+        email,
+        name,
+        role
+      })
+
+    if (profileError) {
+      console.warn('Erro ao criar perfil:', profileError)
+    } else {
+      console.log('✅ Perfil criado com sucesso')
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `Usuário ${name} criado com sucesso! Senha temporária: 123456`,
+      userId: authData.user.id,
+      email,
+      role,
+      profileCreated: !profileError,
+      temporaryPassword: '123456'
+    })
+  } catch (error) {
+    console.error('Erro ao criar usuário:', error)
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
+    })
+  }
+})
+
+// POST /api/deleteCandidate
+app.post('/api/deleteCandidate', async (req, res) => {
+  try {
+    // Verificar se há token de autorização
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token de autorização necessário'
+      })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    
+    // Verificar se o token é válido no Supabase
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      console.error('Erro de autenticação:', authError)
+      return res.status(401).json({
+        success: false,
+        error: 'Token inválido ou expirado'
+      })
+    }
+
+    console.log('✅ Usuário autenticado para remoção:', user.email)
+
+    const { id, email, name } = req.body
+    
+    if (!id && !email && !name) {
+      return res.status(400).json({
+        success: false,
+        error: 'ID, email ou nome do candidato é obrigatório'
+      })
+    }
+
+    let query = supabase.from('candidates').delete()
+    
+    if (id) {
+      query = query.eq('id', id)
+    } else if (email) {
+      query = query.eq('email', email)
+    } else if (name) {
+      query = query.eq('name', name)
+    }
+
+    const { error } = await query
+
+    if (error) {
+      console.error('Erro ao remover candidato:', error)
+      throw error
+    }
+
+    console.log('✅ Candidato removido com sucesso')
+    res.json({
+      success: true,
+      message: 'Candidato removido com sucesso',
+      candidate: { id, email, name }
+    })
+  } catch (error) {
+    console.error('Erro ao remover candidato:', error)
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
+    })
+  }
+})
+
 // ===== APIs DE INTEGRAÇÃO =====
 
 // POST /api/gupy-webhook
 app.post('/api/gupy-webhook', async (req, res) => {
   try {
+    console.log('🔍 Webhook Gupy recebido:', req.body)
+    
     // Aceitar tanto formato { candidate: {...} } quanto { name, email } diretamente
     let candidateData = req.body.candidate || req.body
     
     if (!candidateData || (!candidateData.name && !candidateData.email)) {
+      console.error('❌ Dados do candidato inválidos:', candidateData)
       return res.status(400).json({
         success: false,
         error: 'Dados do candidato são obrigatórios (name e email)'
@@ -362,6 +554,7 @@ app.post('/api/gupy-webhook', async (req, res) => {
 
     // Processar dados do Gupy
     const { name, email } = candidateData
+    console.log('✅ Processando candidato:', { name, email })
     
     // Inserir candidato no banco
     const { data, error } = await supabase
@@ -377,20 +570,29 @@ app.post('/api/gupy-webhook', async (req, res) => {
       .select()
 
     if (error) {
+      console.error('❌ Erro ao inserir candidato:', error)
       throw error
     }
 
+    console.log('✅ Candidato inserido com sucesso:', data[0])
+
     // Gerar token único para o candidato
     const uniqueToken = `sispac_${Date.now()}${Math.random().toString(36).substr(2, 9)}`
+    const accessLink = `${req.protocol}://${req.get('host')}/form?token=${uniqueToken}`
+    
+    console.log('✅ Token gerado:', uniqueToken)
+    console.log('✅ Link de acesso:', accessLink)
     
     res.status(201).json({
       success: true,
       candidate: data[0],
+      access_token: uniqueToken,
       token: uniqueToken,
+      access_link: accessLink,
       message: 'Candidato sincronizado com sucesso'
     })
   } catch (error) {
-    console.error('Erro no webhook do Gupy:', error)
+    console.error('❌ Erro no webhook do Gupy:', error)
     res.status(500).json({
       success: false,
       error: 'Erro interno do servidor'

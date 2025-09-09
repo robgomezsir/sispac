@@ -201,7 +201,7 @@ export default function IntegracaoGupy() {
     addLog('Testando validação de token...', 'info')
     
     try {
-      const response = await fetch('/api/validate-token', {
+      const response = await fetch('/auth/validate-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

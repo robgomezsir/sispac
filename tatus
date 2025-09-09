@@ -1,0 +1,5 @@
+[33m011c3e9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m fix: Corrigir carregamento automático de dados no Dashboard
+[33m5d0eb97[m feat: Implementação completa do backend e testes com TestSpriteEli
+[33mdd20d41[m fix: Melhorar tratamento de erros de autenticação e carregamento no Dashboard
+[33m619ecb3[m fix: Adicionar imports do componente Button em todos os arquivos que estavam faltando
+[33md7e6423[m fix: Adicionar imports do componente Badge em todos os arquivos que estavam faltando

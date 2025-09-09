@@ -219,9 +219,12 @@ export default function Dashboard(){
       
       const data = await res.json()
       
-      console.log("✅ [Dashboard] Dados carregados com sucesso:", data?.length || 0, "registros")
-      console.log("🔍 [Dashboard] Primeiro registro:", data?.[0])
-      setRows(data || [])
+      // Processar resposta da API corretamente
+      const candidates = Array.isArray(data) ? data : (data?.candidates || [])
+      
+      console.log("✅ [Dashboard] Dados carregados com sucesso:", candidates?.length || 0, "registros")
+      console.log("🔍 [Dashboard] Primeiro registro:", candidates?.[0])
+      setRows(candidates)
       setInitialLoad(true)
       setError(null)
     } catch (err) {
