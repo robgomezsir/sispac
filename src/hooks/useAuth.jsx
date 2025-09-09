@@ -1,5 +1,5 @@
 import React from 'react'
-import { supabase, clearInvalidTokens, checkSupabaseHealth, testConnectivity } from '../lib/supabase'
+import { supabase, supabaseAdmin, clearInvalidTokens, checkSupabaseHealth, testConnectivity } from '../lib/supabase'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { clearAuthCache, checkCacheHealth } from '../lib/cache-cleaner.js'
 
@@ -181,9 +181,9 @@ function useProvideAuth(){
             if (profileError) {
               if (profileError.code === 'PGRST116') {
                 // Perfil não existe, criar padrão
-                const { error: insertError } = await supabase
+                const { error: insertError } = await supabaseAdmin
                   .from('profiles')
-                  .insert({
+                  .upsert({
                     id: currentUser.id,
                     email: currentUser.email,
                     role: 'rh'
@@ -363,9 +363,9 @@ function useProvideAuth(){
       if (error) {
         if (error.code === 'PGRST116') {
           // Perfil não existe, criar padrão
-          const { error: insertError } = await supabase
+          const { error: insertError } = await supabaseAdmin
             .from('profiles')
-            .insert({
+            .upsert({
               id: userData.id,
               email: userData.email,
               role: 'rh'
@@ -431,13 +431,12 @@ function useProvideAuth(){
           
           if (signUpData.user && !signUpError) {
             // Criar perfil na tabela profiles
-            const { error: profileError } = await supabase
+            const { error: profileError } = await supabaseAdmin
               .from('profiles')
-              .insert({
+              .upsert({
                 id: signUpData.user.id,
                 email: email,
-                role: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'admin' : 'rh',
-                name: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'Admin' : email === 'test@example.com' ? 'Test User' : 'RH User'
+                role: email === 'admin@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'admin@example.com' ? 'admin' : 'rh'
               })
             
             if (profileError) {

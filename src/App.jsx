@@ -37,7 +37,7 @@ export default function App(){
     },
     { 
       path: "/api", 
-      element: <AdminOnly><ApiPanel /></AdminOnly> 
+      element: <Protected><ApiPanel /></Protected> 
     },
     { 
       path: "/integracao-gupy", 

@@ -20,8 +20,12 @@ export const Protected = React.memo(function Protected({ children }){
     )
   }
   
+  // Se não há usuário, redirecionar imediatamente
   if (!user) {
-    return <Navigate to="/" replace />
+    console.log('🔒 [Protected] Usuário não autenticado, redirecionando para login...')
+    // Forçar redirecionamento imediato
+    window.location.href = '/'
+    return null
   }
   
   return children

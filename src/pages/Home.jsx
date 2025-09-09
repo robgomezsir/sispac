@@ -37,24 +37,16 @@ export default function Home(){
   const navigate = useNavigate()
   const hasRedirected = useRef(false)
 
-  // Debug logs - apenas quando necessário
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 [Home] Componente Home renderizado')
-      console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
-    }
-  }, [user?.id, isLoading]) // Reduzir dependências para evitar re-renders
+  // Debug logs - apenas quando necessário (removido para evitar loop infinito)
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === 'development') {
+  //     console.log('🔍 [Home] Componente Home renderizado')
+  //     console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
+  //   }
+  // }, [user?.id, isLoading, loading, authError])
 
-  // Redirecionamento de backup após login bem-sucedido
-  useEffect(() => {
-    if (user && !isLoading && !loading && !hasRedirected.current) {
-      console.log("🚀 [Home] Usuário logado detectado, redirecionando para dashboard...")
-      hasRedirected.current = true
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true })
-      }, 100) // Pequeno delay para garantir que o estado foi atualizado
-    }
-  }, [user?.id, isLoading, navigate]) // Reduzir dependências para evitar re-renders
+  // Redirecionamento de backup após login bem-sucedido - REMOVIDO para evitar loop infinito
+  // O redirecionamento será gerenciado pelo useAuth
 
   async function onSubmit(e){
     e.preventDefault()
@@ -136,7 +128,7 @@ export default function Home(){
     )
   }
 
-  console.log('🔍 [Home] Mostrando formulário de login...')
+  // console.log('🔍 [Home] Mostrando formulário de login...') // Removido para evitar spam
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-auto p-4 mobile-scrollable mobile-login-container bg-gradient-to-br from-background via-background to-accent/5">

@@ -42,33 +42,75 @@ const validateToken = (token) => {
   }
 }
 
-// Criar cliente com chave anônima para operações básicas
-export const supabase = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNzQ3NjUsImV4cCI6MjA3MTc1MDc2NX0.a1EoCpinPFQqBd_ZYOT7n7iViH3NCwIzldzcBLlvfNo', {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false, // DESABILITADO para evitar login automático
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    storageKey: 'sispac-auth-token',
-    // Configurações adicionais para melhorar a estabilidade
-    flowType: 'pkce',
-    debug: false, // Desabilitar debug para reduzir warnings
-    // Configurações de retry para melhorar conectividade
-    retryDelay: 1000,
-    maxRetries: 3
-  },
-  // Configurações adicionais para produção
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
-  },
-  global: {
-    headers: {
-      'X-Client-Info': 'sispac-web'
-    }
+// Singleton para evitar múltiplas instâncias do Supabase
+let supabaseInstance = null
+let supabaseAdminInstance = null
+
+// Função para criar ou retornar instância existente
+const createSupabaseClient = () => {
+  if (supabaseInstance) {
+    console.log('🔄 [Supabase] Reutilizando instância existente')
+    return supabaseInstance
   }
-})
+
+  console.log('🆕 [Supabase] Criando nova instância')
+  supabaseInstance = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNzQ3NjUsImV4cCI6MjA3MTc1MDc2NX0.a1EoCpinPFQqBd_ZYOT7n7iViH3NCwIzldzcBLlvfNo', {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false, // DESABILITADO para evitar login automático
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      storageKey: 'sispac-auth-token',
+      // Configurações adicionais para melhorar a estabilidade
+      flowType: 'pkce',
+      debug: false, // Desabilitar debug para reduzir warnings
+      // Configurações de retry para melhorar conectividade
+      retryDelay: 1000,
+      maxRetries: 3
+    },
+    // Configurações adicionais para produção
+    realtime: {
+      params: {
+        eventsPerSecond: 10
+      }
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'sispac-web'
+      }
+    }
+  })
+
+  return supabaseInstance
+}
+
+// Função para criar cliente admin
+const createSupabaseAdminClient = () => {
+  if (supabaseAdminInstance) {
+    console.log('🔄 [Supabase] Reutilizando instância admin existente')
+    return supabaseAdminInstance
+  }
+
+  console.log('🆕 [Supabase] Criando nova instância admin')
+  supabaseAdminInstance = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseServiceKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjE3NDc2NSwiZXhwIjoyMDcxNzUwNzY1fQ.PzB6anXBL41uxSGg9GppVhoZGMVRvBqtWYfSVzGOBXQ', {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false,
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'sispac-web-admin'
+      }
+    }
+  })
+
+  return supabaseAdminInstance
+}
+
+// Criar cliente com chave anônima para operações básicas
+export const supabase = createSupabaseClient()
+export const supabaseAdmin = createSupabaseAdminClient()
 
 // Interceptor para validar tokens antes das requisições
 supabase.auth.onAuthStateChange(async (event, session) => {
@@ -99,13 +141,6 @@ if (import.meta.env.DEV) {
   })
 }
 
-// Criar cliente com chave de serviço para operações que precisam contornar RLS
-export const supabaseAdmin = createClient(supabaseUrl || 'https://zibuyabpsvgulvigvdtb.supabase.co', supabaseServiceKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYnV5YWJwc3ZndWx2aWd2ZHRiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjE3NDc2NSwiZXhwIjoyMDcxNzUwNzY1fQ.PzB6anXBL41uxSGg9GppVhoZGMVRvBqtWYfSVzGOBXQ', {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-})
 
 // Função para limpar tokens inválidos
 export const clearInvalidTokens = async () => {

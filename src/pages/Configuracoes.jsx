@@ -758,7 +758,7 @@ export default function Configuracoes(){
                   )}
                 </button>
                 <button
-                  onClick={() => setViewMode('cards')}
+                  onClick={() => setUsersExpanded(!usersExpanded)}
                   className="btn-secondary-modern px-4 py-2"
                 >
                   <div className="flex items-center gap-2">

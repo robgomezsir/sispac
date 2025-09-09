@@ -276,28 +276,57 @@ export default function ApiPanel(){
         </div>
 
         {/* Navegação por abas */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="endpoints" className="flex items-center gap-2">
+        <div className="w-full">
+          <div className="grid w-full grid-cols-4 mb-8">
+            <button 
+              onClick={() => setActiveTab('endpoints')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'endpoints' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
               <Database size={16} />
               Endpoints
-            </TabsTrigger>
-            <TabsTrigger value="scoring" className="flex items-center gap-2">
+            </button>
+            <button 
+              onClick={() => setActiveTab('scoring')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'scoring' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
               <Target size={16} />
               Sistema de Pontuação
-            </TabsTrigger>
-            <TabsTrigger value="gupy" className="flex items-center gap-2">
+            </button>
+            <button 
+              onClick={() => setActiveTab('gupy')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'gupy' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
               <Globe size={16} />
               Integração Gupy
-            </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
+            </button>
+            <button 
+              onClick={() => setActiveTab('security')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'security' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
               <Shield size={16} />
               Segurança
-            </TabsTrigger>
-          </TabsList>
+            </button>
+          </div>
 
           {/* Aba: Endpoints */}
-          <TabsContent value="endpoints" className="space-y-6">
+          {activeTab === 'endpoints' && (
+          <div className="space-y-6">
             {/* Informações de Segurança Rápida */}
             <div className="border-warning/20 bg-warning/5 rounded-lg border bg-card text-card-foreground shadow-sm">
               <div className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -350,10 +379,8 @@ export default function ApiPanel(){
                               </div>
                               
                               <button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setViewMode('cards')}
-                                className="flex items-center gap-2"
+                                onClick={() => copyToClipboard(endpoint.example, endpoint.path)}
+                                className="flex items-center gap-2 px-3 py-1 border border-border rounded-md hover:bg-muted transition-colors"
                               >
                                 {copiedEndpoint === endpoint.path ? (
                                   <CheckCircle size={16} className="text-success" />
@@ -394,10 +421,12 @@ export default function ApiPanel(){
                 </div>
               ))}
             </div>
-          </TabsContent>
+          </div>
+          )}
 
           {/* Aba: Sistema de Pontuação */}
-          <TabsContent value="scoring" className="space-y-6">
+          {activeTab === 'scoring' && (
+          <div className="space-y-6">
             <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
                 <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -473,10 +502,12 @@ export default function ApiPanel(){
                 </div>
               </div>
             </div>
-          </TabsContent>
+          </div>
+          )}
 
           {/* Aba: Integração Gupy */}
-          <TabsContent value="gupy" className="space-y-6">
+          {activeTab === 'gupy' && (
+          <div className="space-y-6">
             <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
                 <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -635,10 +666,12 @@ export default function ApiPanel(){
                 </div>
               </div>
             </div>
-          </TabsContent>
+          </div>
+          )}
 
           {/* Aba: Segurança */}
-          <TabsContent value="security" className="space-y-6">
+          {activeTab === 'security' && (
+          <div className="space-y-6">
             <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
                 <h3 className="flex items-center gap-3 rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -711,8 +744,9 @@ export default function ApiPanel(){
                 </div>
               </div>
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+          )}
+        </div>
       </div>
     </div>
   )
