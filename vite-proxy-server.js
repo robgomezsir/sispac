@@ -168,6 +168,15 @@ app.get('/dashboard', async (req, res) => {
       })
     }
 
+    // Verificar se o token é válido (simulação)
+    const token = authHeader.replace('Bearer ', '')
+    if (!token || token.length < 10) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token inválido'
+      })
+    }
+
     // Simular dados do dashboard
     res.json({
       success: true,
@@ -371,9 +380,13 @@ app.post('/api/gupy-webhook', async (req, res) => {
       throw error
     }
 
+    // Gerar token único para o candidato
+    const uniqueToken = `sispac_${Date.now()}${Math.random().toString(36).substr(2, 9)}`
+    
     res.status(201).json({
       success: true,
       candidate: data[0],
+      token: uniqueToken,
       message: 'Candidato sincronizado com sucesso'
     })
   } catch (error) {

@@ -246,12 +246,21 @@ export default function Dashboard(){
     }
   }, [loading])
 
-  // Carregar dados apenas na primeira visita
+  // Carregar dados automaticamente quando o usuário estiver autenticado
   useEffect(() => {
-    if (!initialLoad) {
+    if (user && !initialLoad && !loading) {
+      console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados automaticamente...")
       load()
     }
-  }, [initialLoad, load])
+  }, [user, initialLoad, loading, load])
+
+  // Recarregar dados quando o usuário mudar (para casos de troca de usuário)
+  useEffect(() => {
+    if (user && initialLoad) {
+      console.log("🔍 [Dashboard] Usuário mudou, recarregando dados...")
+      setInitialLoad(false) // Reset para permitir novo carregamento
+    }
+  }, [user?.id]) // Dependência apenas no ID do usuário
 
   // Funções de export otimizadas
   const openExportModal = useCallback(() => {
