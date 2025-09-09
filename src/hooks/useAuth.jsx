@@ -268,7 +268,7 @@ function useProvideAuth(){
           setRole(defaultRole)
         }
         
-        // Redirecionar para dashboard após login bem-sucedido
+        // Redirecionar para dashboard após login bem-sucedido apenas se estiver na página inicial
         if (location.pathname === '/' && !hasRedirected.current) {
           hasRedirected.current = true
           navigate('/dashboard', { replace: true })
@@ -401,7 +401,7 @@ function useProvideAuth(){
 
   // Redirecionamento simplificado - apenas para usuários já logados na inicialização
   React.useEffect(() => {
-    // Apenas redirecionar se usuário já estiver logado na inicialização
+    // Apenas redirecionar se usuário já estiver logado na inicialização E estiver na página inicial
     if (isInitialized && user && role && !isLoading && !isInvitePending && location.pathname === '/') {
       navigate('/dashboard', { replace: true })
     }
@@ -471,11 +471,7 @@ function useProvideAuth(){
       // Limpar cache
       roleCache.current.clear()
       
-      // Redirecionar para dashboard após login bem-sucedido
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true })
-      }, 100)
-      
+      // O redirecionamento será gerenciado pelo listener de auth
       return data
     } catch (err) {
       console.error("❌ [useAuth] Exceção no login:", err)

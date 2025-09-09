@@ -6,12 +6,8 @@ import { useAuth } from '../hooks/useAuth.jsx'
 export const AdminOnly = React.memo(function AdminOnly({ children }){
   const { role, isLoading } = useAuth()
   
-  // Debug: logar o estado atual
-  console.log('🔍 [AdminOnly] Estado atual:', { role, isLoading, isAdmin: role === 'admin' })
-  
   // Mostrar loading enquanto verifica role
   if (isLoading) {
-    console.log('🔍 [AdminOnly] Mostrando loading...')
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
@@ -24,11 +20,9 @@ export const AdminOnly = React.memo(function AdminOnly({ children }){
     )
   }
   
-  if (role !== 'admin') {
-    console.log('🔍 [AdminOnly] Role não é admin, redirecionando...')
+  if (role && role !== 'admin') {
     return <Navigate to="/" replace />
   }
   
-  console.log('🔍 [AdminOnly] Role é admin, renderizando conteúdo...')
   return children
 })
