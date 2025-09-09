@@ -187,8 +187,6 @@ export default function Dashboard(){
     setError(null) // Limpar erro anterior
     
     try {
-      console.log("🔍 [Dashboard] Iniciando carregamento de dados...")
-      
       // Carregar dados diretamente do Supabase em vez de usar API externa
       const { data: candidates, error: candidatesError } = await supabase
         .from('candidates')
@@ -200,8 +198,6 @@ export default function Dashboard(){
         throw new Error(`Erro ao carregar candidatos: ${candidatesError.message}`)
       }
       
-      console.log("✅ [Dashboard] Dados carregados com sucesso:", candidates?.length || 0, "registros")
-      console.log("🔍 [Dashboard] Primeiro registro:", candidates?.[0])
       setRows(candidates || [])
       setInitialLoad(true)
       setError(null)
@@ -239,7 +235,6 @@ export default function Dashboard(){
   // Carregar dados apenas uma vez quando o componente montar e usuário estiver autenticado
   useEffect(() => {
     if (user && !hasLoaded.current && !loading) {
-      console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados...")
       hasLoaded.current = true
       load()
     }
@@ -857,16 +852,6 @@ function CandidateDetails({ id }){
 
   const statusProfile = getStatusProfile(details.status)
   
-  // Debug: verificar se o perfil está sendo obtido corretamente
-  console.log('🔍 [CandidateDetails] Debug perfilamento:', {
-    candidateId: id,
-    candidateStatus: details.status,
-    candidateScore: details.score,
-    statusProfile: statusProfile,
-    hasProfile: !!statusProfile,
-    profileKeys: statusProfile ? Object.keys(statusProfile) : null
-  })
-
   // Verificação adicional: se não há perfil, tentar obter pelo score
   const finalStatusProfile = statusProfile || (details.score !== undefined ? getStatusProfile(classify(details.score)) : null)
 

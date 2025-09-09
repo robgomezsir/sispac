@@ -117,8 +117,6 @@ function useProvideAuth(){
     
     const initializeAuth = async () => {
       try {
-        console.log('🔍 [useAuth] Iniciando autenticação...')
-        
         // Limpar tokens inválidos antes de começar
         await clearInvalidTokens()
         
@@ -139,34 +137,25 @@ function useProvideAuth(){
           
           // Tratar erros específicos
           if (error.message.includes('token') || error.message.includes('expired') || error.message.includes('invalid')) {
-            console.log('🔍 [useAuth] Token inválido/expirado detectado, limpando cache...')
             clearAuthCache()
             setAuthError('Sessão expirada. Faça login novamente.')
           } else if (error.message.includes('network') || error.message.includes('fetch')) {
-            console.log('🔍 [useAuth] Erro de rede detectado...')
             setAuthError('Erro de conexão. Verifique sua internet.')
           } else {
             setAuthError('Erro de autenticação. Tente novamente.')
           }
-          
-          // Não tentar novamente automaticamente para evitar loops
-          console.log('🔍 [useAuth] Finalizando inicialização com erro')
         } else if (currentUser) {
-          console.log('🔍 [useAuth] Usuário encontrado:', currentUser.email)
-          
           // Definir usuário imediatamente
           setUser(currentUser)
           setAuthError(null)
           
           // Verificar se é o usuário admin principal
           if (currentUser.email === 'robgomez.sir@gmail.com') {
-            console.log('🔍 [useAuth] Usuário admin principal detectado')
             const adminRole = 'admin'
             roleCache.current.set(currentUser.id, adminRole)
             setRole(adminRole)
             
             // Redirecionar imediatamente para admin
-            console.log("🚀 [useAuth] Redirecionando admin para dashboard...")
             hasRedirected.current = true
             navigate('/dashboard', { replace: true })
             return
@@ -183,19 +172,15 @@ function useProvideAuth(){
           
           // Verificar se o usuário tem perfil na tabela profiles
           try {
-            console.log('🔍 [useAuth] Verificando perfil do usuário...')
             const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('id, email, role')
               .eq('id', currentUser.id)
               .single()
             
-            console.log('🔍 [useAuth] Dados do perfil:', profileData)
-            
             if (profileError) {
               if (profileError.code === 'PGRST116') {
                 // Perfil não existe, criar padrão
-                console.log('🔍 [useAuth] Perfil não existe, criando padrão...')
                 const { error: insertError } = await supabase
                   .from('profiles')
                   .insert({
@@ -206,7 +191,6 @@ function useProvideAuth(){
                 
                 if (insertError) {
                   console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
-                  // Continuar mesmo com erro na criação do perfil
                 }
                 
                 // Definir role padrão
@@ -232,7 +216,6 @@ function useProvideAuth(){
             setAuthError(null) // Limpar erro se tudo funcionou
             
           } catch (profileError) {
-            console.log('🔍 [useAuth] Erro ao verificar perfil, usando configuração padrão:', profileError)
             // Em caso de erro, usar configuração padrão
             const defaultRole = 'rh'
             roleCache.current.set(currentUser.id, defaultRole)
@@ -240,7 +223,6 @@ function useProvideAuth(){
             setUser(currentUser)
           }
         } else {
-          console.log('🔍 [useAuth] Nenhum usuário encontrado')
           setAuthError(null) // Limpar erro quando não há usuário (estado normal)
         }
       } catch (err) {
@@ -263,15 +245,10 @@ function useProvideAuth(){
     }
 
     // Configurar listener de mudança de auth - SIMPLIFICADO para evitar loops
-    console.log('🔍 [useAuth] Configurando listener de auth...')
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted.current) return
       
-      console.log('🔍 [useAuth] Evento de auth:', event, session?.user?.email)
-      
       if (event === 'SIGNED_IN' && session?.user) {
-        console.log('🔍 [useAuth] Usuário logado:', session.user.email)
-        
         // Resetar flag de redirecionamento para permitir novo redirecionamento
         hasRedirected.current = false
         
@@ -281,7 +258,6 @@ function useProvideAuth(){
         
         // Verificar se é o usuário admin principal
         if (session.user.email === 'robgomez.sir@gmail.com') {
-          console.log('🔍 [useAuth] Usuário admin principal logado')
           const adminRole = 'admin'
           roleCache.current.set(session.user.id, adminRole)
           setRole(adminRole)
@@ -294,12 +270,10 @@ function useProvideAuth(){
         
         // Redirecionar para dashboard após login bem-sucedido
         if (location.pathname === '/' && !hasRedirected.current) {
-          console.log("🚀 [useAuth] Redirecionando usuário para dashboard...")
           hasRedirected.current = true
           navigate('/dashboard', { replace: true })
         }
       } else if (event === 'SIGNED_OUT') {
-        console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
         setUser(null)
         setRole(null)
         setAuthError(null)
@@ -309,7 +283,6 @@ function useProvideAuth(){
         // Limpar cache de autenticação
         clearAuthCache()
       } else if (event === 'TOKEN_REFRESHED') {
-        console.log('🔍 [useAuth] Token atualizado com sucesso')
         setAuthError(null)
       }
     })
@@ -430,15 +403,12 @@ function useProvideAuth(){
   React.useEffect(() => {
     // Apenas redirecionar se usuário já estiver logado na inicialização
     if (isInitialized && user && role && !isLoading && !isInvitePending && location.pathname === '/') {
-      console.log("🚀 [useAuth] Redirecionando usuário já logado para dashboard...")
       navigate('/dashboard', { replace: true })
     }
   }, [isInitialized, user?.id, role, isLoading, isInvitePending, navigate, location.pathname]) // Usar user?.id em vez de user
 
   const signIn = React.useCallback(async (email, password) => {
     try {
-      console.log('🔐 [useAuth] Iniciando login para:', email)
-      
       // Testar conectividade antes do login
       const isConnected = await testConnectivity()
       if (!isConnected) {
@@ -447,7 +417,6 @@ function useProvideAuth(){
       
       // Para desenvolvimento, criar usuário automaticamente se não existir
       if (email === 'admin@sispac.com' || email === 'rh@sispac.com' || email === 'test@sispac.com' || email === 'robgomez.sir@gmail.com' || email === 'test@example.com' || email === 'hr@sispac.com' || email === 'admin@example.com') {
-        console.log('🔧 [useAuth] Tentando criar usuário de teste...')
         try {
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email,
@@ -461,8 +430,6 @@ function useProvideAuth(){
           })
           
           if (signUpData.user && !signUpError) {
-            console.log('✅ [useAuth] Usuário de teste criado:', email)
-            
             // Criar perfil na tabela profiles
             const { error: profileError } = await supabase
               .from('profiles')
@@ -478,7 +445,7 @@ function useProvideAuth(){
             }
           }
         } catch (signUpErr) {
-          console.log('🔍 [useAuth] Usuário já existe ou erro na criação:', signUpErr.message)
+          // Usuário já existe ou erro na criação - continuar normalmente
         }
       }
       
@@ -501,8 +468,6 @@ function useProvideAuth(){
         }
       }
       
-      console.log('✅ [useAuth] Login bem-sucedido para:', email)
-      
       // Limpar cache
       roleCache.current.clear()
       
@@ -521,7 +486,6 @@ function useProvideAuth(){
   // Função para fazer logout
   const signOut = async () => {
     try {
-      console.log('🔍 [useAuth] Fazendo logout...')
       await supabase.auth.signOut()
       
       // Limpar estado local
@@ -535,8 +499,6 @@ function useProvideAuth(){
       
       // Redirecionar para home
       navigate('/')
-      
-      console.log('✅ [useAuth] Logout realizado com sucesso')
     } catch (error) {
       console.error('❌ [useAuth] Erro ao fazer logout:', error)
       setAuthError('Erro ao fazer logout')
