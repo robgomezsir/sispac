@@ -262,7 +262,7 @@ function useProvideAuth(){
       clearTimeout(timeoutId)
     }
 
-    // Configurar listener de mudança de auth
+    // Configurar listener de mudança de auth - SIMPLIFICADO para evitar loops
     console.log('🔍 [useAuth] Configurando listener de auth...')
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted.current) return
@@ -285,73 +285,18 @@ function useProvideAuth(){
           const adminRole = 'admin'
           roleCache.current.set(session.user.id, adminRole)
           setRole(adminRole)
-        }
-
-        // Verificar se o usuário precisa redefinir a senha
-        const needsReset = await checkPasswordResetNeeded(session.user)
-        if (needsReset && location.pathname !== '/reset-password') {
-          console.log('🔍 [useAuth] Usuário precisa redefinir senha após login, redirecionando...')
-          setNeedsPasswordReset(true)
-          navigate('/reset-password', { replace: true })
-          return
-        }
-        
-        // Verificar perfil do usuário logado
-        try {
-          console.log('🔍 [useAuth] Verificando perfil do usuário logado...')
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('id, email, role')
-            .eq('id', session.user.id)
-            .single()
-          
-          if (profileError && profileError.code === 'PGRST116') {
-            // Perfil não existe, criar padrão
-            console.log('🔍 [useAuth] Perfil não existe, criando padrão...')
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert({
-                id: session.user.id,
-                email: session.user.email,
-                role: 'rh'
-              })
-            
-            if (insertError) {
-              console.error("❌ [useAuth] Erro ao criar perfil:", insertError.message)
-            }
-          }
-          
-          // Definir role
-          if (profileData?.role) {
-            roleCache.current.set(session.user.id, profileData.role)
-            setRole(profileData.role)
-          } else {
-            const defaultRole = 'rh'
-            roleCache.current.set(session.user.id, defaultRole)
-            setRole(defaultRole)
-          }
-          
-        } catch (error) {
-          console.error("❌ [useAuth] Erro ao verificar perfil após login:", error)
-          // Usar role padrão em caso de erro
+        } else {
+          // Para outros usuários, usar role padrão
           const defaultRole = 'rh'
           roleCache.current.set(session.user.id, defaultRole)
           setRole(defaultRole)
         }
         
         // Redirecionar para dashboard após login bem-sucedido
-        console.log("🔍 [useAuth] Verificando redirecionamento...")
-        console.log("🔍 [useAuth] location.pathname:", location.pathname)
-        console.log("🔍 [useAuth] hasRedirected.current:", hasRedirected.current)
-        
         if (location.pathname === '/' && !hasRedirected.current) {
           console.log("🚀 [useAuth] Redirecionando usuário para dashboard...")
           hasRedirected.current = true
           navigate('/dashboard', { replace: true })
-        } else if (location.pathname !== '/') {
-          console.log("🔍 [useAuth] Usuário já está em uma página diferente da raiz:", location.pathname)
-        } else if (hasRedirected.current) {
-          console.log("🔍 [useAuth] Redirecionamento já foi executado anteriormente")
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔍 [useAuth] Usuário deslogado, limpando estado...')
@@ -366,11 +311,6 @@ function useProvideAuth(){
       } else if (event === 'TOKEN_REFRESHED') {
         console.log('🔍 [useAuth] Token atualizado com sucesso')
         setAuthError(null)
-      } else if (event === 'USER_UPDATED') {
-        console.log('🔍 [useAuth] Usuário atualizado:', session?.user?.email)
-        if (session?.user) {
-          setUser(session.user)
-        }
       }
     })
     
@@ -493,7 +433,7 @@ function useProvideAuth(){
       console.log("🚀 [useAuth] Redirecionando usuário já logado para dashboard...")
       navigate('/dashboard', { replace: true })
     }
-  }, [isInitialized, user, role, isLoading, isInvitePending, navigate, location.pathname])
+  }, [isInitialized, user?.id, role, isLoading, isInvitePending, navigate, location.pathname]) // Usar user?.id em vez de user
 
   const signIn = React.useCallback(async (email, password) => {
     try {

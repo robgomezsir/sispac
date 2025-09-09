@@ -37,21 +37,24 @@ export default function Home(){
   const navigate = useNavigate()
   const hasRedirected = useRef(false)
 
-  // Debug logs
+  // Debug logs - apenas quando necessário
   useEffect(() => {
-    console.log('🔍 [Home] Componente Home renderizado')
-    console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
-  }, [user, isLoading, loading, authError])
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 [Home] Componente Home renderizado')
+      console.log('🔍 [Home] Estado atual:', { user: !!user, isLoading, loading, authError })
+    }
+  }, [user?.id, isLoading, loading, authError]) // Usar user?.id em vez de user
 
   // Redirecionamento de backup após login bem-sucedido
   useEffect(() => {
-    if (user && !isLoading && !loading) {
+    if (user && !isLoading && !loading && !hasRedirected.current) {
       console.log("🚀 [Home] Usuário logado detectado, redirecionando para dashboard...")
+      hasRedirected.current = true
       setTimeout(() => {
         navigate('/dashboard', { replace: true })
       }, 100) // Pequeno delay para garantir que o estado foi atualizado
     }
-  }, [user, isLoading, loading, navigate])
+  }, [user?.id, isLoading, loading, navigate]) // Usar user?.id em vez de user
 
   async function onSubmit(e){
     e.preventDefault()

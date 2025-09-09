@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { downloadXlsx } from '../utils/download'
 import Modal from '../components/Modal.jsx'
@@ -60,6 +60,9 @@ export default function Dashboard(){
   const [error, setError] = useState(null)
   const [q, setQ] = useState('')
   const [current, setCurrent] = useState(null)
+  
+  // Ref para controlar se já carregou os dados
+  const hasLoaded = useRef(false)
 
   // Verificação de segurança - redirecionar se não autenticado
   useEffect(() => {
@@ -176,7 +179,7 @@ export default function Dashboard(){
     return { total, superou, acima, dentro, abaixo }
   }, [filtered])
 
-  // Função de carregamento otimizada
+  // Função de carregamento otimizada - SEM dependências que causam loops
   const load = useCallback(async () => {
     if (loading) return // Evitar múltiplas chamadas simultâneas
     
@@ -202,6 +205,7 @@ export default function Dashboard(){
       setRows(candidates || [])
       setInitialLoad(true)
       setError(null)
+      hasLoaded.current = true // Marcar como carregado
     } catch (err) {
       console.error("❌ [Dashboard] Exceção ao carregar dados:", err)
       
@@ -222,15 +226,24 @@ export default function Dashboard(){
     } finally {
       setLoading(false)
     }
-  }, [loading, user])
+  }, []) // SEM dependências para evitar loops
+
+  // Resetar carregamento quando usuário mudar
+  useEffect(() => {
+    if (user) {
+      hasLoaded.current = false
+      setInitialLoad(false)
+    }
+  }, [user?.id])
 
   // Carregar dados apenas uma vez quando o componente montar e usuário estiver autenticado
   useEffect(() => {
-    if (user && !initialLoad && !loading) {
+    if (user && !hasLoaded.current && !loading) {
       console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados...")
+      hasLoaded.current = true
       load()
     }
-  }, [user?.id]) // Dependência apenas no ID do usuário para evitar loops
+  }, [user?.id, loading]) // Incluir loading para evitar carregamento duplo
 
   // Funções de export otimizadas
   const openExportModal = useCallback(() => {
