@@ -227,27 +227,25 @@ app.get('/api/candidates', async (req, res) => {
   try {
     // Verificar se há token de autorização
     const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        error: 'Token de autorização necessário'
-      })
-    }
-
-    const token = authHeader.replace('Bearer ', '')
     
-    // Verificar se o token é válido no Supabase
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
-    if (authError || !user) {
-      console.error('Erro de autenticação:', authError)
-      return res.status(401).json({
-        success: false,
-        error: 'Token inválido ou expirado'
-      })
-    }
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '')
+      
+      // Verificar se o token é válido no Supabase
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+      
+      if (authError || !user) {
+        console.error('Erro de autenticação:', authError)
+        return res.status(401).json({
+          success: false,
+          error: 'Token inválido ou expirado'
+        })
+      }
 
-    console.log('✅ Usuário autenticado:', user.email)
+      console.log('✅ Usuário autenticado:', user.email)
+    } else {
+      console.log('⚠️ Requisição sem autenticação - modo demonstração')
+    }
 
     const { data, error } = await supabase
       .from('candidates')

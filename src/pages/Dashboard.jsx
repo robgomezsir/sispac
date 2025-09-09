@@ -186,47 +186,26 @@ export default function Dashboard(){
     try {
       console.log("🔍 [Dashboard] Iniciando carregamento de dados...")
       
-      // Obter token de sessão atual
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError) {
-        console.error("❌ [Dashboard] Erro ao obter sessão:", sessionError)
-        throw new Error(`Erro de autenticação: ${sessionError.message}`)
+      let headers = {
+        'Content-Type': 'application/json'
       }
       
-      if (!session?.access_token) {
-        console.warn("⚠️ [Dashboard] Nenhuma sessão ativa encontrada")
-        // Tentar obter usuário atual para verificar se está logado
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
+      // Tentar obter token de sessão se houver usuário autenticado
+      if (user) {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
         
-        if (userError || !user) {
-          console.log("🔍 [Dashboard] Usuário não autenticado, redirecionando para login...")
-          // Redirecionar para login se não estiver autenticado
-          window.location.href = '/'
-          return
+        if (!sessionError && session?.access_token) {
+          console.log("✅ [Dashboard] Token de sessão obtido com sucesso")
+          headers['Authorization'] = `Bearer ${session.access_token}`
         } else {
-          console.log("🔍 [Dashboard] Usuário autenticado mas sem sessão ativa, tentando refresh...")
-          // Tentar refresh da sessão
-          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
-          
-          if (refreshError || !refreshData.session?.access_token) {
-            throw new Error('Sessão expirada. Faça login novamente.')
-          }
-          
-          // Usar o novo token
-          session.access_token = refreshData.session.access_token
+          console.log("⚠️ [Dashboard] Nenhuma sessão ativa, tentando sem autenticação...")
         }
+      } else {
+        console.log("⚠️ [Dashboard] Nenhum usuário autenticado, tentando sem autenticação...")
       }
-      
-      console.log("✅ [Dashboard] Token de sessão obtido com sucesso")
       
       // Usar a API que inclui o perfil comportamental
-      const res = await fetch('/api/candidates', {
-        headers: { 
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      const res = await fetch('/api/candidates', { headers })
       
       if (!res.ok) {
         const errorText = await res.text()
@@ -273,12 +252,16 @@ export default function Dashboard(){
     } finally {
       setLoading(false)
     }
-  }, [loading])
+  }, [loading, user])
 
-  // Carregar dados automaticamente quando o usuário estiver autenticado
+  // Carregar dados automaticamente
   useEffect(() => {
-    if (user && !initialLoad && !loading) {
-      console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados automaticamente...")
+    if (!initialLoad && !loading) {
+      if (user) {
+        console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados automaticamente...")
+      } else {
+        console.log("🔍 [Dashboard] Carregando dados em modo demonstração...")
+      }
       load()
     }
   }, [user, initialLoad, loading, load])
