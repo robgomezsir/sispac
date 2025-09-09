@@ -186,50 +186,20 @@ export default function Dashboard(){
     try {
       console.log("🔍 [Dashboard] Iniciando carregamento de dados...")
       
-      let headers = {
-        'Content-Type': 'application/json'
+      // Carregar dados diretamente do Supabase em vez de usar API externa
+      const { data: candidates, error: candidatesError } = await supabase
+        .from('candidates')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (candidatesError) {
+        console.error("❌ [Dashboard] Erro ao buscar candidatos:", candidatesError)
+        throw new Error(`Erro ao carregar candidatos: ${candidatesError.message}`)
       }
-      
-      // Tentar obter token de sessão se houver usuário autenticado
-      if (user) {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-        
-        if (!sessionError && session?.access_token) {
-          console.log("✅ [Dashboard] Token de sessão obtido com sucesso")
-          headers['Authorization'] = `Bearer ${session.access_token}`
-        } else {
-          console.log("⚠️ [Dashboard] Nenhuma sessão ativa, tentando sem autenticação...")
-        }
-      } else {
-        console.log("⚠️ [Dashboard] Nenhum usuário autenticado, tentando sem autenticação...")
-      }
-      
-      // Usar a API que inclui o perfil comportamental
-      const res = await fetch('/api/candidates', { headers })
-      
-      if (!res.ok) {
-        const errorText = await res.text()
-        let errorMessage = 'Erro ao carregar dados'
-        
-        try {
-          const errorData = JSON.parse(errorText)
-          errorMessage = errorData.error || errorMessage
-        } catch {
-          errorMessage = errorText || `HTTP ${res.status}: ${res.statusText}`
-        }
-        
-        console.error("❌ [Dashboard] Erro na API:", errorMessage)
-        throw new Error(errorMessage)
-      }
-      
-      const data = await res.json()
-      
-      // Processar resposta da API corretamente
-      const candidates = Array.isArray(data) ? data : (data?.candidates || [])
       
       console.log("✅ [Dashboard] Dados carregados com sucesso:", candidates?.length || 0, "registros")
       console.log("🔍 [Dashboard] Primeiro registro:", candidates?.[0])
-      setRows(candidates)
+      setRows(candidates || [])
       setInitialLoad(true)
       setError(null)
     } catch (err) {
@@ -254,25 +224,13 @@ export default function Dashboard(){
     }
   }, [loading, user])
 
-  // Carregar dados automaticamente
+  // Carregar dados apenas uma vez quando o componente montar e usuário estiver autenticado
   useEffect(() => {
-    if (!initialLoad && !loading) {
-      if (user) {
-        console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados automaticamente...")
-      } else {
-        console.log("🔍 [Dashboard] Carregando dados em modo demonstração...")
-      }
+    if (user && !initialLoad && !loading) {
+      console.log("🔍 [Dashboard] Usuário autenticado detectado, carregando dados...")
       load()
     }
-  }, [user, initialLoad, loading, load])
-
-  // Recarregar dados quando o usuário mudar (para casos de troca de usuário)
-  useEffect(() => {
-    if (user && initialLoad) {
-      console.log("🔍 [Dashboard] Usuário mudou, recarregando dados...")
-      setInitialLoad(false) // Reset para permitir novo carregamento
-    }
-  }, [user?.id]) // Dependência apenas no ID do usuário
+  }, [user?.id]) // Dependência apenas no ID do usuário para evitar loops
 
   // Funções de export otimizadas
   const openExportModal = useCallback(() => {
@@ -336,39 +294,15 @@ export default function Dashboard(){
       setLoading(true)
       console.log("🔍 [Dashboard] Removendo candidato:", candidate.name)
       
-      // Obter token de sessão atual
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      // Remover candidato diretamente do Supabase
+      const { error: deleteError } = await supabase
+        .from('candidates')
+        .delete()
+        .eq('id', candidate.id)
       
-      if (sessionError) {
-        console.error("❌ [Dashboard] Erro ao obter sessão para remoção:", sessionError)
-        throw new Error(`Erro de autenticação: ${sessionError.message}`)
-      }
-      
-      if (!session?.access_token) {
-        console.warn("⚠️ [Dashboard] Nenhuma sessão ativa para remoção")
-        // Tentar refresh da sessão
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
-        
-        if (refreshError || !refreshData.session?.access_token) {
-          throw new Error('Sessão expirada. Faça login novamente.')
-        }
-        
-        session.access_token = refreshData.session.access_token
-      }
-      
-      const res = await fetch('/api/deleteCandidate', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({ email: candidate.email })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        throw new Error(data.error || 'Erro ao remover candidato')
+      if (deleteError) {
+        console.error("❌ [Dashboard] Erro ao remover candidato:", deleteError)
+        throw new Error(`Erro ao remover candidato: ${deleteError.message}`)
       }
       
       // Remover candidato da lista local
@@ -609,7 +543,7 @@ export default function Dashboard(){
                         <button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setViewMode('cards')}
+                          onClick={() => openModal(row)}
                           className="flex-1 h-8 text-xs btn-modern-outline"
                         >
                           <Eye size={14} className="mr-1" />
@@ -618,7 +552,7 @@ export default function Dashboard(){
                         <button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setViewMode('cards')}
+                          onClick={() => exportOne(row)}
                           className="flex-1 h-8 text-xs btn-modern-secondary"
                         >
                           <Download size={14} className="mr-1" />
@@ -627,7 +561,7 @@ export default function Dashboard(){
                         <button 
                           variant="outline" 
                           size="sm" 
-                          onClick={() => setViewMode('cards')}
+                          onClick={() => handleDeleteCandidate(row)}
                           className="flex-1 h-8 text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                         >
                           <Trash2 size={14} className="mr-1" />
@@ -675,21 +609,21 @@ export default function Dashboard(){
                           <td className="p-4">
                             <div className="flex items-center gap-2">
                               <button 
-                                onClick={() => setViewMode('cards')}
+                                onClick={() => openModal(row)}
                                 className="h-8 px-3 btn-modern-outline"
                               >
                                 <Eye size={14} className="mr-1" />
                                 Ver
                               </button>
                               <button 
-                                onClick={() => setViewMode('cards')}
+                                onClick={() => exportOne(row)}
                                 className="h-8 px-3 btn-modern-secondary"
                               >
                                 <Download size={14} className="mr-1" />
                                 Download
                               </button>
                               <button 
-                                onClick={() => setViewMode('cards')}
+                                onClick={() => handleDeleteCandidate(row)}
                                 className="h-8 px-3 text-destructive hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-all duration-200"
                               >
                                 <Trash2 size={14} className="mr-1" />

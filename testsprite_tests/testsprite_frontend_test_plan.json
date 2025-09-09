@@ -1,0 +1,72 @@
+{
+  "test_plan": {
+    "project_name": "sispac-app",
+    "test_type": "frontend",
+    "tests": [
+      {
+        "id": "auth_security_test",
+        "name": "Teste de Segurança - Dashboard Acessível sem Autenticação",
+        "description": "Verificar se o dashboard está protegido contra acesso não autorizado",
+        "priority": "critical",
+        "steps": [
+          "Acessar /dashboard diretamente sem login",
+          "Verificar se é redirecionado para página de login",
+          "Confirmar que dados sensíveis não são expostos"
+        ],
+        "expected_result": "Dashboard deve redirecionar para login quando acessado sem autenticação"
+      },
+      {
+        "id": "login_redirect_test",
+        "name": "Teste de Login e Redirecionamento",
+        "description": "Verificar se o login funciona corretamente e redireciona para o dashboard",
+        "priority": "high",
+        "steps": [
+          "Preencher formulário de login com credenciais válidas",
+          "Clicar em submit",
+          "Verificar se é redirecionado para /dashboard",
+          "Confirmar que usuário está autenticado"
+        ],
+        "expected_result": "Login deve funcionar e redirecionar para dashboard"
+      },
+      {
+        "id": "dashboard_rendering_test",
+        "name": "Teste de Renderização do Dashboard",
+        "description": "Verificar se elementos do dashboard são renderizados corretamente",
+        "priority": "high",
+        "steps": [
+          "Fazer login e acessar dashboard",
+          "Verificar se título 'Candidatos' é exibido",
+          "Verificar se botão 'Atualizar' está presente",
+          "Verificar se cartões de estatísticas são exibidos"
+        ],
+        "expected_result": "Todos os elementos do dashboard devem ser renderizados corretamente"
+      },
+      {
+        "id": "data_loading_test",
+        "name": "Teste de Carregamento de Dados",
+        "description": "Verificar se dados dos candidatos são carregados corretamente",
+        "priority": "medium",
+        "steps": [
+          "Acessar dashboard autenticado",
+          "Clicar no botão 'Atualizar'",
+          "Verificar se dados são carregados",
+          "Confirmar se estatísticas são calculadas"
+        ],
+        "expected_result": "Dados devem ser carregados e exibidos corretamente"
+      },
+      {
+        "id": "session_management_test",
+        "name": "Teste de Gerenciamento de Sessão",
+        "description": "Verificar se a sessão do usuário é mantida adequadamente",
+        "priority": "high",
+        "steps": [
+          "Fazer login",
+          "Navegar entre páginas",
+          "Recarregar a página",
+          "Verificar se usuário permanece logado"
+        ],
+        "expected_result": "Sessão deve ser mantida durante navegação e recarregamento"
+      }
+    ]
+  }
+}

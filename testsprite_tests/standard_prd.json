@@ -1,0 +1,68 @@
+{
+  "prd": {
+    "title": "SisPAC - Sistema de Avaliação Comportamental",
+    "version": "1.0.0",
+    "description": "Sistema web para avaliação e análise comportamental de candidatos com dashboard administrativo",
+    "features": [
+      {
+        "name": "Sistema de Autenticação",
+        "description": "Login seguro com Supabase Auth, proteção de rotas e gerenciamento de sessões",
+        "requirements": [
+          "Usuários devem fazer login para acessar o sistema",
+          "Dashboard deve ser protegido contra acesso não autorizado",
+          "Sessões devem ser mantidas durante navegação",
+          "Logout deve funcionar corretamente"
+        ]
+      },
+      {
+        "name": "Dashboard de Candidatos",
+        "description": "Interface para visualização e gerenciamento de candidatos",
+        "requirements": [
+          "Exibir lista de candidatos com filtros e busca",
+          "Mostrar estatísticas de performance",
+          "Permitir exportação de dados",
+          "Interface responsiva e moderna"
+        ]
+      },
+      {
+        "name": "Sistema de Avaliação",
+        "description": "Formulário para coleta de dados comportamentais dos candidatos",
+        "requirements": [
+          "Questionário interativo e responsivo",
+          "Cálculo automático de scores",
+          "Classificação comportamental",
+          "Salvamento de respostas"
+        ]
+      },
+      {
+        "name": "Gerenciamento de Dados",
+        "description": "CRUD completo para candidatos e configurações",
+        "requirements": [
+          "Criar, editar e excluir candidatos",
+          "Filtros avançados de busca",
+          "Ordenação de dados",
+          "Exportação em Excel"
+        ]
+      }
+    ],
+    "technical_requirements": [
+      "Frontend: React com Vite",
+      "Backend: Express.js",
+      "Banco: Supabase PostgreSQL",
+      "Autenticação: Supabase Auth",
+      "UI: TailwindCSS + componentes customizados"
+    ],
+    "security_requirements": [
+      "Todas as rotas administrativas devem ser protegidas",
+      "Dados sensíveis não devem ser expostos sem autenticação",
+      "Sessões devem ser válidas e seguras",
+      "Validação de permissões de usuário"
+    ],
+    "performance_requirements": [
+      "Carregamento inicial em menos de 3 segundos",
+      "Interface responsiva em diferentes dispositivos",
+      "Filtros e busca em tempo real",
+      "Exportação de dados eficiente"
+    ]
+  }
+}
